@@ -1,5 +1,5 @@
 ﻿<head>
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Just+Another+Hand&family=Mona+Sans:ital,wght@0,200..900;1,200..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Underdog&family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
@@ -31,29 +31,25 @@
         background-blend-mode: lighten;
         }
 
-        .Gallery {
+        #Gallery {
                 display: flex;
-                justify-content: center;
-                gap: 100px;
+                width: 1200px;
+                margin: 0 auto;
+            justify-content: center;
+
 
             }
 
 
-            .pic1{
-
+            .pics{
+                
+                width:1200px;
+                height:550px;
             border-radius: 20px;
-
         }
 
-        .pic2{
+       
 
-        border-radius: 20px;
-        }
-
-        .pic3{
-
-        border-radius: 20px;
-        }
 
         .heading{
 
@@ -118,7 +114,11 @@
         .btn:hover{
             transform: scale(1.2);
             cursor: pointer;
-        }
+                background-color: orangered;
+                color: white;
+                border-color: white;
+                border-style: dashed;
+            }
 
         .bottomP{
             font-family: bpmf huninn;
@@ -151,11 +151,9 @@
 
             .heading {
                 font-size: 30px;
-                font-family: 'Courier New', Courier, monospace;
             }
             .heading2 {
                 font-size: 30px;
-                font-family: 'Courier New', Courier, monospace;
             }
 
             .topBarImg {
@@ -175,44 +173,30 @@
             }
 
             .bottomP {
-                width: 90%;
+                width: 100%;
                 font-size: 20px;
-                ;
+                
             }
 
 
-            .Gallery{
+            #Gallery{
 
-                flex-direction: column;
+               flex-direction: column;
+            margin: 0 auto;
+            width:400px;
                 }
 
-            .pic1{
+            .pics{
 
 
-                max-width: 300px;
-                max-height: 300px;
-                width: 150px;
+                max-width: 400px;
+                max-height: 350px;
+                width: 400px;
                 height: 200px;
                 margin: auto;
             }
 
-            .pic2{
-
-                 max-width: 300px;
-                max-height: 300px;
-                width: 150px;
-                height: 200px;
-                margin: auto;
-            }
-
-            .pic3{
-
-                max-width: 300px;
-                max-height: 300px;
-                width: 150px;
-                height: 200px;
-                margin: auto;
-            }
+           
 
         }
 
@@ -249,14 +233,36 @@
 
     </div>
 
-    <div class="Gallery">
 
-        <img src="/Images/HomeImages/gPic1.png" class="pic1">
-        <img src="/Images/HomeImages/gPic2.png" class="pic2">
-        <img src="/Images/HomeImages/gPic3.png" class="pic3">
+   <div class="carousel slide" id="Gallery">
+       <div class="carousel-inner">
+           <div class="carousel-item active">
+                <img src="/Images/HomeImages/galPic1.png" class="pics">
+
+           </div>
+            <div class="carousel-item">
+                <img src="/Images/HomeImages/galPic2.png" class="pics">
+
+            </div>
+            <div class="carousel-item">
+                <img src="/Images/HomeImages/galPic3.png" class="pics">
+
+            </div>
+
+            <button class="carousel-control-prev" data-bs-target="#Gallery" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" data-bs-target="#Gallery" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+
+       </div>
 
 
-    </div>
+   </div>
+
+    
 
 
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -18,6 +18,11 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        public IActionResult Gallery()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

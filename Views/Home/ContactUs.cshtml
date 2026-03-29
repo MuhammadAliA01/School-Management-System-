@@ -1,0 +1,116 @@
+﻿<head>
+
+    <style>
+        .heading1{
+            color: orangered;
+            font-size: 60px;
+            font-family:Dubai;
+            font-weight:900;
+        }
+
+        .paragraph{
+            font-size:25px;
+            font-family:Dubai;
+        }
+
+        .Text{
+            text-align:center;
+     
+        }
+
+        .icons{
+            width:80px;
+            height:80px;
+        }
+
+        .heading2{
+            color:orangered;
+        }
+
+        .Content{
+            display:flex;
+   
+        }
+
+        .bottomContent{
+            display:flex;
+            padding:150px;
+            padding-top:1px;
+        }
+
+        .messageBox{
+            display:flex;
+            flex-direction: column;
+            gap:25px;
+            background-color:white;
+            border:2px solid black;
+            height:320px;
+            width:400px;
+            padding:10px;
+            margin-left: auto;
+        }
+
+
+    </style>
+
+
+
+</head>
+
+<body>
+    <div class="Text"> 
+        <h1 class="heading1"> Contact Us</h1>
+        <p class="paragraph">
+            Reach out with any questions or concerns
+        </p>
+    </div>
+
+    <div class="bottomContent">
+        <div class="ContactInfo">
+            <div class="Content">
+                <div class="AddressIcon">
+                    <img src="/Images/ContactImages/AddressIcon.png" class="icons" />
+                </div>
+                <div class="AddressText">
+                    <h4 class="heading2">Address</h4>
+                    <p>51 Tourmalin Ave,<br /> Chatsworth, Durban<br /> 4092</p>
+                </div>
+            </div>
+
+            <div class="Content mt-4">
+                <div class="PhoneIcon">
+                    <img src="/Images/ContactImages/PhoneIcon.jpg" class="icons" />
+                </div>
+                <div class="PhoneText">
+                    <h4 class="heading2">Phone</h4>
+                    <p>065 362 9055</p>
+                </div>
+            </div>
+
+            <div class="Content mt-4">
+                <div class="EmailIcon">
+                    <img src="/Images/ContactImages/EmailIcon.webp" class="icons" />
+                </div>
+                <div class="EmailText">
+                    <h4 class="heading2">Email</h4>
+                    <p>joelene.nadasan@gmail.com</p>
+                </div>
+            </div>
+
+        </div>
+        <div class="messageBox">
+
+            <h3>Send Message</h3>
+            <input type="text" placeholder="Full Name"/>
+            <input type="text" placeholder="Email" />
+            <textarea placeholder="Type Your Message"></textarea>
+            <button class="btn-primary">Send</button>
+        </div>
+        
+    </div>
+    
+
+
+
+
+</body>

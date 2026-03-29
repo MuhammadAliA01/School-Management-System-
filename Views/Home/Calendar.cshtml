@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Calendar</title>
+    <style>
+        .main-wrapper {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .calendar-container {
+            width: 400px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+        }
+
+        .calendar-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+            .nav-btn:hover {
+                background: rgba(255,255,255,0.3);
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #7f8c8d;
+            padding: 10px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #f0f0f0;
+            cursor: pointer;
+            position: relative;
+            font-weight: 500;
+        }
+
+            td:hover:not(.empty) {
+                background-color: #e8f4fd;
+            }
+
+        .today {
+            background-color: #e74c3c !important;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .selected {
+            background-color: #1abc9c !important;
+            color: white;
+        }
+
+        
+        .has-event::after {
+            content: '📍';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #FF00FF;
+        }
+
+        .event-details {
+            width: 250px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #fffef0;
+            border: 2px dashed #f1c40f;
+            min-height: 200px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.05);
+        }
+
+            .event-details h3 {
+                margin-top: 0;
+                color: #2c3e50;
+                font-size: 1.1rem;
+                border-bottom: 2px solid #f1c40f;
+                padding-bottom: 5px;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <button class="nav-btn" id="prevMonth">&lt;</button>
+                <h2 id="monthDisplay"></h2>
+                <button class="nav-btn" id="nextMonth">&gt;</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sun</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody"></tbody>
+            </table>
+        </div>
+
+        <div class="event-details" id="eventDetails">
+            <h3 id="selectedDateText">Select a date</h3>
+            <p id="eventDescription">Click on a day to see scheduled events.</p>
+        </div>
+    </div>
+
+    <script>
+        const monthDisplay = document.getElementById('monthDisplay');
+        const calendarBody = document.getElementById('calendarBody');
+        const prevBtn = document.getElementById('prevMonth');
+        const nextBtn = document.getElementById('nextMonth');
+        const selectedDateText = document.getElementById('selectedDateText');
+        const eventDescription = document.getElementById('eventDescription');
+
+        
+        const events = {
+            "2026-04-28": "The Inclusive Obstacle Odyssey: This is a reimagined sports day that focuses on individual progress rather than high-stakes competition. The odyssey features various stations like weighted-ball rolls, tactile balance beams, and quiet tunnels.",
+                    "2026-04-30": "The Community Life-Skills Pop-Up Café: Students take the lead in running a temporary café for parents and local community members. The event is structured with highly defined roles—such as Table Setter, Order Taker (using digital tablets or picture menus), and Greeter. This provides a safe, supervised space for students to practice social scripts and vocational skills in a real-world setting.",
+            "2026-05-01": "The Low-Sensory Creative Showcase: Instead of a loud, crowded traditional art show, this event uses soft lighting, noise-reduction zones, and hush-mode viewing. Students display their artwork, photography, or digital projects in a calm environment where visitors are encouraged to use golf claps or visual praise (like spirit fingers) to celebrate achievements without overwhelming the students."
+        };
+
+        const today = new Date();
+        let navDate = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        function renderCalendar(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+
+            monthDisplay.innerText = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
+            calendarBody.innerHTML = '';
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            let dateCounter = 1;
+
+            for (let i = 0; i < 6; i++) {
+                let row = document.createElement('tr');
+
+                for (let j = 0; j < 7; j++) {
+                    let cell = document.createElement('td');
+
+                    if (i === 0 && j < firstDay) {
+                        cell.classList.add('empty');
+                    } else if (dateCounter > daysInMonth) {
+                        // Skip
+                    } else {
+                        const currentDay = dateCounter;
+                        cell.innerText = currentDay;
+
+                        // Generate key to check for events
+                        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(currentDay).padStart(2, '0')}`;
+
+                        if (events[dateKey]) {
+                            cell.classList.add('has-event');
+                        }
+
+                        if (currentDay === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                            cell.classList.add('today');
+                        }
+
+                        cell.addEventListener('click', () => {
+                            document.querySelectorAll('td').forEach(td => td.classList.remove('selected'));
+                            cell.classList.add('selected');
+                            showEvent(year, month, currentDay);
+                        });
+
+                        dateCounter++;
+                    }
+                    row.appendChild(cell);
+                }
+                calendarBody.appendChild(row);
+                if (dateCounter > daysInMonth) break;
+            }
+        }
+
+        function showEvent(year, month, day) {
+            const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dateString = new Date(year, month, day).toDateString();
+
+            selectedDateText.innerText = dateString;
+            eventDescription.innerText = events[dateKey] || "No events scheduled for this day.";
+        }
+
+        prevBtn.addEventListener('click', () => {
+            navDate.setMonth(navDate.getMonth() - 1);
+            renderCalendar(navDate);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            navDate.setMonth(navDate.getMonth() + 1);
+            renderCalendar(navDate);
+        });
+
+        renderCalendar(navDate);
+    </script>
+
+</body>
+</html>

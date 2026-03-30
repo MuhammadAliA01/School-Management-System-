@@ -1,16 +1,25 @@
 ﻿<head>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
     <style>
         .heading1{
             color: orangered;
             font-size: 60px;
-            font-family:Dubai;
-            font-weight:899;
+            font-family:Arial;
+            font-weight: 700;
+            font-style: normal;
+            font-weight:900;
+            padding-top: 50px;
         }
 
         .paragraph{
             font-size:25px;
-            font-family:Dubai;
+            font-family:Arial;
+            font-weight: 500;
+            font-style: normal;
+            padding-top: 10px;
         }
 
         .Text{
@@ -24,18 +33,37 @@
         }
 
         .heading2{
-            color:orangered;
+            color: orangered;
+            font-family: Arial black;
+            color: #ff5a1f;
+            margin: 0;
         }
 
         .Content{
             display:flex;
-   
+            align-items: flex-start;
+            gap: 20px;
+            font-size: 20px;
+            
         }
+
+        .Content p {
+            margin: 5px 0 0 0;
+         }
+
+        .Content i {
+            font-size: 22px;
+            color: black;
+            margin-top: 5px;
+          
+        }
+
+
 
         .bottomContent{
             display:flex;
-            padding:150px;
-            padding-top:1px;
+            padding:200px;
+            padding-top:70px;
         }
 
         .messageBox{
@@ -43,12 +71,31 @@
             flex-direction: column;
             gap:25px;
             background-color:white;
-            border:2px solid black;
-            height:320px;
-            width:400px;
+            border:5px black;
+            border-style:dotted;
+            height:325px;
+            width:460px;
             padding:10px;
             margin-left: auto;
+            font-family:'Palatino Linotype';
+            
+        
         }
+
+        .boxHeading{
+            font-family:Arial black;
+            font-size:27px;
+            font-weight:700;
+        }
+
+        body{
+            background-image: url(/Images/ContactImages/BackgroundImage5.jpg);
+            background-repeat:no-repeat;
+            background-size:cover;
+            
+        }
+
+       
 
 
     </style>
@@ -69,7 +116,9 @@
         <div class="ContactInfo">
             <div class="Content">
                 <div class="AddressIcon">
-                    <img src="/Images/ContactImages/AddressIcon.png" class="icons" />
+                    <div class="AddressIcon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
                 </div>
                 <div class="AddressText">
                     <h4 class="heading2">Address</h4>
@@ -77,9 +126,11 @@
                 </div>
             </div>
 
-            <div class="Content mt-4">
+            <div class="Content mt-5">
                 <div class="PhoneIcon">
-                    <img src="/Images/ContactImages/PhoneIcon.jpg" class="icons" />
+                    <div class="PhoneIcon">
+                        <i class="fas fa-phone"></i>
+                    </div>
                 </div>
                 <div class="PhoneText">
                     <h4 class="heading2">Phone</h4>
@@ -87,9 +138,11 @@
                 </div>
             </div>
 
-            <div class="Content mt-4">
+            <div class="Content mt-5">
                 <div class="EmailIcon">
-                    <img src="/Images/ContactImages/EmailIcon.webp" class="icons" />
+                    <div class="EmailIcon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
                 </div>
                 <div class="EmailText">
                     <h4 class="heading2">Email</h4>
@@ -100,7 +153,7 @@
         </div>
         <div class="messageBox">
 
-            <h3>Send Message</h3>
+            <h3 class="boxHeading">Send Message</h3>
             <input type="text" placeholder="Full Name"/>
             <input type="text" placeholder="Email" />
             <textarea placeholder="Type Your Message"></textarea>
@@ -108,9 +161,6 @@
         </div>
         
     </div>
-    
 
-
-
-
+ 
 </body>

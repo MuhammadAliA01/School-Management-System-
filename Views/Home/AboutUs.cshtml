@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewData["Title"] = "AboutUs";
+}
+
+
+
+<style>
+    
+    .about-us-container {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+        padding-bottom: 50px;
+    }
+
+    .about-hero {
+        text-align: center;
+        padding: 60px 20px;
+        background-color: #fcf9f2; =
+        border-bottom: 4px solid #ff5722; 
+        margin-bottom: 40px;
+        border-radius: 0 0 50px 50px;
+    }
+
+        .about-hero h1 {
+            font-weight: 800;
+            color: #2c3e50;
+            font-size: 2.5rem;
+        }
+
+        .about-hero p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+    .about-section {
+        margin-bottom: 60px;
+        align-items: center;
+    }
+
+    /* The 'Checkerboard' Layout Styles */
+    .text-content {
+        padding: 30px;
+    }
+
+        .text-content h2 {
+            color: #ff5722; /* Brand Orange */
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .text-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+    .focus-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+        .focus-list li {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 30px;
+            color: #444;
+        }
+
+            .focus-list li::before {
+                content: '♥';
+                color: #ff5722;
+                position: absolute;
+                left: 0;
+                font-size: 1.2rem;
+            }
+
+   
+    .image-content img {
+        width: 100%;
+        height: auto;
+        border-radius: 30px 100px 30px 100px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        object-fit: cover;
+    }
+
+    .highlight-box {
+        background-color: #e8f5e9; 
+        padding: 20px;
+        border-left: 5px solid #4caf50;
+        border-radius: 10px;
+        margin-top: 20px;
+        font-weight: bold;
+        color: #2e7d32;
+    }
+</style>
+
+<div class="container-fluid about-us-container">
+
+    <div class="row">
+        <div class="col-12 about-hero">
+            <h1>About Hybrid Learning Academy</h1>
+            <p>Advocate. Accept. Include. A bright start for growing little minds in Chatsworth, Durban.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row about-section">
+            <div class="col-md-6 text-content">
+                <h2>Our Mission</h2>
+                <p>
+                    Located in Chatsworth, KwaZulu-Natal, Hybrid Learning Academy is a specialized center dedicated to early childhood development for children aged 1 to 8. We specialize in caring for and educating neurodivergent learners, with a primary focus on the Autism Spectrum.
+                </p>
+                <p>
+                    Guided by a team of experienced professionals, we provide a safe, structured, and engaging environment where children are encouraged to explore, learn, and grow. Our educators are committed to delivering personalized, play-based, and visually supported learning experiences tailored to each child’s needs.
+                </p>
+            </div>
+            <div class="col-md-6 image-content">
+                <img src="~/Images/AboutUsimg/aboutus_HandsonLearning.webp" alt="Child doing a puzzle at Hybrid Learning Academy" />
+            </div>
+        </div>
+
+        <div class="row about-section flex-column-reverse flex-md-row">
+            <div class="col-md-6 image-content">
+                <img src="~/Images/AboutUsimg/about_WrittingSkills.jpg" alt="Students practicing writing skills" />
+            </div>
+            <div class="col-md-6 text-content">
+                <h2>Our Specialized Focus</h2>
+                <p>We understand that every child learns differently. We don't just focus on academics; we focus on holistic development to prepare our learners for mainstream schooling and personal independence.</p>
+
+                <ul class="focus-list">
+                    <li>Oral skills & Language development</li>
+                    <li>Social & Physical development</li>
+                    <li>Life skills & Self-help skills</li>
+                    <li>Inclusive & Visual learning methodologies</li>
+                    <li>Comprehensive School Preparation</li>
+                </ul>
+
+                
+            </div>
+        </div>
+    </div>
+</div>

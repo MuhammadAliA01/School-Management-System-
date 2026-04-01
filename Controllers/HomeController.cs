@@ -1,6 +1,7 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
+using System.Diagnostics;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -11,11 +12,17 @@ namespace SchoolManagmentSystem.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+
+            
         }
 
         public IActionResult HomePage()
         {
+
+            
             return View();
+
+            
         }
 
         public IActionResult ContactUs()

@@ -17,9 +17,9 @@ namespace SchoolManagmentSystem.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly HlaDbContext _context;
+        private readonly ApplicationDBContext _context;
 
-        public AccountController(HlaDbContext context)
+        public AccountController(ApplicationDBContext context)
         {
             _context = context;
         }
@@ -36,7 +36,7 @@ namespace SchoolManagmentSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAccount([Bind("Id,IdNumber,FirstName,Surname,Username,Email,Password")] Parent parent)
+        public async Task<IActionResult> CreateAccount([Bind("IdNumber,FirstName,Surname,Username,Email,Password")] Parent parent)
         {
             if (ModelState.IsValid)
             {

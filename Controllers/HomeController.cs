@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -96,8 +96,10 @@ namespace SchoolManagmentSystem.Controllers
                 await _context.SaveChangesAsync();
 
                 // Redirect to the Confirmation page, passing the new ID
-                return RedirectToAction("Confirmation", new { id = registration.Id });
+                return RedirectToAction("Confirmation", "Home", new { id = registration.Id });
             }
+
+
             return View(registration);
         }
 

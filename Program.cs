@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SchoolManagmentSystem.Data;
+using SchoolManagmentSystem.Data; // Ensure this is here
 using SchoolManagmentSystem.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// --- GROUP SETTINGS (DO NOT TOUCH) ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -16,10 +16,16 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-
-
 builder.Services.AddDbContext<HlaDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// -------------------------------------
+
+// --- YOUR PERSONAL DATABASE SETUP ---
+// This uses your "LocalConnection" from appsettings.json
+var myLocalConnection = builder.Configuration.GetConnectionString("LocalConnection");
+builder.Services.AddDbContext<SchoolContext>(options =>
+    options.UseSqlServer(myLocalConnection));
+// -------------------------------------
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -38,7 +44,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

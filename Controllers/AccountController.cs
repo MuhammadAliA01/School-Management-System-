@@ -36,7 +36,7 @@ namespace SchoolManagmentSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAccount([Bind("Id,IdNumber,FirstName,Surname,Username,Email,Password")] Parent parent)
+        public async Task<IActionResult> CreateAccount([Bind("IdNumber,FirstName,Surname,Username,Email,Password")] Parent parent)
         {
             if (ModelState.IsValid)
             {

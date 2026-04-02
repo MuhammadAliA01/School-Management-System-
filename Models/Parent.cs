@@ -5,8 +5,6 @@ namespace SchoolManagmentSystem.Models;
 
 public partial class Parent
 {
-    public int Id { get; set; }
-
     public string? IdNumber { get; set; }
 
     public string? FirstName { get; set; }
@@ -18,4 +16,6 @@ public partial class Parent
     public string? Email { get; set; }
 
     public string? Password { get; set; }
+
+    public int Id { get; set; }
 }

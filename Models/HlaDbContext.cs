@@ -17,11 +17,9 @@ public partial class HlaDbContext : DbContext
     {
         modelBuilder.Entity<Parent>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Parents__3213E83F30CB3FFA");
+            entity.HasKey(e => e.Id).HasName("PK__Parents__3213E83F8753F80A");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);

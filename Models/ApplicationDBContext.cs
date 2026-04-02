@@ -10,6 +10,7 @@ namespace SchoolManagmentSystem.Models
         }
 
         public DbSet<Parent> Parents { get; set; }
+        public DbSet<Staff> Staffs { get; set; }
 
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
@@ -30,6 +31,7 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        
         public IActionResult Gallery()
         {
             return View();

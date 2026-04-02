@@ -17,9 +17,9 @@ namespace SchoolManagmentSystem.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly HlaDbContext _context;
+        private readonly ApplicationDBContext _context;
 
-        public AccountController(HlaDbContext context)
+        public AccountController(ApplicationDBContext context)
         {
             _context = context;
         }
@@ -93,9 +93,9 @@ namespace SchoolManagmentSystem.Controllers
         public async Task<IActionResult> Login(Parent parent)
         {
 
-            var user = _context.Parents.FirstOrDefault(u => u.Username == parent.Username);
+            //var user = _context.Parents.FirstOrDefault(u => u.Username == parent.Username);
 
-            if (user != null)
+            /*if (user != null)
             {
 
                 var claims = new List<Claim>
@@ -112,7 +112,7 @@ namespace SchoolManagmentSystem.Controllers
                 return RedirectToAction("HomePage", "Home");
 
 
-            }
+            }*/
 
             ModelState.AddModelError("", "Invalid username or password");
 

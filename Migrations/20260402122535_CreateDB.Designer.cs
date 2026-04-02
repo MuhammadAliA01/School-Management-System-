@@ -10,9 +10,9 @@ using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Migrations
 {
-    [DbContext(typeof(HlaDbContext))]
-    [Migration("20260401193627_CreateParentsTable")]
-    partial class CreateParentsTable
+    [DbContext(typeof(ApplicationDBContext))]
+    [Migration("20260402122535_CreateDB")]
+    partial class CreateDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,42 +27,36 @@ namespace SchoolManagmentSystem.Migrations
             modelBuilder.Entity("SchoolManagmentSystem.Models.Parent", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdNumber")
-                        .HasMaxLength(13)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(13)")
-                        .HasColumnName("ID_Number");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Surname")
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Parents__3213E83F30CB3FFA");
+                    b.HasKey("Id");
 
                     b.ToTable("Parents");
                 });

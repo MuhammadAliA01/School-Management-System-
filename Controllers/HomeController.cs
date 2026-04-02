@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
 using System.Diagnostics;
@@ -9,12 +10,13 @@ namespace SchoolManagmentSystem.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDBContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDBContext context)
         {
             _logger = logger;
+            _context = context;
 
-            
         }
 
         public IActionResult HomePage()
@@ -68,6 +70,57 @@ namespace SchoolManagmentSystem.Controllers
         {
             return View();
         }
+
+        public IActionResult RegForm()
+        {
+            return View();
+        }
+
+
+        // Add the DB Context to your constructor
+        
+
+
+        // 1. The POST method that receives the form data
+        [HttpPost]
+        public async Task<IActionResult> RegForm(StudentRegistration registration, IFormFile pdfFile)
+        {
+            if (ModelState.IsValid)
+            {
+                // Set the registration date
+                registration.RegistrationDate = DateTime.Now;
+
+                // (Optional) Handle File Upload logic here if you are saving the PDF
+
+                _context.StudentRegistrations.Add(registration);
+                await _context.SaveChangesAsync();
+
+                // Redirect to the Confirmation page, passing the new ID
+                return RedirectToAction("Confirmation", new { id = registration.Id });
+            }
+            return View(registration);
+        }
+
+        // 2. The GET method that displays the confirmation
+        public async Task<IActionResult> Confirmation(int id)
+        {
+            try
+            {
+                var registration = await _context.StudentRegistrations
+                    .FirstOrDefaultAsync(m => m.Id == id);
+
+                if (registration == null) return NotFound();
+
+                return View(registration);
+            }
+            catch (SqlException ex)
+            {
+                // This will redirect to your error page instead of showing the "Ugly" crash screen
+                return RedirectToAction("Error");
+            }
+        }
+
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

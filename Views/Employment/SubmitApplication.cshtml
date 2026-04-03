@@ -1,0 +1,61 @@
+﻿@model SchoolManagmentSystem.Models.EmploymentApplication
+
+@{
+    ViewData["Title"] = "SubmitApplication";
+}
+
+@{
+    var Vacancy = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "Teacher", Text = "Teacher" },
+      new SelectListItem { Value = "Cleaner", Text = "Cleaner" }
+    };
+
+
+}
+
+<h1>SubmitApplication</h1>
+
+<h4>EmploymentApplication</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="SubmitApplication" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CVLocation" class="control-label"></label>
+                <input asp-for="CVLocation" class="form-control" type="file" name="cvFile"/>
+                <span asp-validation-for="CVLocation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="selectedRole" class="control-label"></label>
+                <select asp-for="selectedRole" asp-items="Vacancy")"></select>
+                <span asp-validation-for="selectedRole" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

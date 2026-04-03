@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SchoolManagmentSystem.Data;
 using SchoolManagmentSystem.Models;
 using System.Linq;
 
@@ -9,9 +8,9 @@ namespace SchoolManagmentSystem.Controllers
 {
     public class IncidentController : Controller
     {
-        private readonly SchoolContext _context;
+        private readonly ApplicationDBContext _context;
 
-        public IncidentController(SchoolContext context)
+        public IncidentController(ApplicationDBContext context)
         {
             _context = context;
         }
@@ -43,22 +42,22 @@ namespace SchoolManagmentSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Incident model)
-        {
+        {/*
             if (ModelState.IsValid)
             {
                 _context.Incidents.Add(model);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-
+            */
             ViewBag.Teachers = new SelectList(_context.Teachers.ToList(), "TeacherId", "Name");
             return View("ReportIncident", model);
         }
 
         public IActionResult Index()
         {
-            var incidents = _context.Incidents.ToList();
-            return View(incidents);
+           /* var incidents = _context.Incidents.ToList();*/
+            return View();
         }
     }
 }

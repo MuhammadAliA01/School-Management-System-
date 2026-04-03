@@ -13,8 +13,6 @@ namespace SchoolManagmentSystem.Models
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<EmploymentApplication> EmploymentApplications { get; set; }
 
-        public DbSet<Parent> Parents { get; set; }        public DbSet<Staff> Staffs { get; set; }
-
         public DbSet<StudentRegistration> StudentRegistrations { get; set; }
     }
 }

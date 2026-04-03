@@ -1,0 +1,227 @@
+﻿@model SchoolManagmentSystem.Models.StudentRegistration
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Confirmation</title>
+    <style>
+        :root {
+            --primary-blue: #2c3e50;
+            --light-gray: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: white;
+            width: 800px;
+            padding: 50px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-top: 8px solid var(--primary-blue);
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid var(--light-gray);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+            .header h1 {
+                margin: 0;
+                color: var(--primary-blue);
+                text-transform: uppercase;
+                letter-spacing: 2px;
+            }
+
+        .status-badge {
+            background-color: #27ae60;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            color: var(--primary-blue);
+            border-left: 4px solid var(--primary-blue);
+            padding-left: 10px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .label {
+            width: 30%;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .footer {
+            margin-top: 50px;
+            font-size: 0.85em;
+            color: #888;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .no-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+            button.secondary {
+                background-color: #7f8c8d;
+            }
+
+        @@media print {
+            .no-print {
+                display: none;
+            }
+
+            body {
+                padding: 0;
+                background-color: white;
+            }
+
+            .container {
+                box-shadow: none;
+                border: none;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print">
+        <a asp-action="Index" class="button secondary" style="text-decoration:none; padding:10px 20px; background:#7f8c8d; color:white; border-radius:5px;">Back to List</a>
+        <button onclick="window.print()">Print/Save as PDF</button>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Official Registration</h1>
+            <p>Confirmation Receipt</p>
+            <div class="status-badge">SUCCESSFULLY REGISTERED</div>
+        </div>
+
+        <div class="section">
+            <p><strong>Date of Registration:</strong> <span>@Model.RegistrationDate.ToString("MMMM dd, yyyy")</span></p>
+            <p><strong>Confirmation ID:</strong> <span>#REG-@Model.Id.ToString("D6")-X</span></p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Child's Information</div>
+            <table>
+                <tr>
+                    <td class="label">Full Name:</td>
+                    <td>@Model.ChildName</td>
+                </tr>
+                <tr>
+                    <td class="label">Date of Birth:</td>
+                    <td>@Model.ChildDob.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td class="label">Gender:</td>
+                    <td style="text-transform: capitalize;">@Model.Gender</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Parent/Guardian Information</div>
+            <table>
+                <tr>
+                    <td class="label">Primary Contact:</td>
+                    <td>@Model.ParentName</td>
+                </tr>
+                <tr>
+                    <td class="label">Email Address:</td>
+                    <td>@Model.ParentEmail</td>
+                </tr>
+                <tr>
+                    <td class="label">Phone Number:</td>
+                    <td>@Model.ParentPhone</td>
+                </tr>
+                <tr>
+                    <td class="label">Address:</td>
+                    <td>@Model.Street, @Model.Suburb, @Model.City, @Model.PostalCode</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Program Details</div>
+            <table>
+                <tr>
+                    <td class="label">Autism Level:</td>
+                    <td>Level @Model.AutismLevel</td>
+                </tr>
+                <tr>
+                    <td class="label">Diagnosis Type:</td>
+                    <td>@Model.AutismType</td>
+                </tr>
+                <tr>
+                    <td class="label">Documents:</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(Model.PdfPath))
+                        {
+                            <span>File Attached: @Model.PdfPath</span>
+                        }
+                        else
+                        {
+                            <span>No document uploaded</span>
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>Please keep this document for your records. If you have any questions, contact our administration office.</p>
+            <p><em>This is an electronically generated document. No signature is required.</em></p>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -90,28 +90,67 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(Parent parent)
+        public async Task<IActionResult> Login(Parent parent, Staff staff)
         {
+            var selectedRole = Request.Form["role"].ToString();
 
-            var user = _context.Parents.FirstOrDefault(u => u.Username == parent.Username);
-
-            if (user != null)
+            if (selectedRole == "Teacher")
             {
+                var staffUser = _context.Staffs.FirstOrDefault(s => s.Username == staff.Username);
 
-                var claims = new List<Claim>
+                if (staffUser != null)
+                {
+
+                    var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, staffUser.Username),
+                    new Claim("UserInternalID", staffUser.id.ToString())
+                };
+
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity));
+
+                    return RedirectToAction("StaffDashboard", "Dashboards");
+
+
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid username or password");
+                    return View(parent);
+
+                }
+
+            }
+            else if(selectedRole == "Parent")
+            {
+                var user = _context.Parents.FirstOrDefault(u => u.Username == parent.Username);
+
+                if (user != null)
+                {
+
+                    var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Username),
                     new Claim("UserInternalID", user.Id.ToString())
                 };
 
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity));
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity));
 
-                return RedirectToAction("HomePage", "Home");
+                    return RedirectToAction("ParentDashboard", "Dashboards");
 
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid username or password");
+                    return View(parent);
 
+                }
             }
 
             ModelState.AddModelError("", "Invalid username or password");

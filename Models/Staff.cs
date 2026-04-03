@@ -38,5 +38,8 @@ namespace SchoolManagmentSystem.Models
         [Required]
         [DisplayName("Role")]
         public string Role { get; set; }
+
+        public string? Salt { get; set; }
+
     }
 }

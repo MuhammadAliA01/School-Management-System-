@@ -34,5 +34,7 @@ namespace SchoolManagmentSystem.Models
         [DisplayName("Password")]
         [Required(ErrorMessage = "Password is required.")]
         public string? Password { get; set; }
+
+        public string? Salt { get; set; }
     }
 }

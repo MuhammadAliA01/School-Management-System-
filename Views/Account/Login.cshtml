@@ -1,47 +1,198 @@
 ﻿@model SchoolManagmentSystem.Models.Parent
 
+<head>
+    <style>
+        body {
+            background-image: url(/Images/LoginImages/BGImage1.png);
+            background-size: cover;
+        }
+
+        .mainHeading {
+            text-align: center;
+            font-weight: 700;
+            font-family: Dubai;
+            font-size: 40px;
+        }
+
+        .smallParagraph {
+            text-align: center;
+        }
+
+        .link {
+            text-decoration: none;
+            color: red;
+        }
+
+        .allItems {
+            display: flex;
+            justify-content: center;
+        }
+
+        .imageDiv {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: red;
+            background-image: url(/Images/LoginImages/DisplayImage.png);
+            width: 500px;
+            height: 800px;
+            box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), -5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .regItems {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            width: 600px;
+            height: 800px;
+            box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), 5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            text-align: left;
+            padding-top: 25px;
+        }
+
+        .customTextBox {
+            border: none;
+            outline: none;
+            box-shadow: none;
+            border-radius: 0;
+            border-bottom: 1px solid black;
+            width: 300px
+        }
+
+            .customTextBox:focus {
+                box-shadow: none;
+                border-bottom: 1px solid red;
+            }
+
+        .button {
+            text-align: center;
+            background-color: #f93a5b;
+            color: white;
+            width: 270px;
+            height: 60px;
+            border-radius: 25px;
+            border: none;
+            font-size: 25px;
+        }
+
+            .button:hover {
+                text-align: center;
+                background-color: #f93a5b;
+                color: white;
+                border-radius: 25px;
+                border: none;
+                font-size: 25px;
+                transform: scale(1.1);
+                transition: ease 0.2s all;
+            }
+
+            .button:active {
+                text-align: center;
+                background-color: #f93a5b;
+                color: white;
+                width: 270px;
+                height: 60px;
+                border-radius: 25px;
+                border: none;
+                font-size: 25px;
+            }
+
+            .button:focus-within {
+                text-align: center;
+                background-color: #f93a5b;
+                color: white;
+                width: 270px;
+                height: 60px;
+                border-radius: 25px;
+                border: none;
+                font-size: 25px;
+            }
+
+        .buttons {
+            text-align: center;
+        }
+
+        .rbDiv{
+            display:flex;
+            justify-content:center;
+            gap:10px;
+            padding-top: 25px;
+            
+            
+        }
+        .radiobuttons{
+            accent-color: #f93a5b;
+        }
+
+        .radio-labels{
+            margin-top: 8px;
+        }
 
 
-<div class="row">
+        @@media screen and (max-width: 950px) {
+            .imageDiv {
+                display: none;
+            }
 
-    <div class="col-md-4">
+            .customTextBox {
+                font-size: 20px;
+            }
+
+    </style>
+</head>
+
+<body>
+    <div class="row allItems">
+
+    <div class="imageDiv"></div>
+
+
+
+    <div class="regItems">
         <form asp-action="Login">
+                <h1 class="mainHeading" style="">Login</h1>
+                <p class="smallParagraph">Don't have an account? <a class="link" asp-action="CreateAccount">Click here</a></p>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input asp-for="Username" class="form-control" />
+                    <input asp-for="Username" class="form-control customTextBox" placeholder="Username"/>
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
+                    <input asp-for="Password" class="form-control customTextBox" type="password" name="Password" placeholder="Password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
-            <h4>Who's logging in</h4>
-            <div>
-                <label for="Parent">Parent</label>
-
-                <input type="radio" id="Parent" name="role" value="Parent" class="btn btn-primary" checked/>
-
-                <label for="Parent">Teacher</label>
-
-                <input type="radio" id="Teacher" name="role" value="Teacher" class="btn btn-primary" />
-            </div>
-
-
-
-
-            <div class="form-group">
-                <input type="submit" value="Login" class="btn btn-primary" />
-            </div>
-
-           
             
+            <div class="rbDiv">
+                    <h6>Who's logging in</h6>
+
+                    <input type="radio" id="Parent" name="role" value="Parent" class="btn btn-primary radiobuttons" checked />
+                    <label for="Parent" class="radio-labels">Parent</label>
+
+
+
+                <input type="radio" id="Teacher" name="role" value="Teacher" class="btn btn-primary radiobuttons" />
+                    <label for="Parent" class="radio-labels">Teacher</label>
+
+            </div>
+
+
+
+
+            <div class="form-group buttons">
+                <input type="submit" value="Login" class="btn btn-primary button" />
+            </div>
+
+
+
 
         </form>
 
-       
+
 
 
     </div>
@@ -49,4 +200,5 @@
 
 
 
-</div>
+    </div>
+</body>

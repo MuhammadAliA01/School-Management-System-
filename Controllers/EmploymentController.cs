@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using SchoolManagmentSystem.Models;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -54,6 +58,13 @@ namespace SchoolManagmentSystem.Controllers
             if (cvFile != null && cvFile.Length > 0)
             {
                 var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+                var allowedfileTypes = new[] { ".pdf" };
+                var extension = Path.GetExtension(cvFile.FileName).ToLowerInvariant();
+
+                if (!allowedfileTypes.Contains(extension))
+                {
+                    ModelState.AddModelError("CVLocation", "Only PDF Files are accepted");
+                }
 
                 if (!Directory.Exists(uploadsFolder))
                 {
@@ -88,18 +99,43 @@ namespace SchoolManagmentSystem.Controllers
             }
 
             
-            
-
-
-
             if (ModelState.IsValid)
             {
-                employmentApplication.Status = "Pending";
-                employmentApplication.referenceNumber = refNumber;
-                _context.Add(employmentApplication);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("ApplicationConfirmed", "Employment", new {referenceNum = employmentApplication.referenceNumber});
+                if (Regex.IsMatch(employmentApplication.Email, "(?=.*[@])"))
+                {
+                    SmtpClient client = new SmtpClient("Smtp.gmail.com");
+                    client.Port = 587;
+                    client.EnableSsl = true;
+                    client.Credentials = new NetworkCredential("Hybridlearnacademy05@gmail.com", "utxw xbwc dsik yysx");
+                    MailAddress mailAddress = new MailAddress("Hybridlearnacademy05@gmail.com");
+                    MailAddress recipientAddress = new MailAddress(employmentApplication.Email);
+
+                    MailMessage mailMessage = new MailMessage();
+
+                    
+                    employmentApplication.Status = "Pending";
+                    employmentApplication.referenceNumber = refNumber;
+
+                    mailMessage.From = mailAddress;
+                    mailMessage.To.Add(recipientAddress);
+                    mailMessage.Subject = "HLA Job Application!";
+                    mailMessage.Body = "Thank you for applying for a career at Hybrid Learning Academy! Your application reference number is " + employmentApplication.referenceNumber.ToString();
+
+                    _context.Add(employmentApplication);
+                    await _context.SaveChangesAsync();
+                    client.Send(mailMessage);
+                    return RedirectToAction("ApplicationConfirmed", "Employment", new { referenceNum = employmentApplication.referenceNumber });
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Email is invalid");
+                }
+
+
+
+                
             }
+            
             return View(employmentApplication);
         }
 

@@ -1,12 +1,166 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Registration";
 }
+<style>
+   
+    body {
+        background-image: url('/Images/RegImages/RegBGImage4.jpeg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        margin: 0;
+        font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+    }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    /* Container centered below Navbar */
+    .registration-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 100px 20px;
+        min-height: 80vh;
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    /* Heading */
+    .page-header {
+        text-align: center;
+        margin-bottom: 50px;
+        
+    }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 900; 
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 12px; 
+            margin-bottom: 15px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+    .header-underline {
+        width: 60px;
+        height: 3px;
+        background: #1e3a8a;
+        margin: 0 auto;
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+    }
+
+    
+    .glass-card {
+        /* Layered backgrounds  */
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        /* Double Border Effect */
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        outline: 1px solid rgba(255, 255, 255, 0.1);
+        outline-offset: -10px; /* Inner border line */
+        
+        border-radius: 20px; 
+        padding: 60px 50px;
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.25);
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+    }
+
+  
+    .card-text {
+        color: white;
+        font-weight: 600;
+        font-size: 1.05rem;
+        margin-bottom: 45px;
+        line-height: 1.6;
+        letter-spacing: 0.5px;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
+    
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .portal-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-radius: 8px; 
+        transition: all 0.3s ease;
+    }
+
+   
+    .btn-review {
+        background: rgba(255, 255, 255, 0.95);
+        color: #1e293b;
+        border: 1px solid white;
+        font-weight:800;
+    }
+
+        .btn-review:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+    
+    .btn-enrol {
+        background: #1e293b; 
+        color: white;
+        border: 1px solid #1e293b;
+        font-weight:800;
+    }
+
+        .btn-enrol:hover {
+            background: #334155;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+    .btn-icon {
+        margin-right: 15px;
+        font-size: 1.2rem;
+        opacity: 0.8;
+    }
+</style>
+
+<div class="registration-wrapper">
+    <div class="page-header">
+        <h1>REGISTRATION</h1>
+        <div class="header-underline"></div>
+    </div>
+
+    <div class="glass-card">
+        <p class="card-text">
+            Please review your information to ensure accuracy before confirming enrolment.
+        </p>
+
+        <div class="btn-group">
+            <a class="portal-btn btn-review"
+                   asp-controller="Home"
+                   asp-action="PreviewPdf"
+                   asp-route-studentId="2"
+                   target="_blank">
+                   Review Details
+            </a>
+
+            <a class="portal-btn btn-enrol"
+                   asp-controller="Home"
+                   asp-action="Enrol"
+                   asp-route-studentId="2">
+                   Confirm Enrolment
+            </a>
+        </div>
+    </div>
 </div>
-
-<a class="btn btn-primary" asp-controller="Home" asp-action="DownloadPdf">
-    Download Registration PDF
-</a>

@@ -1,34 +1,222 @@
-﻿using Microsoft.VisualBasic;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.VisualBasic;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Fields;
 using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
 using PdfSharp.Pdf;
+using SchoolManagmentSystem.Models;
+
 
 namespace SchoolManagmentSystem.Services
 {
     public class RegistrationService
     {
-        public PdfDocument GetRegistration()
+        private readonly ApplicationDBContext _context;
+
+        public PdfDocument GetPreviewRegistration(int studentId)
         {
-            //creating a MigraDoc document
             var document = new Document();
 
-            BuildDocument(document);
+            var student = _context.StudentRegistrations
+                                  .FirstOrDefault(s => s.Id == studentId);
 
-           //creating a renderer for the MigraDoc document
-           var pdfRenderer = new PdfDocumentRenderer();
-           pdfRenderer.Document = document;
+            if (student == null)
+                throw new Exception("Student not found");
 
-            //layout and render document to pdf
+            Section section = document.AddSection();
+
+            
+            //Adding an image
+            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Images/PDFImages/HbaLogo.jpeg");
+            Image image = section.AddImage(imagePath);
+
+            image.Width = "8cm";
+            image.Height = "5cm";
+            image.LockAspectRatio = true;
+            image.Left = ShapePosition.Center;
+            var spacer = section.AddParagraph();
+
+            spacer.Format.SpaceBefore = "0.005cm";
+            var spacer1 = section.AddParagraph();
+            spacer1.Format.SpaceAfter = 9;
+            //space before the image(top)
+            section.PageSetup.TopMargin = "1cm";
+
+
+            // Title
+            var paragraph = section.AddParagraph();
+            paragraph.AddFormattedText("REVIEW YOUR REGISTRATION DETAILS", TextFormat.Bold);
+            paragraph.Format.Font.Size = 14;
+            paragraph.Format.SpaceAfter = 10;
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+
+            paragraph = section.AddParagraph();
+            paragraph.AddText("Please review the information below carefully and ensure all details are correct before proceeding with enrolment.");
+            paragraph.Format.SpaceAfter = 15;
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+
+
+
+            // PARENT TABLE
+            var parentTable = section.AddTable();
+            parentTable.Borders.Width = 0.25;
+            parentTable.Format.Font.Size = 10;
+
+            parentTable.AddColumn("5cm");
+            parentTable.AddColumn("10cm");
+
+            // Header row (grey bar)
+            var row = parentTable.AddRow();
+            row.Cells[0].MergeRight = 1;
+            row.Cells[0].AddParagraph("Parent Information");
+            row.Format.Font.Bold = true;
+            row.Shading.Color = Colors.LightGray;
+
+            // Data rows
+            row = parentTable.AddRow();
+            row.Cells[0].AddParagraph("Name:");
+            row.Cells[1].AddParagraph(student.ParentName);
+
+            row = parentTable.AddRow();
+            row.Cells[0].AddParagraph("Email:");
+            row.Cells[1].AddParagraph(student.ParentEmail);
+
+            row = parentTable.AddRow();
+            row.Cells[0].AddParagraph("Phone:");
+            row.Cells[1].AddParagraph(student.ParentPhone);
+            //line below centres the table
+            parentTable.Rows.Alignment = RowAlignment.Center;
+
+            //Add space between tables
+            var spacer2 = section.AddParagraph();
+            spacer2.Format.SpaceBefore = 10; // space above next table
+            spacer2.Format.SpaceAfter = 10;  // space below previous table
+
+
+
+            // STUDENT TABLE
+            var studentTable = section.AddTable();
+            studentTable.Borders.Width = 0.25;
+            studentTable.Format.Font.Size = 10;
+
+            studentTable.AddColumn("5cm");
+            studentTable.AddColumn("10cm");
+
+            // Header row
+            row = studentTable.AddRow();
+            row.Cells[0].MergeRight = 1;
+            row.Cells[0].AddParagraph("Student Information");
+            row.Format.Font.Bold = true;
+            row.Shading.Color = Colors.LightGray;
+
+            row = studentTable.AddRow();
+            row.Cells[0].AddParagraph("Name:");
+            row.Cells[1].AddParagraph(student.ChildName);
+
+            row = studentTable.AddRow();
+            row.Cells[0].AddParagraph("Date of Birth:");
+            row.Cells[1].AddParagraph(student.ChildDob.ToString("dd MMMM yyyy"));
+
+            row = studentTable.AddRow();
+            row.Cells[0].AddParagraph("Gender:");
+            row.Cells[1].AddParagraph(student.Gender);
+
+            row = studentTable.AddRow();
+            row.Cells[0].AddParagraph("Autism Level:");
+            row.Cells[1].AddParagraph(student.AutismLevel);
+
+            row = studentTable.AddRow();
+            row.Cells[0].AddParagraph("Autism Type:");
+            row.Cells[1].AddParagraph(student.AutismType);
+            //line below centres the table
+            studentTable.Rows.Alignment = RowAlignment.Center;
+
+            //Add space between tables
+            var spacer3 = section.AddParagraph();
+            spacer3.Format.SpaceBefore = 10; // space above next table
+            spacer3.Format.SpaceAfter = 10;  // space below previous table
+
+
+
+            // ADDRESS TABLEE
+            var addressTable = section.AddTable();
+            addressTable.Borders.Width = 0.25;
+            addressTable.Format.Font.Size = 10;
+
+            addressTable.AddColumn("5cm");
+            addressTable.AddColumn("10cm");
+
+            // Header row
+            row = addressTable.AddRow();
+            row.Cells[0].MergeRight = 1;
+            row.Cells[0].AddParagraph("Address");
+            row.Format.Font.Bold = true;
+            row.Shading.Color = Colors.LightGray;
+
+            row = addressTable.AddRow();
+            row.Cells[0].AddParagraph("Street:");
+            row.Cells[1].AddParagraph(student.Street);
+
+            row = addressTable.AddRow();
+            row.Cells[0].AddParagraph("Suburb:");
+            row.Cells[1].AddParagraph(student.Suburb);
+
+            row = addressTable.AddRow();
+            row.Cells[0].AddParagraph("City:");
+            row.Cells[1].AddParagraph(student.City);
+
+            row = addressTable.AddRow();
+            row.Cells[0].AddParagraph("Postal Code:");
+            row.Cells[1].AddParagraph(student.PostalCode);
+            addressTable.Rows.Alignment = RowAlignment.Center;
+
+            //Text at the bottom of pdf
+            paragraph = section.Footers.Primary.AddParagraph();
+            paragraph.AddText("Hybrid Learning Academy");
+            //line below centres the table
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+
+
+
+            var renderer = new PdfDocumentRenderer();
+            renderer.Document = document;
+            renderer.RenderDocument();
+
+            return renderer.PdfDocument;
+
+          
+        }
+        
+        public RegistrationService(ApplicationDBContext context)
+        {
+            _context = context;
+        }
+        public PdfDocument GetRegistration(int studentId)
+        {
+            var document = new Document();
+
+            // Fetch student from DB
+            var student = _context.StudentRegistrations
+                                  .FirstOrDefault(s => s.Id == 2); //hardcoded 2 for testing purposes. Replace with "studentId"
+
+            if (student == null)
+                throw new Exception("Student not found");
+
+            BuildDocument(document, student);
+
+            var pdfRenderer = new PdfDocumentRenderer();
+            pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
 
             return pdfRenderer.PdfDocument;
         }
 
-       
-        private void BuildDocument(Document document)
+        
+        private void BuildDocument(Document document, StudentRegistration student)
         {
          
 
@@ -54,6 +242,7 @@ namespace SchoolManagmentSystem.Services
             var paragraph = section.AddParagraph();
             paragraph.AddFormattedText("HYBRID LEARNING ACADEMY" , TextFormat.Bold);
             paragraph.AddLineBreak();
+            paragraph.Format.SpaceAfter = "1cm";
             paragraph.AddFormattedText("Principal: ", TextFormat.Bold); // only this part bold
             paragraph.AddText("Ms Tasania Nadasan");
             paragraph.AddLineBreak();
@@ -62,32 +251,60 @@ namespace SchoolManagmentSystem.Services
             paragraph.AddLineBreak();
             paragraph.AddFormattedText("Phone: ", TextFormat.Bold); // only this part bold
             paragraph.AddText("065 362 9055");
-            paragraph.Format.SpaceAfter = 20;
+            paragraph.Format.SpaceAfter = "0.5cm";
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
 
             //Student details
 
             paragraph = section.AddParagraph();
-            paragraph.AddFormattedText("PROOF OF REGISTRATION FOR:" , TextFormat.Bold);
+            paragraph.AddFormattedText("PROOF OF REGISTRATION FOR:", TextFormat.Bold);
             paragraph.AddLineBreak();
-            paragraph.AddText("Name:");
+            
+            paragraph.AddFormattedText("Student Name: ", TextFormat.Bold);
+            paragraph.AddText(student.ChildName);
             paragraph.AddLineBreak();
-            paragraph.AddText("Surname:");
+
+            paragraph.AddFormattedText("Birth Certificate Number: ", TextFormat.Bold);
             paragraph.AddLineBreak();
-            paragraph.AddText("Birth Certificate Number:");
+
+            paragraph.AddFormattedText("Date Of Birth: ", TextFormat.Bold);
+            paragraph.AddText(student.ChildDob.ToString("yyyy-MM-dd"));
             paragraph.AddLineBreak();
-            paragraph.AddText("Date Of Birth:");
+
+            paragraph.AddFormattedText("Medical Records: ", TextFormat.Bold);
             paragraph.AddLineBreak();
-            paragraph.AddText("Medical Records:");
-            paragraph.AddLineBreak();
-            paragraph.AddText("Phone:");
+
+            paragraph.AddFormattedText("Phone: ", TextFormat.Bold);
+            paragraph.AddText(student.ParentPhone);
+
             paragraph.Format.SpaceAfter = 20;
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
 
 
-            paragraph = section.AddParagraph();
-            paragraph.AddText("Student Number: 224034567");
-            paragraph.AddLineBreak();
-            paragraph.Add(new DateField { Format = "yyyy/MM/dd : hh:mm " });
-            paragraph.Format.SpaceAfter = 10;
+            // Layout for student number and date
+            var infoTable = section.AddTable();
+            infoTable.Borders.Width = 0;
+
+            infoTable.AddColumn("7.06cm");
+            infoTable.AddColumn("7.06cm");
+
+            var rowInfo = infoTable.AddRow();
+            infoTable.Rows.Alignment = RowAlignment.Center;
+
+            // Student number on left side
+            var leftPara = rowInfo.Cells[0].AddParagraph();
+            leftPara.AddText("Student Number: 224034567");
+            leftPara.Format.Alignment = ParagraphAlignment.Left;
+
+            // Date&Time on the right
+            var rightPara = rowInfo.Cells[1].AddParagraph();
+            rightPara.Add(new DateField { Format = "yyyy/MM/dd : hh:mm " });
+            rightPara.Format.Alignment = ParagraphAlignment.Right;
+
+            // Space after
+            var spacer2 = section.AddParagraph();
+            spacer2.Format.SpaceAfter = "0.2cm";
+
 
 
             string[,] subjects =
@@ -107,6 +324,7 @@ namespace SchoolManagmentSystem.Services
 
             var table = document.LastSection.AddTable();
             table.Borders.Width = 0.5;
+            table.Rows.Alignment = RowAlignment.Center;
 
             //define colums first then rows
 
@@ -118,18 +336,21 @@ namespace SchoolManagmentSystem.Services
 
 
             //Create the header of the table
-
+            
             Row row = table.AddRow();
             row.HeadingFormat = true;
             row.Format.Font.Bold = true;
             paragraph.Format.Font.Bold = true;
+
+            row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(211, 211, 211); // light grey shading for the column heading
+
             row.Cells[0].AddParagraph("No");
             row.Cells[1].AddParagraph("Subject");
             row.Cells[2].AddParagraph("Description");
             row.Cells[3].AddParagraph("Class Group");
             row.Cells[4].AddParagraph("Amount (Yearly)");
 
-
+          
             for (int i = 0; i < subjects.GetLength(0); i++)
             {
                 row = table.AddRow();
@@ -141,6 +362,7 @@ namespace SchoolManagmentSystem.Services
               
 
             }
+            
 
             // CalculateS total balance 
             decimal total = 0;

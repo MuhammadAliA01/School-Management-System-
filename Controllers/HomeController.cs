@@ -8,18 +8,20 @@ using PdfSharp.Snippets.Font;
 using SchoolManagmentSystem.Services;
 using System.IO;
 using System.Drawing;
+using SchoolManagmentSystem.Controllers;
 
 namespace SchoolManagmentSystem.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDBContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDBContext context)
         {
             _logger = logger;
+            _context = context;
 
-            
         }
 
         public IActionResult HomePage()
@@ -85,21 +87,77 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
-        public IActionResult DownloadPdf()
+        public IActionResult Confirmation(int studentId)
         {
-            if (PdfSharp.Fonts.GlobalFontSettings.FontResolver == null)
-                PdfSharp.Fonts.GlobalFontSettings.FontResolver = new MyFontResolver();
+            var student = _context.StudentRegistrations
+                                  .FirstOrDefault(s => s.Id == studentId);
 
-            var registrationService = new RegistrationService();
-            var document = registrationService.GetRegistration();
+            if (student == null)
+                return Content("Student not found");
+
+            return View(student); // This will use your Confirmation.cshtml view
+        }
+
+        public IActionResult PreviewPdf(int studentId)
+        {
+            var service = new RegistrationService(_context);
+            var document = service.GetPreviewRegistration(studentId);
 
             using (MemoryStream stream = new MemoryStream())
             {
                 document.Save(stream);
-                byte[] bytes = stream.ToArray();
+                return File(stream.ToArray(), "application/pdf"); // preview
+            }
+        }
 
-                // This returns the file directly to the browser
-                return File(bytes, "application/pdf", "Registration.pdf");
+        public IActionResult Enrol(int studentId)
+        {
+            var student = _context.StudentRegistrations
+                                  .FirstOrDefault(s => s.Id == 2);
+
+            if (student == null)
+                return Content("Student not found");
+
+            return RedirectToAction("Confirmation", new { studentId = studentId });
+        }
+
+
+        public IActionResult DownloadPdf(int studentId)
+        {
+           
+            try
+            {
+                var registrationService = new RegistrationService(_context);
+                var document = registrationService.GetRegistration(studentId);
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    document.Save(stream);
+                    byte[] bytes = stream.ToArray();
+
+                    // This returns the file directly to the browser
+                    return File(bytes, "application/pdf", "Proof of Registration.pdf");
+                }
+            }
+            catch 
+            {
+                // If student not found, return a small PDF saying so
+                var doc = new MigraDoc.DocumentObjectModel.Document();
+                var section = doc.AddSection();
+                var paragraph = section.AddParagraph();
+                paragraph.AddFormattedText("Student not found", MigraDoc.DocumentObjectModel.TextFormat.Bold);
+
+                var pdfRenderer = new MigraDoc.Rendering.PdfDocumentRenderer();
+                pdfRenderer.Document = doc;
+                pdfRenderer.RenderDocument();
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    pdfRenderer.PdfDocument.Save(stream);
+                    byte[] bytes = stream.ToArray();
+
+                    return File(bytes, "application/pdf", "StudentNotFound.pdf");
+                }
             }
         }
 

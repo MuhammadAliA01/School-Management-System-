@@ -6,7 +6,10 @@ namespace SchoolManagmentSystem.Models
 {
     public class StudentRegistration
     {
+
+    
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public int ParentId { get; set; }
     [ForeignKey("ParentId")]

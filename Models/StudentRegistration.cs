@@ -24,6 +24,8 @@ namespace SchoolManagmentSystem.Models
     public string PostalCode { get; set; }
 
     public string ChildName { get; set; }
+
+   
     public DateTime ChildDob { get; set; }
     public string Gender { get; set; }
 

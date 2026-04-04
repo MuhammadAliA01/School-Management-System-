@@ -17,8 +17,6 @@ namespace SchoolManagmentSystem.Models
    
 
 
-        public DbSet<Teacher> Teachers { get; set; }
-
         public DbSet<StudentRegistration> StudentRegistrations { get; set; }
     }
 }

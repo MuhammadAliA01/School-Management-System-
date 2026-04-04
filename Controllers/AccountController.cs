@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Security.Cryptography;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -36,8 +38,28 @@ namespace SchoolManagmentSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAccount([Bind("IdNumber,FirstName,Surname,Username,Email,Password")] Parent parent)
+        public async Task<IActionResult> CreateAccount([Bind("IdNumber,FirstName,Surname,Password,Username,Email")] Parent parent)
         {
+            bool emailExists = await _context.Parents.AnyAsync(e => e.Email == parent.Email);
+
+            if (emailExists)
+            {
+                ModelState.AddModelError("", "An account with this email already exists.");
+                return View(parent);
+            }
+
+            bool username = await _context.Parents.AnyAsync(e => e.Username == parent.Username);
+
+            if (username)
+            {
+                ModelState.AddModelError("", "An account with this username already exists.");
+                return View(parent);
+            }
+
+            
+
+
+
             if (ModelState.IsValid)
             {
                     if (Regex.IsMatch(parent.Email, "(?=.*[@])"))
@@ -51,6 +73,22 @@ namespace SchoolManagmentSystem.Controllers
                                 {
                                     if (Regex.IsMatch(parent.Password, ".{8,}"))
                                     {
+                                    string password = parent.Password;
+
+                                    byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
+
+                                    parent.Salt = Convert.ToBase64String(salt);
+
+                                    string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                                        password: password!,
+                                        salt: salt,
+                                        prf: KeyDerivationPrf.HMACSHA256,
+                                        iterationCount: 100000,
+                                        numBytesRequested: 256 / 8
+                                        ));
+
+
+                                    parent.Password = hashedPassword;
                                         _context.Add(parent);
                                         await _context.SaveChangesAsync();
                                         return RedirectToAction("HomePage", "Home");
@@ -90,68 +128,91 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(Parent parent, Staff staff)
+        public async Task<IActionResult> Login([Bind("Username,Password")] Parent parent, Staff staff)
         {
             var selectedRole = Request.Form["role"].ToString();
 
-            if (selectedRole == "Teacher")
+
+            if (ModelState.IsValid)
             {
-                var staffUser = _context.Staffs.FirstOrDefault(s => s.Username == staff.Username);
-
-                if (staffUser != null)
+                if (selectedRole == "Teacher" && staff != null)
                 {
+                    var staffUser = _context.Staffs.FirstOrDefault(s => s.Username == staff.Username);
 
-                    var claims = new List<Claim>
+                    if (staffUser != null)
+                    {
+
+                        var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, staffUser.Username),
                     new Claim("UserInternalID", staffUser.id.ToString())
                 };
 
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity));
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity));
 
-                    return RedirectToAction("StaffDashboard", "Dashboards");
+                        return RedirectToAction("StaffDashboard", "Dashboards");
 
+
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Invalid username or password");
+                        return View(parent);
+
+                    }
 
                 }
-                else
+                else if (selectedRole == "Parent")
                 {
-                    ModelState.AddModelError("", "Invalid username or password");
-                    return View(parent);
+                    var user = _context.Parents.FirstOrDefault(u => u.Username == parent.Username);
 
-                }
+                    string password = parent.Password;
 
-            }
-            else if(selectedRole == "Parent")
-            {
-                var user = _context.Parents.FirstOrDefault(u => u.Username == parent.Username);
+                    string dbPassword = _context.Parents.Where(p => p.Username == parent.Username).Select(p => p.Password).SingleOrDefault();
 
-                if (user != null)
-                {
+                    byte[] salt = Convert.FromBase64String(user.Salt);
 
-                    var claims = new List<Claim>
+                    string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: password!,
+                        salt: salt,
+                        prf: KeyDerivationPrf.HMACSHA256,
+                        iterationCount: 100000,
+                        numBytesRequested: 256 / 8
+                        ));
+
+
+
+
+                    if (user != null && hashedPassword == dbPassword)
+                    {
+
+                        var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Username),
                     new Claim("UserInternalID", user.Id.ToString())
                 };
 
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity));
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity));
 
-                    return RedirectToAction("ParentDashboard", "Dashboards");
+                        return RedirectToAction("ParentDashboard", "Dashboards");
 
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Invalid username or password");
-                    return View(parent);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Invalid username or password");
+                        return View(parent);
 
+                    }
                 }
             }
+            
+            
 
             ModelState.AddModelError("", "Invalid username or password");
 

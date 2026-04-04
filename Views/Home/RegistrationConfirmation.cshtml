@@ -1,0 +1,74 @@
+﻿@model SchoolManagmentSystem.Models.StudentRegistration
+
+<head>    
+
+    <style>
+            .btn {
+                padding: 10px 20px;
+                background-color: orange;
+                color: black;
+                font-weight:900;
+                text-decoration: none;
+                border-radius: 5px;
+                text-align: center;
+            }
+
+            body {
+                background-image: url(/Images/ConfirmationImages/ConfirmationBG9.jpeg);
+                background-repeat: no-repeat;
+                background-size: cover;
+               
+            }
+
+            .Heading1{
+                color: black;
+                font-size: 40px;
+                font-family: Arial;
+                font-weight: 700;
+                font-style: normal;
+                padding-top: 40px;
+                text-align: center;
+            }
+
+            .Details {
+               font-family:"Britannic";
+               font-size: 20px;
+               width: fit-content;      
+               margin: 0 auto;           
+               text-align: center;      
+               padding-top: 50px;
+              
+               
+            }
+
+            
+
+    </style>
+
+</head>
+
+<body>
+    <div class=" Details">
+
+    <h2 class="Heading1">🎉 Registration Successful!</h2>
+   
+    <p><strong>Student Name:</strong> @Model.ChildName</p>
+    <p><strong>Date of Birth:</strong> @Model.ChildDob.ToString("yyyy-MM-dd")</p>
+
+    <hr style="border: 0; border-top: 1px solid gray; width: 100%;">
+   
+
+    <h3><strong>📚 Assigned Classes</strong></h3>
+    <p>Class 1A</p>
+    
+    <h3><strong>📅 Term Start Date</strong></h3>
+    <p>15 January 2026</p>
+
+    <br />
+
+    <a href="/Home/DownloadPdf?studentId=@Model.Id" class="btn">
+        Download Proof of Registration
+    </a>
+    </div>
+</body>
+

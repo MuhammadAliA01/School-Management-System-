@@ -77,16 +77,19 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
-<<<<<<< HEAD
+
         public IActionResult Index()
-=======
-        public IActionResult RegForm()
->>>>>>> f5f0ad85fc3e3974f0863847e25bec9aed6efad8
         {
             return View();
         }
 
-<<<<<<< HEAD
+        public IActionResult RegForm()
+
+        {
+            return View();
+        }
+
+
      
         public IActionResult RegistrationService()
         {
@@ -166,7 +169,7 @@ namespace SchoolManagmentSystem.Controllers
                 }
             }
         }
-=======
+
 
         // Add the DB Context to your constructor
         
@@ -215,7 +218,7 @@ namespace SchoolManagmentSystem.Controllers
 
 
 
->>>>>>> f5f0ad85fc3e3974f0863847e25bec9aed6efad8
+
 
 
 

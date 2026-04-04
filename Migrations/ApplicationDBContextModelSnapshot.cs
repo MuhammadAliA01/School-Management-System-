@@ -30,6 +30,9 @@ namespace SchoolManagmentSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<string>("AIReviewSummary")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CVLocation")
                         .HasColumnType("nvarchar(max)");
 
@@ -47,6 +50,9 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SuitabilityScore")
+                        .HasColumnType("int");
 
                     b.Property<string>("referenceNumber")
                         .HasColumnType("nvarchar(max)");

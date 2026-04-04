@@ -13,7 +13,7 @@ namespace SchoolManagmentSystem.ServicesAi
         public async Task<string> GetAdvice(string level, string type, string parentComments, string medicalText)
         {
             // api keys
-            string apiKey = "AIzaSyBkyYXI2R303zAbWVzrQ8frurKAoM70gv4";
+            string apiKey = "";
             string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
 
             // pdf

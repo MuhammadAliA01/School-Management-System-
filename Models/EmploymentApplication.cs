@@ -33,6 +33,10 @@ namespace SchoolManagmentSystem.Models
 
         public string? Status { get; set; }
 
+        public int? SuitabilityScore { get; set; }
+
+        public string? AIReviewSummary { get; set; }
+
 
     }
 }

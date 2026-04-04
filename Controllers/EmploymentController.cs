@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.ServicesAi.EmploymentAI;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -25,6 +26,12 @@ namespace SchoolManagmentSystem.Controllers
         public IActionResult EmploymentInfo()
         {
             return View();
+        }
+
+        public async Task<IActionResult> ApplicationList()
+        {
+            return View(await _context.EmploymentApplications.ToListAsync());
+
         }
 
         public IActionResult SearchStatus(string searchString)
@@ -54,9 +61,18 @@ namespace SchoolManagmentSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SubmitApplication([Bind("FirstName,LastName,Email,selectedRole")] EmploymentApplication employmentApplication, IFormFile cvFile)
         {
+
+
+
             var refNumber = Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
             if (cvFile != null && cvFile.Length > 0)
             {
+               
+
+
+
+
+
                 var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
                 var allowedfileTypes = new[] { ".pdf" };
                 var extension = Path.GetExtension(cvFile.FileName).ToLowerInvariant();
@@ -111,10 +127,16 @@ namespace SchoolManagmentSystem.Controllers
                     MailAddress recipientAddress = new MailAddress(employmentApplication.Email);
 
                     MailMessage mailMessage = new MailMessage();
+                    var cvService = new CVService();
+                    var aiService = new AIScoringService();
+                    var cvText = await cvService.ExtractTextFromPDFAsync(cvFile);
+                    var aiFeedback = await aiService.GetSuitabilityScore(cvText, employmentApplication.selectedRole);
 
-                    
+
                     employmentApplication.Status = "Pending";
                     employmentApplication.referenceNumber = refNumber;
+                    employmentApplication.AIReviewSummary = aiFeedback.Summary;
+                    employmentApplication.SuitabilityScore = aiFeedback.Score;
 
                     mailMessage.From = mailAddress;
                     mailMessage.To.Add(recipientAddress);
@@ -123,7 +145,7 @@ namespace SchoolManagmentSystem.Controllers
 
                     _context.Add(employmentApplication);
                     await _context.SaveChangesAsync();
-                    client.Send(mailMessage);
+                    await client.SendMailAsync(mailMessage);
                     return RedirectToAction("ApplicationConfirmed", "Employment", new { referenceNum = employmentApplication.referenceNumber });
                 }
                 else

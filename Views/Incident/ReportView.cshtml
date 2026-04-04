@@ -1,0 +1,236 @@
+﻿@using System.Linq
+@model IEnumerable<IGrouping<string, SchoolManagmentSystem.Models.Incident>>
+
+@{
+    ViewData["Title"] = "Incident History";
+}
+
+<style>
+    :root {
+        --brand-primary: #E67E22;
+        --text-dark: #2C3E50;
+        --text-muted: #95A5A6;
+        --bg-body: #F4F7F9;
+        --danger-red: #E74C3C;
+    }
+
+    body {
+        background-color: var(--bg-body);
+        color: var(--text-dark);
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+
+    .page-header {
+        background: white;
+        padding: 1rem 0;
+        border-bottom: 1px solid #E0E0E0;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .search-wrapper {
+        max-width: 550px;
+        margin: 0 auto 2rem auto;
+    }
+
+    .custom-search {
+        display: flex;
+        background: white;
+        border: 1px solid #DCDDE1;
+        border-radius: 25px;
+        padding: 5px 5px 5px 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .search-input {
+        border: none;
+        outline: none;
+        flex-grow: 1;
+        font-size: 0.9rem;
+    }
+
+    .teacher-card {
+        background: white;
+        border-radius: 10px;
+        border: 1px solid #E0E0E0;
+        margin-bottom: 2rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+
+    .teacher-header {
+        background-color: #FFF9F4;
+        color: var(--brand-primary);
+        padding: 12px 20px;
+        font-weight: 800;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #FAE5D3;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .student-sub-header {
+        background-color: #FAFAFA;
+        padding: 8px 20px;
+        border-bottom: 1px solid #F0F0F0;
+        font-weight: 700;
+        color: #7F8C8D;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .incident-row {
+        display: grid;
+        grid-template-columns: 70px 1fr 120px; /* Slightly wider for the button */
+        padding: 12px 20px;
+        border-bottom: 1px solid #F8F8F8;
+        align-items: center;
+    }
+
+    .incident-row:last-child { border-bottom: none; }
+
+    .date-col {
+        text-align: center;
+        border-right: 1px solid #EEE;
+        padding-right: 15px;
+    }
+
+    .day-num { font-weight: 800; font-size: 1.1rem; line-height: 1; color: var(--text-dark); }
+    .month-txt { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); }
+
+    .action-badge {
+        display: inline-block;
+        background: #EBF7EE;
+        color: #27AE60;
+        padding: 2px 10px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        margin-top: 5px;
+    }
+
+    /* Enhanced Delete Button */
+    .btn-delete { 
+        color: var(--danger-red); 
+        background: #FDEDEC;
+        border: 1px solid #FADBD8;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    
+    .btn-delete:hover { 
+        background: var(--danger-red); 
+        color: white; 
+        text-decoration: none;
+        box-shadow: 0 2px 4px rgba(231, 76, 60, 0.2);
+    }
+
+    .btn-clear {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        text-decoration: none;
+        align-self: center;
+        margin-right: 15px;
+        font-weight: 600;
+    }
+    .btn-clear:hover { color: var(--text-dark); text-decoration: none; }
+</style>
+
+<div class="page-header">
+    <div class="container header-container">
+        <div>
+            <h5 class="mb-0" style="font-weight: 800;">
+                Administrative Log 
+                <a asp-action="Index" class="text-muted ml-1" title="Reload full list">
+                    <i class="fas fa-sync-alt" style="font-size: 0.8rem;"></i>
+                </a>
+            </h5>
+            <small class="text-muted">Growing Little Minds • Incident History</small>
+        </div>
+        <a asp-action="Create" class="btn btn-sm btn-warning text-white px-3" style="font-weight:700; border-radius:6px;">
+            <i class="fas fa-plus mr-1"></i> New Entry
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="search-wrapper">
+        <form asp-action="Index" method="get" class="custom-search">
+            <input type="text" name="searchString" class="search-input" placeholder="Search by student name..." value="@ViewData["CurrentFilter"]" />
+            
+            @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+            {
+                <a asp-action="Index" class="btn-clear">
+                    <i class="fas fa-times-circle"></i> Clear
+                </a>
+            }
+            
+            <button type="submit" class="btn btn-dark btn-sm px-4" style="border-radius: 20px;">Search</button>
+        </form>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-folder-open text-muted mb-3" style="font-size: 3rem; opacity: 0.3;"></i>
+            <p class="text-muted">No records found matching your search.</p>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Show All Records</a>
+        </div>
+    }
+
+    @foreach (var teacherGroup in Model)
+    {
+        <div class="teacher-card">
+            <div class="teacher-header">
+                <span><i class="fas fa-user-tie mr-2"></i> Class Teacher: @teacherGroup.Key</span>
+                <span style="opacity:0.6; font-size:0.75rem;">@teacherGroup.Count() Total Reports</span>
+            </div>
+
+            @foreach (var studentGroup in teacherGroup.GroupBy(i => i.Student?.FullName ?? "Unknown Student"))
+            {
+                <div class="student-sub-header">
+                    <i class="fas fa-child mr-2"></i> Student: @studentGroup.Key
+                </div>
+
+                @foreach (var item in studentGroup)
+                {
+                    <div class="incident-row">
+                        <div class="date-col">
+                            <div class="day-num">@item.Date.ToString("dd")</div>
+                            <div class="month-txt">@item.Date.ToString("MMM")</div>
+                        </div>
+
+                        <div class="px-3">
+                            <div style="font-size: 0.9rem; color: #444; line-height: 1.4;">@item.Description</div>
+                            @if (!string.IsNullOrEmpty(item.ActionTaken))
+                            {
+                                <div class="action-badge"><i class="fas fa-check-circle mr-1"></i> @item.ActionTaken</div>
+                            }
+                        </div>
+
+                        <div class="text-right">
+                            <form asp-action="Delete" asp-route-id="@item.IncidentId" method="post" onsubmit="return confirm('Remove this log?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-delete">
+                                    <i class="fas fa-trash-alt mr-1"></i> Delete
+                                </button>
+                            </form>
+                            <div class="text-muted mt-1" style="font-size: 0.65rem;">@item.Date.Year</div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>

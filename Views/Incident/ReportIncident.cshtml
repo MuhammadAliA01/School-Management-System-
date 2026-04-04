@@ -1,5 +1,246 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model SchoolManagmentSystem.Models.Incident
+
 @{
+    ViewBag.Title = "Incident Report Form";
 }
+
+<style>
+    :root {
+        --primary-brand: #E67E22;
+        --brand-hover: #D35400;
+        --slate-text: #34495E;
+        --border-color: #DCDDE1;
+    }
+
+    body {
+        background-color: #F0F2F5;
+        color: var(--slate-text);
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .report-page {
+        background-color: white;
+        max-width: 850px;
+        margin: 40px auto;
+        padding: 50px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border-top: 6px solid var(--primary-brand);
+        border-radius: 12px;
+        position: relative;
+    }
+
+    .school-header {
+        border-bottom: 1px solid #EEE;
+        margin-bottom: 35px;
+        padding-bottom: 25px;
+    }
+
+    .report-title {
+        letter-spacing: 1px;
+        font-weight: 800;
+        color: var(--slate-text);
+    }
+
+    .form-section-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--primary-brand);
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        display: block;
+        letter-spacing: 1.5px;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        padding: 12px 15px;
+        background-color: #FAFAFA;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-brand);
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+            background-color: #fff;
+            outline: none;
+        }
+
+    label {
+        font-weight: 600;
+        color: #5D6D7E;
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+    }
+
+    .btn-save {
+        background-color: var(--primary-brand);
+        color: white;
+        padding: 14px 40px;
+        font-weight: 700;
+        border-radius: 8px;
+        border: none;
+        transition: 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+    }
+
+        .btn-save:hover {
+            background-color: var(--brand-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.25);
+        }
+
+    .watermark {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 0.65rem;
+        color: #BDC3C7;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .back-link {
+        color: #95A5A6;
+        font-size: 0.9rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .back-link:hover {
+            color: var(--primary-brand);
+        }
+</style>
+
+<div class="container">
+    <div class="report-page">
+        <div class="watermark">FORM-REF: @DateTime.Now.Ticks.ToString().Substring(0, 8)</div>
+
+        <div class="school-header text-center">
+            <h3 class="report-title mb-1">Incident Report Entry</h3>
+            <p class="text-muted small mb-0">Growing Little Minds • Official Log</p>
+        </div>
+
+        @if (TempData["AlertMessage"] != null)
+        {
+            <div class="alert alert-@TempData["AlertType"] alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+                <strong><i class="fas fa-info-circle mr-2"></i> @TempData["AlertMessage"]</strong>
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        }
+
+        <form asp-action="Create" method="post" id="incidentForm">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="TeacherName" id="HiddenTeacherName" />
+            <input type="hidden" asp-for="StudentName" id="HiddenStudentName" />
+            <input type="hidden" asp-for="StudentId" id="StudentId" />
+
+            <div class="row">
+                <div class="col-md-6 pr-md-4">
+                    <span class="form-section-title">01. Identification</span>
+                    
+                    <div class="form-group mb-4">
+                        <label>Assigned Teacher / Reporter</label>
+                        <select asp-for="TeacherId" id="TeacherSelect" class="form-control" asp-items="ViewBag.Teachers" required>
+                            <option value="">Select Staff Member</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label>Student Involved</label>
+                        <select id="StudentDropdown" class="form-control" required>
+                            <option value="">Select Student</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label>Date of Incident</label>
+                        @* Changed type to "date" to remove the time picker *@
+                        <input asp-for="Date" type="date" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <span class="form-section-title">02. Incident Details</span>
+                    
+                    <div class="form-group">
+                        <label>Factual Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="10"
+                                  placeholder="Provide a clear, objective account of the event..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12">
+                    <span class="form-section-title">03. Immediate Response</span>
+                    <div class="form-group">
+                        <label>Action Taken</label>
+                        <input asp-for="ActionTaken" class="form-control"
+                               placeholder="e.g., Calming techniques used, first aid, parent notified..." />
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-5" style="border-top: 1px solid #EEE;" />
+
+            <div class="d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="back-link">
+                    <i class="fas fa-history mr-1"></i> Back to History
+                </a>
+                <button type="submit" class="btn btn-save shadow-sm">
+                    Submit Final Report
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        
+    function loadStudents(teacherId, selectedStudentId = null) {
+    if (!teacherId) return;
+
+    $('#StudentDropdown').empty().append('<option>Loading Students...</option>');
+            
+    $.getJSON('/Incident/GetStudentsByTeacher', { teacherId: teacherId }, function (data) {
+    $('#StudentDropdown').empty().append('<option value="">Select Student</option>');
+    $.each(data, function (i, item) {
+    var isSelected = (selectedStudentId && item.id == selectedStudentId) ? 'selected' : '';
+    $('#StudentDropdown').append('<option value="' + item.id + '" ' + isSelected + '>' + item.name + '</option>');
+    });
+
+    if(selectedStudentId) {
+    $('#HiddenStudentName').val($("#StudentDropdown option:selected").text());
+    }
+    });
+    }
+
+    $('#TeacherSelect').change(function () {
+    var tId = $(this).val();
+    var tName = $("#TeacherSelect option:selected").text();
+    $('#HiddenTeacherName').val(tName);
+    loadStudents(tId);
+    });
+
+    $('#StudentDropdown').on('change', function () {
+    var sId = $(this).val();
+    var sName = $("#StudentDropdown option:selected").text();
+    $('#StudentId').val(sId);
+    $('#HiddenStudentName').val(sName);
+    });
+
+    var initialTeacherId = $('#TeacherSelect').val();
+    var initialStudentId = $('#StudentId').val();
+
+    if (initialTeacherId) {
+    loadStudents(initialTeacherId, initialStudentId);
+    }
+    });
+</script>

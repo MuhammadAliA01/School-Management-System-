@@ -198,6 +198,7 @@ namespace SchoolManagmentSystem.Services
         public PdfDocument GetRegistration(int studentId)
         {
             var document = new Document();
+            
 
             // Fetch student from DB
             var student = _context.StudentRegistrations
@@ -223,6 +224,7 @@ namespace SchoolManagmentSystem.Services
             //Each MigraDoc document needs at least one section
             Section section = document.AddSection();
             section.PageSetup.TopMargin = "1cm";
+            
 
 
             //Adding an image
@@ -244,7 +246,7 @@ namespace SchoolManagmentSystem.Services
             paragraph.AddLineBreak();
             paragraph.Format.SpaceAfter = "1cm";
             paragraph.AddFormattedText("Principal: ", TextFormat.Bold); // only this part bold
-            paragraph.AddText("Ms Tasania Nadasan");
+            paragraph.AddText("Mrs Tasania Nadasan");
             paragraph.AddLineBreak();
             paragraph.AddFormattedText("Email: ", TextFormat.Bold); // only this part bold
             paragraph.AddText("joelene.nadasan@gmail.com");
@@ -259,29 +261,26 @@ namespace SchoolManagmentSystem.Services
             paragraph = section.AddParagraph();
             paragraph.AddFormattedText("PROOF OF REGISTRATION FOR:", TextFormat.Bold);
             paragraph.AddLineBreak();
-            
-            paragraph.AddFormattedText("Student Name: ", TextFormat.Bold);
-            paragraph.AddText(student.ChildName);
-            paragraph.AddLineBreak();
 
-            paragraph.AddFormattedText("Birth Certificate Number: ", TextFormat.Bold);
+            paragraph.AddFormattedText("Student Name: ", TextFormat.Bold);
+            var studentName = paragraph.AddFormattedText(student.ChildName);
+            studentName.Bold = false;
             paragraph.AddLineBreak();
 
             paragraph.AddFormattedText("Date Of Birth: ", TextFormat.Bold);
-            paragraph.AddText(student.ChildDob.ToString("yyyy-MM-dd"));
-            paragraph.AddLineBreak();
-
-            paragraph.AddFormattedText("Medical Records: ", TextFormat.Bold);
+            var dob = paragraph.AddFormattedText(student.ChildDob.ToString("yyyy-MM-dd"));
+            dob.Bold = false;
             paragraph.AddLineBreak();
 
             paragraph.AddFormattedText("Phone: ", TextFormat.Bold);
-            paragraph.AddText(student.ParentPhone);
+            var phone = paragraph.AddFormattedText(student.ParentPhone);
+            phone.Bold = false;
 
             paragraph.Format.SpaceAfter = 20;
             paragraph.Format.Alignment = ParagraphAlignment.Center;
 
 
-            // Layout for student number and date
+            // Layout for date
             var infoTable = section.AddTable();
             infoTable.Borders.Width = 0;
 
@@ -291,15 +290,10 @@ namespace SchoolManagmentSystem.Services
             var rowInfo = infoTable.AddRow();
             infoTable.Rows.Alignment = RowAlignment.Center;
 
-            // Student number on left side
-            var leftPara = rowInfo.Cells[0].AddParagraph();
-            leftPara.AddText("Student Number: 224034567");
-            leftPara.Format.Alignment = ParagraphAlignment.Left;
-
             // Date&Time on the right
-            var rightPara = rowInfo.Cells[1].AddParagraph();
-            rightPara.Add(new DateField { Format = "yyyy/MM/dd : hh:mm " });
-            rightPara.Format.Alignment = ParagraphAlignment.Right;
+            var leftPara = rowInfo.Cells[1].AddParagraph();
+            leftPara.Add(new DateField { Format = "dd MMMM yyyy, HH:mm" });
+            leftPara.Format.Alignment = ParagraphAlignment.Right;
 
             // Space after
             var spacer2 = section.AddParagraph();
@@ -376,10 +370,11 @@ namespace SchoolManagmentSystem.Services
 
             // Set your Balance paragraph text 
             paragraph = section.AddParagraph();
-            paragraph.AddText("Balance: R" + total.ToString("N2"));
+            paragraph.AddText("Outstanding Balance: R" + total.ToString("N2"));
             paragraph.AddLineBreak();
             paragraph.Format.SpaceBefore = "1cm";
             paragraph.Format.SpaceAfter = "0.3cm";
+            paragraph.Format.LeftIndent = "1cm";
 
 
             //Adding the signature image
@@ -389,7 +384,7 @@ namespace SchoolManagmentSystem.Services
             image2.Width = "5cm";
             image2.Height = "3cm";
             image2.LockAspectRatio = true;
-            image2.Left = ShapePosition.Left;
+            image2.Left = "1cm";
             var spacer1 = section.AddParagraph();
 
 
@@ -399,6 +394,7 @@ namespace SchoolManagmentSystem.Services
             paragraph.AddText("Principal: Mrs Tasania Joelene Nadasan");
             paragraph.AddLineBreak();
             paragraph.Format.SpaceBefore = "0.05cm";
+            paragraph.Format.LeftIndent = "1cm";
 
             //Bottom of page
             paragraph = section.Footers.Primary.AddParagraph();

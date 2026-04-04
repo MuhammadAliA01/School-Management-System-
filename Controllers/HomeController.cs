@@ -112,7 +112,7 @@ namespace SchoolManagmentSystem.Controllers
             if (student == null)
                 return Content("Student not found");
 
-            return View(student); // This will use your Confirmation.cshtml view
+            return View(student); // This will use your RegistrationConfirmation.cshtml view
         }
 
         public IActionResult PreviewPdf(int studentId)
@@ -135,7 +135,7 @@ namespace SchoolManagmentSystem.Controllers
             if (student == null)
                 return Content("Student not found");
 
-            return RedirectToAction("Confirmation", new { studentId = studentId });
+            return RedirectToAction("RegistrationConfirmation", new { studentId = studentId });
         }
 
 

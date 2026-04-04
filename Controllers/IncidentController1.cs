@@ -44,8 +44,8 @@ namespace SchoolManagmentSystem.Controllers
         public IActionResult Create()
         {
             var model = new Incident { Date = DateTime.Today };
-            //var teachers = _context.Teachers.OrderBy(t => t.Name).ToList();
-           // ViewBag.Teachers = new SelectList(teachers, "TeacherId", "Name");
+            var teachers = _context.Teachers.OrderBy(t => t.Name).ToList();
+            ViewBag.Teachers = new SelectList(teachers, "TeacherId", "Name");
             return View("ReportIncident", model);
         }
 
@@ -81,8 +81,8 @@ namespace SchoolManagmentSystem.Controllers
                 }
             }
 
-           // var teachers = _context.Teachers.OrderBy(t => t.Name).ToList();
-           // ViewBag.Teachers = new SelectList(teachers, "TeacherId", "Name");
+           var teachers = _context.Teachers.OrderBy(t => t.Name).ToList();
+           ViewBag.Teachers = new SelectList(teachers, "TeacherId", "Name");
             return View("ReportIncident", model);
         }
 

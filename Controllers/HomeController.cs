@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
 using System.Diagnostics;
@@ -76,18 +77,23 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+<<<<<<< HEAD
         public IActionResult Index()
+=======
+        public IActionResult RegForm()
+>>>>>>> f5f0ad85fc3e3974f0863847e25bec9aed6efad8
         {
             return View();
         }
 
+<<<<<<< HEAD
      
         public IActionResult RegistrationService()
         {
             return View();
         }
 
-        public IActionResult Confirmation(int studentId)
+        public IActionResult RegistrationConfirmation(int studentId)
         {
             var student = _context.StudentRegistrations
                                   .FirstOrDefault(s => s.Id == studentId);
@@ -160,6 +166,56 @@ namespace SchoolManagmentSystem.Controllers
                 }
             }
         }
+=======
+
+        // Add the DB Context to your constructor
+        
+
+
+        // 1. The POST method that receives the form data
+        [HttpPost]
+        public async Task<IActionResult> RegForm(StudentRegistration registration, IFormFile pdfFile)
+        {
+            if (ModelState.IsValid)
+            {
+                // Set the registration date
+                registration.RegistrationDate = DateTime.Now;
+
+                // (Optional) Handle File Upload logic here if you are saving the PDF
+
+                _context.StudentRegistrations.Add(registration);
+                await _context.SaveChangesAsync();
+
+                // Redirect to the Confirmation page, passing the new ID
+                return RedirectToAction("Confirmation", "Home", new { id = registration.Id });
+            }
+
+
+            return View(registration);
+        }
+
+        // 2. The GET method that displays the confirmation
+        public async Task<IActionResult> Confirmation(int id)
+        {
+            try
+            {
+                var registration = await _context.StudentRegistrations
+                    .FirstOrDefaultAsync(m => m.Id == id);
+
+                if (registration == null) return NotFound();
+
+                return View(registration);
+            }
+            catch (SqlException ex)
+            {
+                // This will redirect to your error page instead of showing the "Ugly" crash screen
+                return RedirectToAction("Error");
+            }
+        }
+
+
+
+>>>>>>> f5f0ad85fc3e3974f0863847e25bec9aed6efad8
 
 
 

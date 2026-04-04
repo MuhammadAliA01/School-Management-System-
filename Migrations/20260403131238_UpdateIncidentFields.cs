@@ -14,7 +14,7 @@ namespace SchoolManagmentSystem.Migrations
             // We are commenting this out because the 'Incidents' table already exists in SSMS.
             // This allows the migration to complete without throwing the "Object already exists" error.
 
-            /*
+            
             migrationBuilder.CreateTable(
                 name: "Incidents",
                 columns: table => new
@@ -33,7 +33,7 @@ namespace SchoolManagmentSystem.Migrations
                 {
                     table.PrimaryKey("PK_Incidents", x => x.IncidentId);
                 });
-            */
+            
         }
 
         /// <inheritdoc />

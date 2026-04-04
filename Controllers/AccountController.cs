@@ -133,8 +133,7 @@ namespace SchoolManagmentSystem.Controllers
             var selectedRole = Request.Form["role"].ToString();
 
 
-            if (ModelState.IsValid)
-            {
+            
                 if (selectedRole == "Teacher" && staff != null)
                 {
                     var staffUser = _context.Staffs.FirstOrDefault(s => s.Username == staff.Username);
@@ -167,11 +166,20 @@ namespace SchoolManagmentSystem.Controllers
                 }
                 else if (selectedRole == "Parent")
                 {
+
                     var user = _context.Parents.FirstOrDefault(u => u.Username == parent.Username);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "Invalid username or password");
+                    return View(parent);
+                }
+
+
 
                     string password = parent.Password;
 
-                    string dbPassword = _context.Parents.Where(p => p.Username == parent.Username).Select(p => p.Password).SingleOrDefault();
+                    string dbPassword = user.Password;
 
                     byte[] salt = Convert.FromBase64String(user.Salt);
 
@@ -186,7 +194,7 @@ namespace SchoolManagmentSystem.Controllers
 
 
 
-                    if (user != null && hashedPassword == dbPassword)
+                    if (hashedPassword == dbPassword)
                     {
 
                         var claims = new List<Claim>
@@ -200,7 +208,7 @@ namespace SchoolManagmentSystem.Controllers
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity));
 
-                        return RedirectToAction("ParentDashboard", "Dashboards");
+                        return RedirectToAction("ParentDashboard", "Dashboards", new {parentID = user.Id});
 
                     }
                     else
@@ -210,11 +218,8 @@ namespace SchoolManagmentSystem.Controllers
 
                     }
                 }
-            }
             
-            
-
-            ModelState.AddModelError("", "Invalid username or password");
+            ModelState.AddModelError("", "Invalid username or passwords");
 
             return View(parent);
         }

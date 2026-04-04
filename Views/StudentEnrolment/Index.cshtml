@@ -148,17 +148,17 @@
 
         <div class="btn-group">
             <a class="portal-btn btn-review"
-                   asp-controller="Home"
+                   asp-controller="StudentEnrolment"
                    asp-action="PreviewPdf"
-                   asp-route-studentId="2"
+                   asp-route-studentId=@ViewBag.studentID
                    target="_blank">
                    Review Details
             </a>
 
             <a class="portal-btn btn-enrol"
-                   asp-controller="Home"
+                   asp-controller="StudentEnrolment"
                    asp-action="Enrol"
-                   asp-route-studentId="2">
+               asp-route-studentId=@ViewBag.studentID>
                    Confirm Enrolment
             </a>
         </div>

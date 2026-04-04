@@ -1,14 +1,42 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SchoolManagmentSystem.Models
 {
     public class Student
     {
         [Key]
-        public int StudentId { get; set; } // This is the Primary Key
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int StudentId { get; set; }
+        public int ParentId { get; set; }
+        [ForeignKey("ParentId")]
+        public virtual Parent Parent { get; set; }
+        public string ParentName { get; set; }
+        public string ParentEmail { get; set; }
+        public string ParentPhone { get; set; }
 
-        [Required]
+
+        public int TeacherId { get; set; } //required for Aamir's part. but in reality students arent linked to specific teachers
+
+        public string Street { get; set; }
+        public string Suburb { get; set; }
+        public string City { get; set; }
+        public string PostalCode { get; set; }
+
         public string? FullName { get; set; }
-        public int TeacherId { get; set; } // Links student to a teacher
+
+
+        public DateTime ChildDob { get; set; }
+        public string Gender { get; set; }
+
+        public string AutismLevel { get; set; }
+        public string AutismType { get; set; }
+
+        //We save the name of the PDF file here, not the actual file itself
+        public string PdfPath { get; set; }
+
+        public string Comments { get; set; }
+
+        public DateTime RegistrationDate { get; set; } = DateTime.Now;
     }
 }

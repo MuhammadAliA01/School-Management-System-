@@ -39,5 +39,9 @@ namespace SchoolManagmentSystem.Models
 
     public DateTime RegistrationDate { get; set; } = DateTime.Now;
 
-}
+        public string? Status { get; set; }
+
+        public bool? feesPaid { get; set; }
+
+    }
 }

@@ -1,0 +1,46 @@
+﻿@model IEnumerable<StudentRegistration>
+
+<h2>Registered Students</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Child Name</th>
+            <th>Parent Email</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+<tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ChildName</td>
+                <td>@item.ParentEmail</td>
+                <td>
+                    <!-- Conditional styling based on status -->
+                    <span class="badge @(item.Status == "Accepted" ? "bg-success" : item.Status == "Rejected" ? "bg-danger" : "bg-warning")">
+                        @item.Status
+                    </span>
+                </td>
+                <td>
+                    <!-- Form for Status Update Buttons -->
+                    <form asp-action="UpdateStatus" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" name="newStatus" value="Accepted"
+                                class="btn btn-sm btn-success"
+                                @(item.Status == "Accepted" ? "disabled" : "")>
+                            Accept
+                        </button>
+
+                        <button type="submit" name="newStatus" value="Rejected"
+                                class="btn btn-sm btn-danger"
+                                @(item.Status == "Rejected" ? "disabled" : "")>
+                            Reject
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

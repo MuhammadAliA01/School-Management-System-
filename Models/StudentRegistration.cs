@@ -23,14 +23,22 @@ namespace SchoolManagmentSystem.Models
     public string City { get; set; }
     public string PostalCode { get; set; }
 
-    public string ChildName { get; set; }
+        [Required(ErrorMessage = "Child's name is required")]
 
-   
-    public DateTime ChildDob { get; set; }
+        public string ChildName { get; set; }
+
+        [Required(ErrorMessage = "Child's DOB is required")]
+
+
+        public DateTime ChildDob { get; set; }
+
     public string Gender { get; set; }
 
-    public string AutismLevel { get; set; }
-    public string AutismType { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public string AutismLevel { get; set; }
+
+        [Required(ErrorMessage = "Required")]
+        public string AutismType { get; set; }
 
     //We save the name of the PDF file here, not the actual file itself
     public string PdfPath { get; set; }

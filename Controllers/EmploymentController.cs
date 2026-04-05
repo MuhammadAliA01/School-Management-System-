@@ -22,6 +22,8 @@ namespace SchoolManagmentSystem.Controllers
         }
 
 
+      
+
 
         public IActionResult EmploymentInfo()
         {
@@ -45,8 +47,18 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create(StudentRegistration model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(model);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return View(model); // Returns to form with error messages
+        }
 
-        
 
 
         public IActionResult SubmitApplication()

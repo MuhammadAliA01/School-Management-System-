@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
 using SchoolManagmentSystem.Services;
 using System.Net;
@@ -25,45 +26,7 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
-        public IActionResult StudentList() 
-        {
-            return View();
-        }
-
-
-
-        [HttpPost]
-        public async Task<IActionResult> Create(StudentRegistration model)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(model);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(model); // Returns to form with error messages
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateStatus(int id, string newStatus)
-        {
-            var student = await _context.StudentRegistrations.FindAsync(id);
-            if (student != null)
-            {
-                student.Status = newStatus;
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction("Index");
-        }
-
         
-
-
-
-
-
-
-
 
         public IActionResult RegistrationService()
         {

@@ -23,7 +23,6 @@ namespace SchoolManagmentSystem.Models
     public string City { get; set; } = default!;
     public string PostalCode { get; set; } = default!;
 
-    public string ChildName { get; set; } = default!;
         [Required(ErrorMessage = "Child's name is required")]
 
         public string ChildName { get; set; }

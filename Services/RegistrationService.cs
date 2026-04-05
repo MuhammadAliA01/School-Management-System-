@@ -22,7 +22,7 @@ namespace SchoolManagmentSystem.Services
             var document = new Document();
 
             var student = _context.StudentRegistrations
-                                  .FirstOrDefault(s => s.Id == studentId);
+                                  .FirstOrDefault(s => s.Id  == studentId);
 
             if (student == null)
                 throw new Exception("Student not found");
@@ -202,7 +202,7 @@ namespace SchoolManagmentSystem.Services
 
             // Fetch student from DB
             var student = _context.StudentRegistrations
-                                  .FirstOrDefault(s => s.Id == 2); //hardcoded 2 for testing purposes. Replace with "studentId"
+                                  .FirstOrDefault(s => s.Id == studentId); //hardcoded 2 for testing purposes. Replace with "studentId"
 
             if (student == null)
                 throw new Exception("Student not found");

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManagmentSystem.Models;
 using SchoolManagmentSystem.Services;
+using System.Net;
+using System.Net.Mail;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -71,8 +73,13 @@ namespace SchoolManagmentSystem.Controllers
                 var registrationService = new RegistrationService(_context);
                 var document = registrationService.GetRegistration(studentId);
 
+               
+
+               
+
                 using (MemoryStream stream = new MemoryStream())
                 {
+
                     document.Save(stream);
                     byte[] bytes = stream.ToArray();
 

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
@@ -24,6 +24,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 var app = builder.Build();
+
+//set pdf font resolver
+PdfSharp.Fonts.GlobalFontSettings.FontResolver = new MyFontResolver();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

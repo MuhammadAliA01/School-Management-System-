@@ -1,19 +1,28 @@
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
 using System.Diagnostics;
+using PdfSharp.Fonts;
+using PdfSharp.Snippets.Font;
+using SchoolManagmentSystem.Services;
+using System.IO;
+using System.Drawing;
+using SchoolManagmentSystem.Controllers;
 
 namespace SchoolManagmentSystem.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDBContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDBContext context)
         {
             _logger = logger;
+            _context = context;
 
-            
         }
 
         public IActionResult HomePage()
@@ -47,6 +56,7 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        
         public IActionResult Gallery()
         {
             return View();
@@ -67,11 +77,77 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        public IActionResult RegForm()
+        {
+            return View();
+        }
+
+
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+       
+
+     
+      
+
+
+        // Add the DB Context to your constructor
+        
+
+
+        // 1. The POST method that receives the form data
+        [HttpPost]
+        public async Task<IActionResult> RegForm(StudentRegistration registration, IFormFile pdfFile)
+        {
+            if (ModelState.IsValid)
+            {
+                // Set the registration date
+                registration.RegistrationDate = DateTime.Now;
+
+                // (Optional) Handle File Upload logic here if you are saving the PDF
+
+                _context.StudentRegistrations.Add(registration);
+                await _context.SaveChangesAsync();
+
+                // Redirect to the Confirmation page, passing the new ID
+                return RedirectToAction("Confirmation", "Home", new { id = registration.Id });
+            }
+
+
+            return View(registration);
+        }
+
+        // 2. The GET method that displays the confirmation
+        public async Task<IActionResult> Confirmation(int id)
+        {
+            try
+            {
+                var registration = await _context.StudentRegistrations
+                    .FirstOrDefaultAsync(m => m.Id == id);
+
+                if (registration == null) return NotFound();
+
+                return View(registration);
+            }
+            catch (SqlException ex)
+            {
+                // This will redirect to your error page instead of showing the "Ugly" crash screen
+                return RedirectToAction("Error");
+            }
+        }
+
+
+
+
+
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-
-
-
 
         public IActionResult Error()
         {
@@ -79,3 +155,50 @@ namespace SchoolManagmentSystem.Controllers
         }
     }
 }
+public class MyFontResolver : IFontResolver
+{
+    public FontResolverInfo ResolveTypeface(string familyName, bool isBold, bool isItalic)
+    {
+        if (familyName.Equals("Arial", StringComparison.OrdinalIgnoreCase))
+        {
+            if (isBold && isItalic) return new FontResolverInfo("arialbi.ttf");
+            if (isBold) return new FontResolverInfo("arialbd.ttf");
+            if (isItalic) return new FontResolverInfo("ariali.ttf");
+            return new FontResolverInfo("arial.ttf");
+        }
+
+        if (familyName.Equals("Courier New", StringComparison.OrdinalIgnoreCase))
+        {
+            if (isBold && isItalic) return new FontResolverInfo("courbi.ttf");
+            if (isBold) return new FontResolverInfo("courbd.ttf");
+            if (isItalic) return new FontResolverInfo("couri.ttf");
+            return new FontResolverInfo("cour.ttf");
+        }
+
+        if (familyName.Equals("Times New Roman", StringComparison.OrdinalIgnoreCase))
+        {
+            if (isBold && isItalic) return new FontResolverInfo("timesbi.ttf");
+            if (isBold) return new FontResolverInfo("timesbd.ttf");
+            if (isItalic) return new FontResolverInfo("timesi.ttf");
+            return new FontResolverInfo("times.ttf");
+        }
+
+        return new FontResolverInfo("arial.ttf");
+    }
+
+    public byte[] GetFont(string faceName)
+    {
+        string fontPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), faceName);
+
+        if (File.Exists(fontPath))
+        {
+            return File.ReadAllBytes(fontPath);
+        }
+
+        return File.ReadAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "arial.ttf"));
+    }
+}
+
+
+
+

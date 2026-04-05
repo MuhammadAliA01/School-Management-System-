@@ -1,0 +1,35 @@
+﻿@model IEnumerable<SchoolManagmentSystem.Models.StudentRegistration>
+
+<div class="container mt-5">
+    <h2 class="mb-4"> Teacher AI Dashboard</h2>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="ps-4 py-3">Student Name</th>
+                        <th>Autism Level</th>
+                        <th>Diagnosis</th>
+                        <th class="text-end pe-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in Model)
+                    {
+                        <tr>
+                            <td class="ps-4"><strong>@student.ChildName</strong></td>
+                            <td><span class="badge bg-info text-dark">@student.AutismLevel</span></td>
+                            <td>@student.AutismType</td>
+                            <td class="text-end pe-4">
+                                <a asp-controller="TeachingMethods" asp-action="GenerateTeachingMethods" asp-route-id="@student.Id" class="btn btn-primary btn-sm shadow-sm">
+                                     Generate AI Plan
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

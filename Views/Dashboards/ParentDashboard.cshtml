@@ -1,0 +1,33 @@
+﻿@model SchoolManagmentSystem.Models.StudentRegistration
+
+@if (ViewBag.noStudent == true)
+{
+    //if parent has no application yet
+}
+else if (ViewBag.studentNoVerify == true)
+{
+    //if application has not been verified
+}
+else if (ViewBag.studentNoFees == true)
+{
+    //if fees have not been paid
+}
+else if (ViewBag.studentNoReg == true)
+{
+    //if fees are paid but student has not been registered
+
+    <a href="@Url.Action("Index", "StudentEnrolment", new { studentID = ViewBag.studentID })" class="btn btn-primary">
+Register    </a>
+}
+else if (ViewBag.studentRegistered == true)
+{
+    //if student is registered
+}
+
+
+
+
+
+
+
+

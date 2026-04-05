@@ -13,29 +13,29 @@ namespace SchoolManagmentSystem.Models
     public int Id { get; set; }
     public int ParentId { get; set; }
     [ForeignKey("ParentId")]
-    public virtual Parent Parent { get; set; }
-    public string ParentName { get; set; }
-    public string ParentEmail { get; set; }
-    public string ParentPhone { get; set; }
+    public virtual Parent Parent { get; set; } = default!;
+        public string ParentName { get; set; } = default!;
+        public string ParentEmail { get; set; } = default!;
+        public string ParentPhone { get; set; } = default!;
 
-    public string Street { get; set; }
-    public string Suburb { get; set; }
-    public string City { get; set; }
-    public string PostalCode { get; set; }
+        public string Street { get; set; } = default!;
+    public string Suburb { get; set; } = default!;
+    public string City { get; set; } = default!;
+    public string PostalCode { get; set; } = default!;
 
-    public string ChildName { get; set; }
+    public string ChildName { get; set; } = default!;
 
    
     public DateTime ChildDob { get; set; }
-    public string Gender { get; set; }
+    public string Gender { get; set; } = default!;
 
-    public string AutismLevel { get; set; }
-    public string AutismType { get; set; }
+    public string AutismLevel { get; set; } = default!;
+    public string AutismType { get; set; } = default!;
 
-    //We save the name of the PDF file here, not the actual file itself
-    public string PdfPath { get; set; }
+    
+    public string PdfPath { get; set; } = default!;
 
-    public string Comments { get; set; }
+    public string Comments { get; set; } = default!;
 
     public DateTime RegistrationDate { get; set; } = DateTime.Now;
 

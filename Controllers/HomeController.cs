@@ -89,61 +89,18 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
-       
-
-     
-      
-
-
-        // Add the DB Context to your constructor
-        
-
-
-        // 1. The POST method that receives the form data
         [HttpPost]
-        public async Task<IActionResult> RegForm(StudentRegistration registration, IFormFile pdfFile)
+        public IActionResult Confirmation(StudentRegistration model, IFormFile pdfFile)
         {
-            if (ModelState.IsValid)
+
+            if (pdfFile != null && pdfFile.Length > 0)
             {
-                // Set the registration date
-                registration.RegistrationDate = DateTime.Now;
 
-                // (Optional) Handle File Upload logic here if you are saving the PDF
-
-                _context.StudentRegistrations.Add(registration);
-                await _context.SaveChangesAsync();
-
-                // Redirect to the Confirmation page, passing the new ID
-                return RedirectToAction("Confirmation", "Home", new { id = registration.Id });
             }
 
 
-            return View(registration);
+            return View(model);
         }
-
-        // 2. The GET method that displays the confirmation
-        public async Task<IActionResult> Confirmation(int id)
-        {
-            try
-            {
-                var registration = await _context.StudentRegistrations
-                    .FirstOrDefaultAsync(m => m.Id == id);
-
-                if (registration == null) return NotFound();
-
-                return View(registration);
-            }
-            catch (SqlException ex)
-            {
-                // This will redirect to your error page instead of showing the "Ugly" crash screen
-                return RedirectToAction("Error");
-            }
-        }
-
-
-
-
-
 
 
 

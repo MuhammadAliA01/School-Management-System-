@@ -73,7 +73,7 @@
             text-transform: uppercase;
         }
 
-            /* Red asterisk for required fields */
+           
             label.required::after {
                 content: " *";
                 color: var(--error-color);
@@ -212,8 +212,8 @@
             <h2>Register Child</h2>
         </div>
 
-        @* Redirects directly to the Confirmation page URL *@
-        <form action="/Home/Confirmation" method="get">
+        
+       <form asp-controller="Home" asp-action="Confirmation" method="post" enctype="multipart/form-data">
 
             <input type="hidden" name="ParentId" value="1" />
 
@@ -317,7 +317,7 @@
     </div>
 
     <script>
-        // 1. File Upload Logic (Existing)
+        
         document.getElementById('fileInput').onchange = function () {
             const fileName = this.files[0] ? this.files[0].name : "CLICK TO UPLOAD EVALUATION (PDF)";
             document.querySelector('.file-upload strong').innerHTML =
@@ -325,25 +325,24 @@
             document.querySelector('.file-upload').style.borderColor = "#28a745";
         };
 
-        // 2. Date of Birth Validation Logic
+        
         const dobInput = document.getElementById('ChildDob');
         const dobError = document.getElementById('dobError');
         const today = new Date();
 
-        // Calculate dates
-        // Max date (Youngest: 8 years ago)
+        
         const maxDate = new Date(today.getFullYear() - 8, today.getMonth(), today.getDate());
-        // Min date (Oldest: 15 years ago)
+        
         const minDate = new Date(today.getFullYear() - 15, today.getMonth(), today.getDate());
 
-        // Format to YYYY-MM-DD for the HTML input attributes
+        
         const formatDate = (date) => date.toISOString().split('T')[0];
 
-        // Set constraints on the input field
+        
         dobInput.setAttribute('min', formatDate(minDate));
         dobInput.setAttribute('max', formatDate(maxDate));
 
-        // Optional: Add a visual warning if they type/select an invalid date manually
+       
         dobInput.addEventListener('change', function() {
             const selectedDate = new Date(this.value);
             if (selectedDate > maxDate || selectedDate < minDate) {
@@ -355,7 +354,7 @@
             }
         });
 
-        // Prevent form submission if DOB is invalid
+        
         document.querySelector('form').onsubmit = function(e) {
             const selectedDate = new Date(dobInput.value);
             if (selectedDate > maxDate || selectedDate < minDate) {

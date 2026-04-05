@@ -61,6 +61,43 @@ namespace SchoolManagmentSystem.Controllers
             var student = _context.StudentRegistrations
                                   .FirstOrDefault(s => s.Id == studentId);
 
+            var parentId = _context.StudentRegistrations.Where(p => p.Id == studentId).Select(p => p.ParentId).FirstOrDefault();    
+            var parentEmail = _context.Parents.Where(p=> p.Id == parentId).Select(p=> p.Email).FirstOrDefault();
+
+            var registrationService = new RegistrationService(_context);
+            var document = registrationService.GetRegistration(studentId);
+
+
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+
+                document.Save(stream);
+                byte[] bytes = stream.ToArray();
+
+                var filePath = Path.Combine("wwwroot/PDFUploads", $"ProofOfRegistration_{studentId}.pdf");
+                System.IO.File.WriteAllBytes(filePath, bytes);
+
+                SmtpClient client = new SmtpClient("Smtp.gmail.com");
+                client.Port = 587;
+                client.EnableSsl = true;
+                client.Credentials = new NetworkCredential("Hybridlearnacademy05@gmail.com", "utxw xbwc dsik yysx");
+                MailAddress mailAddress = new MailAddress("Hybridlearnacademy05@gmail.com");
+                MailAddress recipientAddress = new MailAddress(parentEmail);
+                Attachment attachement = new Attachment(filePath);
+                MailMessage mailMessage = new MailMessage();
+
+                mailMessage.From = mailAddress;
+                mailMessage.To.Add(recipientAddress);
+                mailMessage.Subject = " Registration Successful!";
+                mailMessage.Body = "Your registration has been successfully completed. Please find your Proof of Registration attached.";
+                mailMessage.Attachments.Add(attachement);
+
+
+                client.SendMailAsync(mailMessage);
+
+            }
+
             if (student == null)
                 return Content("Student not found");
 
@@ -76,8 +113,7 @@ namespace SchoolManagmentSystem.Controllers
                 var registrationService = new RegistrationService(_context);
                 var document = registrationService.GetRegistration(studentId);
 
-               
-
+          
                
 
                 using (MemoryStream stream = new MemoryStream())

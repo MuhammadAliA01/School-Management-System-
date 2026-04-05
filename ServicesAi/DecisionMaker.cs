@@ -30,7 +30,7 @@ namespace SchoolManagmentSystem.ServicesAi
             Analyze both lists, find the consistent themes, and give me a final, clean list of exactly 3 agreed-upon teaching methods.";
 
             
-            string apiKey = "insertapikey";
+            string apiKey = "";
             string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
 
             var package = new { contents = new[] { new { parts = new[] { new { text = masterPrompt } } } } };

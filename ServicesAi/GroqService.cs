@@ -11,17 +11,15 @@ namespace SchoolManagmentSystem.ServicesAi
     {
         public async Task<string> GetAdvice(string level, string type, string parentComments, string medicalText)
         {
-            // 👉 PASTE YOUR FREE GROQ API KEY HERE!
-            string apiKey = "insertgroq";
+            string apiKey = "";
 
-            // Groq's web address
             string url = "https://api.groq.com/openai/v1/chat/completions";
 
             string prompt = $"I have a student with {level} and {type} autism. The parent noted: '{parentComments}'. Medical evaluation: '{medicalText}'. Give me exactly 3 short teaching methods.";
 
             var package = new
             {
-                model = "llama3-8b-8192", // We are using Meta's Llama 3 model!
+                model = "llama-3.1-8b-instant", 
                 messages = new[]
                 {
                     new { role = "user", content = prompt }

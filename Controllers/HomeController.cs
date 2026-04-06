@@ -2,14 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using SchoolManagmentSystem.Models;
-using System.Diagnostics;
+using Mscc.GenerativeAI.Types;
 using PdfSharp.Fonts;
 using PdfSharp.Snippets.Font;
-using SchoolManagmentSystem.Services;
-using System.IO;
-using System.Drawing;
 using SchoolManagmentSystem.Controllers;
+using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Services;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Security.Claims;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -27,8 +29,8 @@ namespace SchoolManagmentSystem.Controllers
 
         public IActionResult HomePage()
         {
+   
 
-            
             return View();
 
             
@@ -77,8 +79,21 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult RegForm()
         {
+
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+            var access = HttpContext.Session.GetString("AccessnoStudent");
+
+            if (access != "true")
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new {parentID = parentId });
+            }
+
+
+
             return View();
         }
 
@@ -90,6 +105,8 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         [HttpPost]
+
+        [Authorize]
         public IActionResult Confirmation(StudentRegistration model, IFormFile pdfFile)
         {
 

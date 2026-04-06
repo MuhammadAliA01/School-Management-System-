@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
 using SchoolManagmentSystem.Services;
@@ -17,10 +18,21 @@ namespace SchoolManagmentSystem.Controllers
             _context = context;
         }
 
-
+        [Authorize]
         public IActionResult Index(int studentID)
         {
+
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+            
             ViewBag.studentID = studentID;
+
+            var canAccess = HttpContext.Session.GetString("AccessnonReg");
+
+            if (canAccess != "true")
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
+            }
 
 
             return View();
@@ -33,8 +45,15 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult RegistrationConfirmation(int studentId)
         {
+            if (TempData["FormSubmitted"] == null)
+            {
+                return RedirectToAction("HomePage", "Home");
+            }
+
+
             var student = _context.StudentRegistrations
                                   .FirstOrDefault(s => s.Id == studentId);
 
@@ -63,6 +82,8 @@ namespace SchoolManagmentSystem.Controllers
 
             if (student == null)
                 return Content("Student not found");
+
+            TempData["FormSubmitted"] = true;
 
             return RedirectToAction("RegistrationConfirmation", new { studentId = studentId });
         }

@@ -22,6 +22,7 @@ namespace SchoolManagmentSystem.Controllers
         public IActionResult Index(int studentID)
         {
 
+
             var parentId = User.FindFirst("UserInternalID")?.Value;
 
             
@@ -54,8 +55,8 @@ namespace SchoolManagmentSystem.Controllers
             }
 
 
-            var student = _context.StudentRegistrations
-                                  .FirstOrDefault(s => s.Id == studentId);
+            var student = _context.Students
+                                  .FirstOrDefault(s => s.StudentId == studentId);
 
             if (student == null)
                 return Content("Student not found");
@@ -65,6 +66,18 @@ namespace SchoolManagmentSystem.Controllers
 
         public IActionResult PreviewPdf(int studentId)
         {
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+
+            var canAccess = HttpContext.Session.GetString("AccessnonReg");
+
+            if (canAccess != "true")
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
+            }
+
+
+
             var service = new RegistrationService(_context);
             var document = service.GetPreviewRegistration(studentId);
 
@@ -82,6 +95,9 @@ namespace SchoolManagmentSystem.Controllers
 
             var parentId = _context.StudentRegistrations.Where(p => p.Id == studentId).Select(p => p.ParentId).FirstOrDefault();    
             var parentEmail = _context.Parents.Where(p=> p.Id == parentId).Select(p=> p.Email).FirstOrDefault();
+
+            var parent = _context.Parents.Where(p => p.Id == parentId).Select(p => p).FirstOrDefault();
+
 
             var registrationService = new RegistrationService(_context);
             var document = registrationService.GetRegistration(studentId);
@@ -112,6 +128,7 @@ namespace SchoolManagmentSystem.Controllers
                 mailMessage.Body = "Your registration has been successfully completed. Please find your Proof of Registration attached.";
                 mailMessage.Attachments.Add(attachement);
 
+                
 
                 client.SendMailAsync(mailMessage);
 
@@ -122,12 +139,49 @@ namespace SchoolManagmentSystem.Controllers
 
             TempData["FormSubmitted"] = true;
 
-            return RedirectToAction("RegistrationConfirmation", new { studentId = studentId });
+            var studentMain = new Student
+            {
+                ParentId = student.ParentId,
+                ParentName = parent.FirstName,
+                ParentEmail = parent.Email,
+                ParentPhone = "0",
+                TeacherId = 3,
+                Street = student.Street,
+                Suburb = student.Suburb,
+                City = student.City,
+                PostalCode = student.PostalCode,
+                FullName = student.ChildName,
+                ChildDob = student.ChildDob,
+                Gender = student.Gender,
+                AutismLevel = student.AutismLevel,
+                AutismType = student.AutismType,
+                PdfPath = student.PdfPath,
+                Comments = student.Comments,
+                RegistrationDate = DateTime.Today,
+
+            };
+
+            _context.Students.Add(studentMain);
+
+            _context.StudentRegistrations.Remove(student);
+
+            _context.SaveChanges();
+
+            return RedirectToAction("RegistrationConfirmation", new { studentId = studentMain.StudentId });
         }
 
 
         public IActionResult DownloadPdf(int studentId)
         {
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+
+            var canAccess = HttpContext.Session.GetString("AccessnonReg");
+
+            if (canAccess != "true")
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
+            }
 
             try
             {

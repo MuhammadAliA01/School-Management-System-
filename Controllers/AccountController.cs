@@ -144,7 +144,8 @@ namespace SchoolManagmentSystem.Controllers
                         var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, staffUser.Username),
-                    new Claim("UserInternalID", staffUser.id.ToString())
+                    new Claim("UserInternalID", staffUser.id.ToString()),
+                    new Claim(ClaimTypes.Role, "Staff")
                 };
 
                         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -200,7 +201,10 @@ namespace SchoolManagmentSystem.Controllers
                         var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Username),
-                    new Claim("UserInternalID", user.Id.ToString())
+                    new Claim("UserInternalID", user.Id.ToString()),
+                                        new Claim(ClaimTypes.Role, "Parent")
+
+
                 };
 
                         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

@@ -34,6 +34,12 @@ namespace SchoolManagmentSystem.Controllers
         [Authorize]
         public async Task<IActionResult> ApplicationList()
         {
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+            if (User.IsInRole("Parent"))
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
+            }
             return View(await _context.EmploymentApplications.ToListAsync());
 
         }

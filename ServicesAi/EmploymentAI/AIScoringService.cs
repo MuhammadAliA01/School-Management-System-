@@ -6,7 +6,7 @@ namespace SchoolManagmentSystem.ServicesAi.EmploymentAI
 {
     public class AIScoringService
     {
-        private readonly string _apikey = "";
+        private readonly string _apikey = "AIzaSyBMtcpMmNvDmP20FmYbXp8nfElCZSsYxRI";
 
         public async Task<(int Score, string Summary)> GetSuitabilityScore(string cvText, string role)
         {

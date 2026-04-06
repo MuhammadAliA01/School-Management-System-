@@ -66,7 +66,7 @@ namespace SchoolManagmentSystem.Controllers
                     HttpContext.Session.SetString("AccessnonReg", "false");
 
                 }
-                else if (nonregstudent.feesPaid == false && nonregstudent.Status == "Verified")
+                else if (nonregstudent.feesPaid == null && nonregstudent.Status == "Verified")
                 {
                     nostudent = false;
                     studentnoVerify = false;
@@ -113,6 +113,12 @@ namespace SchoolManagmentSystem.Controllers
         [Authorize]
         public IActionResult StaffDashboard()
         {
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+            if (User.IsInRole("Parent"))
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
+            }
             return View();
         }
     }

@@ -21,6 +21,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         
+                        
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="HomePage">Home</a>
                         </li>
@@ -44,13 +45,45 @@
 
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li>
-                                @User.Identity.Name
-                            </li>
+                            
+                                @if (User.IsInRole("Staff"))
+                                {
+                                <li>
+                                    @User.Identity.Name
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                                </li>
+                                <li class="nav-item">
+                                    @{
+                                        var staffID = User.FindFirst("UserInternalID")?.Value;
+                                    }
+                                    <a href="@Url.Action("StaffDashboard", "Dashboards", new { staffID = staffID })" class="nav-link text-dark">
+                                        Dashboard
+                                    </a>
+                                    </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
-                            </li>
+                                }
+                                else if (User.IsInRole("Parent"))
+                                {
+                                <li>
+                                    @User.Identity.Name
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                                </li>
+                                <li class="nav-item">
+                                    @{
+                                        var parentId = User.FindFirst("UserInternalID")?.Value;
+                                    }
+
+                                    <a href="@Url.Action("ParentDashboard", "Dashboards", new { parentID = parentId })" class="nav-link text-dark">
+                                        Dashboard
+                                    </a>
+                                </li>
+                                }
+                            
                         }
                         else
                         {

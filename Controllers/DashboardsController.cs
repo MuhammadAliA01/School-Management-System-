@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Controllers
@@ -11,6 +12,7 @@ namespace SchoolManagmentSystem.Controllers
             _context = context;
         }
 
+        [Authorize]
         public IActionResult ParentDashboard(int parentID, StudentRegistration sr)
         {
 
@@ -44,6 +46,12 @@ namespace SchoolManagmentSystem.Controllers
                     studentNoFees = false;
                     studentNoReg = false;
                     studentRegistered = false;
+                    HttpContext.Session.SetString("AccessnoStudent", "true");
+                    HttpContext.Session.SetString("AccessnoVerify", "false");
+                    HttpContext.Session.SetString("AccessnoFees", "false");
+                    HttpContext.Session.SetString("AccessnonReg", "false");
+
+
                 }
                 else if (nonregstudent.Status == "Pending")
                 {
@@ -52,14 +60,24 @@ namespace SchoolManagmentSystem.Controllers
                     studentNoFees = false;
                     studentNoReg = false;
                     studentRegistered = false;
+                    HttpContext.Session.SetString("AccessnoVerify", "true");
+                    HttpContext.Session.SetString("AccessnoStudent", "false");
+                    HttpContext.Session.SetString("AccessnoFees", "false");
+                    HttpContext.Session.SetString("AccessnonReg", "false");
+
                 }
-                else if (nonregstudent.feesPaid == false && nonregstudent.Status == "Verified")
+                else if (nonregstudent.feesPaid == null && nonregstudent.Status == "Verified")
                 {
                     nostudent = false;
                     studentnoVerify = false;
                     studentNoFees = true;
                     studentNoReg = false;
                     studentRegistered = false;
+                    HttpContext.Session.SetString("AccessnoFees", "true");
+                    HttpContext.Session.SetString("AccessnoVerify", "false");
+                    HttpContext.Session.SetString("AccessnoStudent", "false");
+                    HttpContext.Session.SetString("AccessnonReg", "false");
+
                 }
                 else if (nonregstudent.feesPaid == true && nonregstudent.Status == "Verified")
                 {
@@ -69,6 +87,10 @@ namespace SchoolManagmentSystem.Controllers
                     studentNoReg = true;
                     studentRegistered = false;
                     ViewBag.studentID = nonregstudent.Id;
+                    HttpContext.Session.SetString("AccessnonReg", "true");
+                    HttpContext.Session.SetString("AccessnoFees", "false");
+                    HttpContext.Session.SetString("AccessnoVerify", "false");
+                    HttpContext.Session.SetString("AccessnoStudent", "false");
                 }
             }
 
@@ -88,8 +110,15 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult StaffDashboard()
         {
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+            if (User.IsInRole("Parent"))
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
+            }
             return View();
         }
     }

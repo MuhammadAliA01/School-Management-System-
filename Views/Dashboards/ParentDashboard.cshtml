@@ -3,6 +3,11 @@
 @if (ViewBag.noStudent == true)
 {
     //if parent has no application yet
+    <a href="@Url.Action("RegForm", "Home", new { parentID = ViewBag.ParentID })" class="btn btn-primary">
+        Apply for Enrollment
+    </a>
+
+
 }
 else if (ViewBag.studentNoVerify == true)
 {
@@ -17,11 +22,18 @@ else if (ViewBag.studentNoReg == true)
     //if fees are paid but student has not been registered
 
     <a href="@Url.Action("Index", "StudentEnrolment", new { studentID = ViewBag.studentID })" class="btn btn-primary">
-Register    </a>
+        Register    </a>
 }
 else if (ViewBag.studentRegistered == true)
 {
     //if student is registered
+}
+else
+{
+    //if application is rejected
+    <a href="@Url.Action("RegForm", "Home", new { parentID = ViewBag.ParentID })" class="btn btn-primary">
+        Apply for Enrollment
+    </a>
 }
 
 

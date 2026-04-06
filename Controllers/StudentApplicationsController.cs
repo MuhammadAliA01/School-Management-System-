@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
 using SchoolManagmentSystem.Services;
@@ -18,8 +19,14 @@ namespace SchoolManagmentSystem.Controllers
             _context = context;
         }
 
+        [Authorize]
         public async Task<IActionResult> StudentList()
         {
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+            if (User.IsInRole("Parent")){
+                return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
+            }
             return View(await _context.StudentRegistrations.ToListAsync());
         }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Controllers
@@ -12,12 +13,14 @@ namespace SchoolManagmentSystem.Controllers
             Context = context;
         }
 
+        [Authorize]
         public IActionResult Dashboard()
         {
             var allStudents = Context.Students.ToList();
             return View(allStudents); 
         }
 
+        [Authorize]
         public async Task<IActionResult> GenerateTeachingMethods(int id)
         {
             var student = Context.Students.FirstOrDefault(s => s.StudentId == id);

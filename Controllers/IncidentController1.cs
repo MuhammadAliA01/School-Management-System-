@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
@@ -17,6 +18,7 @@ namespace SchoolManagmentSystem.Controllers
             _context = context;
         }
 
+        [Authorize]
         public IActionResult Index(string? searchString)
         {
             var query = _context.Incidents
@@ -41,6 +43,7 @@ namespace SchoolManagmentSystem.Controllers
             return View("ReportView", groupedIncidents);
         }
 
+        [Authorize]
         public IActionResult Create()
         {
             var model = new Incident { Date = DateTime.Today };

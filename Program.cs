@@ -15,6 +15,9 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache();
+    
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -53,7 +56,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 
-
+app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=HomePage}/{id?}");

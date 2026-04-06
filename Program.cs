@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
+using Stripe; 
 
 var builder = WebApplication.CreateBuilder(args);
+
+StripeConfiguration.ApiKey = "";
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");

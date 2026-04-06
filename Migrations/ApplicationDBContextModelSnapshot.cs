@@ -342,6 +342,9 @@ namespace SchoolManagmentSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StripeSessionId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Suburb")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

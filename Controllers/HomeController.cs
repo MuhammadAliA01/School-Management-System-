@@ -105,19 +105,83 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         [HttpPost]
-
         [Authorize]
-        public IActionResult Confirmation(StudentRegistration model, IFormFile pdfFile)
+        public async Task<IActionResult> Confirmation(StudentRegistration model, IFormFile pdfFile)
         {
 
-            if (pdfFile != null && pdfFile.Length > 0)
+            var userIdClaim = User.FindFirst("UserInternalID")?.Value;
+            if (int.TryParse(userIdClaim, out int parentId))
             {
-
+                model.ParentId = parentId;
             }
 
 
-            return View(model);
+            model.ParentName = string.IsNullOrWhiteSpace(model.ParentName) ? "Not Provided" : model.ParentName;
+            model.ParentEmail = string.IsNullOrWhiteSpace(model.ParentEmail) ? "notprovided@example.com" : model.ParentEmail;
+            model.ParentPhone = string.IsNullOrWhiteSpace(model.ParentPhone) ? "000-000-0000" : model.ParentPhone;
+
+            model.Street = string.IsNullOrWhiteSpace(model.Street) ? "N/A" : model.Street;
+            model.Suburb = string.IsNullOrWhiteSpace(model.Suburb) ? "N/A" : model.Suburb;
+            model.City = string.IsNullOrWhiteSpace(model.City) ? "N/A" : model.City;
+            model.PostalCode = string.IsNullOrWhiteSpace(model.PostalCode) ? "0000" : model.PostalCode;
+
+            model.ChildName = string.IsNullOrWhiteSpace(model.ChildName) ? "Unknown Student" : model.ChildName;
+            model.Gender = string.IsNullOrWhiteSpace(model.Gender) ? "Not Specified" : model.Gender;
+            model.AutismLevel = string.IsNullOrWhiteSpace(model.AutismLevel) ? "Pending Assessment" : model.AutismLevel;
+            model.AutismType = string.IsNullOrWhiteSpace(model.AutismType) ? "Pending Assessment" : model.AutismType;
+            model.Comments = string.IsNullOrWhiteSpace(model.Comments) ? "No comments" : model.Comments;
+
+
+            if (model.ChildDob == default)
+            {
+                model.ChildDob = new DateTime(2000, 1, 1);
+            }
+
+
+            if (pdfFile != null && pdfFile.Length > 0)
+            {
+                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + pdfFile.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await pdfFile.CopyToAsync(fileStream);
+                }
+                model.PdfPath = "/uploads/" + uniqueFileName;
+            }
+            else
+            {
+                model.PdfPath = "No-File-Uploaded.pdf";
+            }
+
+
+            model.RegistrationDate = DateTime.Now;
+            model.Status = "Pending";
+            model.feesPaid = false;
+
+
+            try
+            {
+
+                ModelState.Clear();
+
+                _context.StudentRegistrations.Add(model);
+                await _context.SaveChangesAsync();
+
+                return View("Confirmation", model);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError($"Database Save Error: {ex.Message}");
+                return Content($"Error saving to database: {ex.InnerException?.Message ?? ex.Message}");
+            }
         }
+
+
 
 
 

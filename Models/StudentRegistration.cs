@@ -50,6 +50,7 @@ namespace SchoolManagmentSystem.Models
         public string? Status { get; set; }
 
         public bool? feesPaid { get; set; }
+        public string? StripeSessionId { get; set; }
 
     }
 }

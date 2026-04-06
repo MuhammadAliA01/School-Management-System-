@@ -6,7 +6,7 @@ using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
-StripeConfiguration.ApiKey = "";
+StripeConfiguration.ApiKey = "sk_test_51TJFAXDIXUjRCxCOU2wcbElHd3Flfgdskyg3tm55S6wPQ526nd3SnQyJdOSn4czh2aYmViwmA9zUtHjvuHb9JD7s00fw76O3NH";
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");

@@ -11,22 +11,37 @@
 }
 else if (ViewBag.studentNoVerify == true)
 {
-    //if application has not been verified
+    <h4 class="text-warning">Application Under Review </h4>
+    <p>Please wait while the administration verifies your application.</p>
 }
 else if (ViewBag.studentNoFees == true)
 {
-    //if fees have not been paid
+    <h4 class="text-success">Application Verified! 🎉</h4>
+    <p>Your child's application is verified. Please pay the deposit to secure the spot.</p>
+   
+    @if (Model != null)
+    {
+        <form asp-action="PayDeposit" asp-controller="Payments" method="post" class="mt-4">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-success btn-lg shadow-sm">
+                Pay Deposit (R5000) ->
+            </button>
+        </form>
+    }
 }
 else if (ViewBag.studentNoReg == true)
 {
     //if fees are paid but student has not been registered
-
-    <a href="@Url.Action("Index", "StudentEnrolment", new { parentID = ViewBag.parentID })" class="btn btn-primary">
-        Register    </a>
+    <h3 class="text-success">Payment Received! </h3>
+    <p>Please proceed to complete the final registration steps.</p>
+    <a href="@Url.Action("Enrol", "StudentEnrolment", new { studentID = ViewBag.studentID })" class="btn btn-primary mt-3">
+        Register
+    </a>
 }
 else if (ViewBag.studentRegistered == true)
 {
     //if student is registered
+    <h4 class="text-success">Fully registered </h4>
 }
 else
 {

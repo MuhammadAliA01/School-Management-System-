@@ -204,6 +204,9 @@ namespace SchoolManagmentSystem.Migrations
                     b.Property<string>("AiTeachingPlan")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("AutismLevel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -266,6 +269,9 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.Property<int>("TeacherId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("TotalFees")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("StudentId");
 

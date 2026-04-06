@@ -41,5 +41,16 @@ namespace SchoolManagmentSystem.Models
 
         public string? AiTeachingPlan { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal TotalFees { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal AmountPaid { get; set; }
+
+        public decimal BalanceDue
+        {
+            get { return TotalFees - AmountPaid; }
+        }
+
     }
 }

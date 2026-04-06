@@ -66,7 +66,7 @@ namespace SchoolManagmentSystem.Controllers
                     HttpContext.Session.SetString("AccessnonReg", "false");
 
                 }
-                else if (nonregstudent.feesPaid == null && nonregstudent.Status == "Verified")
+                else if (nonregstudent.feesPaid == false && nonregstudent.Status == "Verified")
                 {
                     nostudent = false;
                     studentnoVerify = false;
@@ -93,21 +93,13 @@ namespace SchoolManagmentSystem.Controllers
                     HttpContext.Session.SetString("AccessnoStudent", "false");
                 }
             }
-
-
             ViewBag.noStudent = nostudent;
             ViewBag.studentNoVerify = studentnoVerify;
             ViewBag.studentNoFees = studentNoFees;
             ViewBag.studentNoReg = studentNoReg;
             ViewBag.studentRegistered = studentRegistered;
             ViewBag.ParentID = parentID;
-
-
-
-
-
-
-            return View();
+            return View(nonregstudent);
         }
 
         [Authorize]

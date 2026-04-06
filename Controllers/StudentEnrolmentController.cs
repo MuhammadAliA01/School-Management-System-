@@ -158,6 +158,8 @@ namespace SchoolManagmentSystem.Controllers
                 PdfPath = student.PdfPath,
                 Comments = student.Comments,
                 RegistrationDate = DateTime.Today,
+                TotalFees = 60000,
+                AmountPaid = 5000
 
             };
 

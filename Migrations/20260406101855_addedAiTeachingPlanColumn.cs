@@ -10,11 +10,7 @@ namespace SchoolManagmentSystem.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "AiTeachingPlan",
-                table: "Students",
-                type: "nvarchar(max)",
-                nullable: true);
+            
         }
 
         /// <inheritdoc />

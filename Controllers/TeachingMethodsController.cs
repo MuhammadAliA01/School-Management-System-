@@ -14,15 +14,23 @@ namespace SchoolManagmentSystem.Controllers
 
         public IActionResult Dashboard()
         {
-            var allStudents = Context.StudentRegistrations.ToList();
+            var allStudents = Context.Students.ToList();
             return View(allStudents); 
         }
 
         public async Task<IActionResult> GenerateTeachingMethods(int id)
         {
-            var student = Context.StudentRegistrations.FirstOrDefault(s => s.Id == id);
+            var student = Context.Students.FirstOrDefault(s => s.StudentId == id);
 
             if (student == null) return Content("Error: Student not found!");
+
+            if (!string.IsNullOrEmpty(student.AiTeachingPlan))
+            {
+                // YES! Skip the AI entirely, use the saved plan, and load the page instantly!
+                ViewBag.StudentName = student.FullName;
+                ViewBag.AiAdvice = student.AiTeachingPlan;
+                return View();
+            }
 
             var consensusEngine = new SchoolManagmentSystem.ServicesAi.DecisionMaker();
 
@@ -41,7 +49,9 @@ namespace SchoolManagmentSystem.Controllers
                 medicalText
             );
 
-            ViewBag.StudentName = student.ChildName;
+            student.AiTeachingPlan = answer;
+            Context.SaveChanges();
+            ViewBag.StudentName = student.FullName;
             ViewBag.AiAdvice = answer;
             return View();
         }

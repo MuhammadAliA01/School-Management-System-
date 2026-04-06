@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SchoolManagmentSystem.Models.StudentRegistration>
+﻿@model IEnumerable<SchoolManagmentSystem.Models.Student>
 
 <div class="container mt-5">
     <h2 class="mb-4"> Teacher AI Dashboard</h2>
@@ -18,12 +18,12 @@
                     @foreach (var student in Model)
                     {
                         <tr>
-                            <td class="ps-4"><strong>@student.ChildName</strong></td>
+                            <td class="ps-4"><strong>@student.FullName</strong></td>
                             <td><span class="badge bg-info text-dark">@student.AutismLevel</span></td>
                             <td>@student.AutismType</td>
                             <td class="text-end pe-4">
-                                <a asp-controller="TeachingMethods" asp-action="GenerateTeachingMethods" asp-route-id="@student.Id" class="btn btn-primary btn-sm shadow-sm">
-                                     Generate AI Plan
+                                <a asp-controller="TeachingMethods" asp-action="GenerateTeachingMethods" asp-route-id="@student.StudentId" class="btn btn-primary btn-sm shadow-sm">
+                                    Generate AI Plan
                                 </a>
                             </td>
                         </tr>

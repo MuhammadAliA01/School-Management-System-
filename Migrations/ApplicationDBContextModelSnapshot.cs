@@ -195,6 +195,9 @@ namespace SchoolManagmentSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
 
+                    b.Property<string>("AiTeachingPlan")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AutismLevel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

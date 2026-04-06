@@ -38,5 +38,6 @@ namespace SchoolManagmentSystem.Models
         public string Comments { get; set; }
 
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
+        public string? AiTeachingPlan { get; set; }
     }
 }

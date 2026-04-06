@@ -11,6 +11,7 @@
                 text-decoration: none;
                 border-radius: 5px;
                 text-align: center;
+                margin-top: 17px;
             }
 
             body {
@@ -31,16 +32,19 @@
             }
 
             .Details {
-               font-family:"Britannic";
-               font-size: 20px;
-               width: fit-content;      
-               margin: 0 auto;           
-               text-align: center;      
-               padding-top: 50px;
-              
-               
+                font-family: "Gill Sans MT";
+                font-size: 20px;
+                width: fit-content;
+                margin: 0 auto;
+                text-align: center;
+                padding-top: 50px;
             }
 
+            .POR{
+               align-items:center;
+               font-family: "Gill Sans MT";
+            
+            }
             
 
     </style>
@@ -50,7 +54,7 @@
 <body>
     <div class=" Details">
 
-    <h2 class="Heading1">🎉 Registration Successful!</h2>
+    <h2 class="Heading1"> Registration Successful!</h2>
    
     <p><strong>Student Name:</strong> @Model.ChildName</p>
     <p><strong>Date of Birth:</strong> @Model.ChildDob.ToString("yyyy-MM-dd")</p>
@@ -58,7 +62,7 @@
     <hr style="border: 0; border-top: 1px solid gray; width: 100%;">
    
 
-    <h3><strong>📚 Assigned Classes</strong></h3>
+    <h3><strong>📚 Assigned Class</strong></h3>
     <p>Class 1A</p>
     
     <h3><strong>📅 Term Start Date</strong></h3>
@@ -66,8 +70,10 @@
 
     <br />
 
+        <p class="POR">Your registration is complete. A copy of your Proof of Registration has been sent to your email.<br> You can also download it below: <br /></p>
+
     <a href="/StudentEnrolment/DownloadPdf?studentId=@Model.Id" class="btn">
-        Download Proof of Registration
+        Download Your Proof of Registration
     </a>
     </div>
 </body>

@@ -11,7 +11,7 @@ namespace SchoolManagmentSystem.ServicesAi
     {
         public async Task<string> GetAdvice(string level, string type, string parentComments, string medicalText)
         {
-            string apiKey = "";
+            string apiKey = "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";
 
             string url = "https://api.groq.com/openai/v1/chat/completions";
 

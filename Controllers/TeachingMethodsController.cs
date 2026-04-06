@@ -7,10 +7,13 @@ namespace SchoolManagmentSystem.Controllers
     public class TeachingMethodsController : Controller
     {
         private readonly ApplicationDBContext Context;
+        private readonly IWebHostEnvironment _env; 
 
-        public TeachingMethodsController(ApplicationDBContext context)
+        public TeachingMethodsController(ApplicationDBContext context, IWebHostEnvironment env)
         {
+            
             Context = context;
+            _env = env;
         }
 
         [Authorize]
@@ -35,10 +38,14 @@ namespace SchoolManagmentSystem.Controllers
                 return View();
             }
 
+            string folderPath = _env.WebRootPath;
+
+            string physicalPath = Path.Combine(folderPath, student.PdfPath.TrimStart('/'));
+
             var consensusEngine = new SchoolManagmentSystem.ServicesAi.DecisionMaker();
 
             string medicalText = "";
-            using (UglyToad.PdfPig.PdfDocument document = UglyToad.PdfPig.PdfDocument.Open(student.PdfPath))
+            using (UglyToad.PdfPig.PdfDocument document = UglyToad.PdfPig.PdfDocument.Open(physicalPath))
             {
                 foreach (UglyToad.PdfPig.Content.Page page in document.GetPages())
                 {

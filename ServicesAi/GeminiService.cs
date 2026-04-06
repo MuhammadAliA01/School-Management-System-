@@ -12,7 +12,7 @@ namespace SchoolManagmentSystem.ServicesAi
 
         public async Task<string> GetAdvice(string level, string type, string parentComments, string medicalText)
         {
-            string apiKey = "";
+            string apiKey = "AIzaSyBkyYXI2R303zAbWVzrQ8frurKAoM70gv4";
             string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
 
             string prompt = $"I have a student with {level} and {type} autism. The parent noted: '{parentComments}'. Here is their medical evaluation: '{medicalText}'. Based on this exact profile, give me exactly 3 short teaching methods.";

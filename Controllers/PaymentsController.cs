@@ -21,8 +21,7 @@ namespace SchoolManagmentSystem.Controllers
             var registration = await _context.StudentRegistrations.FindAsync(id);
             if (registration == null) return BadRequest("Application not found.");
 
-            var domain = "https://localhost:44302/";
-
+            var domain = $"{Request.Scheme}://{Request.Host}/";
             var options = new Stripe.Checkout.SessionCreateOptions
             {
                 LineItems = new List<Stripe.Checkout.SessionLineItemOptions>

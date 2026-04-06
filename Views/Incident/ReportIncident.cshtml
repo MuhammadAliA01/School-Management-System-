@@ -135,9 +135,7 @@
         <form asp-action="Create" method="post" id="incidentForm">
             @Html.AntiForgeryToken()
 
-            <input type="hidden" asp-for="TeacherName" id="HiddenTeacherName" />
-            <input type="hidden" asp-for="StudentName" id="HiddenStudentName" />
-            <input type="hidden" asp-for="StudentId" id="StudentId" />
+            
 
             <div class="row">
                 <div class="col-md-6 pr-md-4">
@@ -152,7 +150,7 @@
 
                     <div class="form-group mb-4">
                         <label>Student Involved</label>
-                        <select id="StudentDropdown" class="form-control" required>
+                        <select asp-for="StudentId" id="StudentDropdown" class="form-control" required>
                             <option value="">Select Student</option>
                         </select>
                     </div>
@@ -203,44 +201,46 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        
-    function loadStudents(teacherId, selectedStudentId = null) {
-    if (!teacherId) return;
+         var initialStudentId = $('#StudentId').val();
 
-    $('#StudentDropdown').empty().append('<option>Loading Students...</option>');
-            
-    $.getJSON('/Incident/GetStudentsByTeacher', { teacherId: teacherId }, function (data) {
-    $('#StudentDropdown').empty().append('<option value="">Select Student</option>');
-    $.each(data, function (i, item) {
-    var isSelected = (selectedStudentId && item.id == selectedStudentId) ? 'selected' : '';
-    $('#StudentDropdown').append('<option value="' + item.id + '" ' + isSelected + '>' + item.name + '</option>');
-    });
+    loadStudents(initialStudentId); 
 
-    if(selectedStudentId) {
-    $('#HiddenStudentName').val($("#StudentDropdown option:selected").text());
-    }
-    });
+        function loadStudents(selectedStudentId = null) {
+
+        $('#StudentDropdown').empty().append('<option>Loading Students...</option>');
+
+        $.getJSON('/Incident/GetAllStudents', function (data) {
+
+            $('#StudentDropdown').empty().append('<option value="">Select Student</option>');
+
+            $.each(data, function (i, item) {
+                var isSelected = (selectedStudentId && item.id == selectedStudentId) ? 'selected' : '';
+                $('#StudentDropdown').append('<option value="' + item.id + '" ' + isSelected + '>' + item.name + '</option>');
+            });
+
+            if (selectedStudentId) {
+                $('#HiddenStudentName').val($("#StudentDropdown option:selected").text());
+            }
+        });
     }
 
     $('#TeacherSelect').change(function () {
     var tId = $(this).val();
     var tName = $("#TeacherSelect option:selected").text();
     $('#HiddenTeacherName').val(tName);
-    loadStudents(tId);
+    loadStudents();
     });
 
     $('#StudentDropdown').on('change', function () {
     var sId = $(this).val();
     var sName = $("#StudentDropdown option:selected").text();
-    $('#StudentId').val(sId);
     $('#HiddenStudentName').val(sName);
     });
 
-    var initialTeacherId = $('#TeacherSelect').val();
     var initialStudentId = $('#StudentId').val();
 
     if (initialTeacherId) {
-    loadStudents(initialTeacherId, initialStudentId);
+    loadStudents(initialStudentId);
     }
     });
 </script>

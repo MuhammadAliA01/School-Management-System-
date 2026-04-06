@@ -197,7 +197,7 @@
                 <span style="opacity:0.6; font-size:0.75rem;">@teacherGroup.Count() Total Reports</span>
             </div>
 
-            @foreach (var studentGroup in teacherGroup.GroupBy(i => i.Student?.FullName ?? "Unknown Student"))
+            @foreach (var studentGroup in teacherGroup.GroupBy(i => i.StudentName ?? "Unknown Student"))
             {
                 <div class="student-sub-header">
                     <i class="fas fa-child mr-2"></i> Student: @studentGroup.Key

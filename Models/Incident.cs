@@ -15,10 +15,9 @@ namespace SchoolManagmentSystem.Models
         [Required(ErrorMessage = "Please select an assigned teacher.")]
         public int TeacherId { get; set; }
 
-        [NotMapped]
         public string? TeacherName { get; set; }
 
-        [NotMapped]
+        
         public string? StudentName { get; set; }
 
         [Required(ErrorMessage = "Please select the date.")]

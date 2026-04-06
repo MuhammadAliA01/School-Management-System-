@@ -66,7 +66,7 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("EmploymentApplications");
+                    b.ToTable("EmploymentApplications", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Incident", b =>
@@ -100,7 +100,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Incidents");
+                    b.ToTable("Incidents", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Parent", b =>
@@ -146,7 +146,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Parents");
+                    b.ToTable("Parents", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Staff", b =>
@@ -190,7 +190,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Staffs");
+                    b.ToTable("Staffs", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>
@@ -271,7 +271,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.StudentRegistration", b =>
@@ -353,7 +353,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("StudentRegistrations");
+                    b.ToTable("StudentRegistrations", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Teacher", b =>
@@ -369,7 +369,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasKey("TeacherId");
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Incident", b =>

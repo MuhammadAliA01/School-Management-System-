@@ -21,22 +21,17 @@ namespace SchoolManagmentSystem.Controllers
         [Authorize]
         public IActionResult Index(string? searchString)
         {
-            var query = _context.Incidents
-                .Include(i => i.Teacher)
-                .Include(i => i.Student)
-                .AsNoTracking()
-                .AsQueryable();
+            var query = _context.Incidents.AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
-                // We use the ! operator to tell the compiler the Student and FullName are not null
-                query = query.Where(s => s.Student != null && s.Student!.FullName!.Contains(searchString));
+                query = query.Where(i => i.StudentName != null && i.StudentName.Contains(searchString));
             }
 
             var groupedIncidents = query
                 .OrderByDescending(i => i.Date)
                 .ToList()
-                .GroupBy(i => i.Teacher?.Name ?? "General Staff")
+                .GroupBy(i => i.TeacherName ?? "General Staff")
                 .ToList();
 
             ViewData["CurrentFilter"] = searchString;
@@ -47,20 +42,22 @@ namespace SchoolManagmentSystem.Controllers
         public IActionResult Create()
         {
             var model = new Incident { Date = DateTime.Today };
-            var teachers = _context.Teachers.OrderBy(t => t.Name).ToList();
-            ViewBag.Teachers = new SelectList(teachers, "TeacherId", "Name");
+            var teachers = _context.Staffs.OrderBy(t => t.FirstName).Where(t => t.Role == "Teacher").ToList();
+            ViewBag.Teachers = new SelectList(teachers, "id", "FirstName");
             return View("ReportIncident", model);
         }
 
         [HttpGet]
-        public JsonResult GetStudentsByTeacher(int teacherId)
+        public JsonResult GetAllStudents()
         {
-            var roster = _context.Students
-                .Where(s => s.TeacherId == teacherId)
-                .OrderBy(s => s.FullName)
-                .Select(s => new { id = s.StudentId, name = s.FullName })
-                .ToList();
-            return Json(roster);
+            var students = _context.Students
+        .Select(s => new {
+            id = s.StudentId,
+            name = s.FullName
+        })
+        .ToList();
+
+            return Json(students);
         }
 
         [HttpPost]
@@ -71,10 +68,20 @@ namespace SchoolManagmentSystem.Controllers
             {
                 try
                 {
+                    model.StudentName = _context.Students
+   .Where(s => s.StudentId == model.StudentId)
+   .Select(s => s.FullName)
+   .FirstOrDefault();
+
+                    model.TeacherName = _context.Staffs
+                        .Where(t => t.id == model.TeacherId)
+                        .Select(t => t.FirstName)
+                        .FirstOrDefault();
                     _context.Incidents.Add(model);
                     _context.SaveChanges();
                     TempData["AlertMessage"] = "Incident logged successfully.";
                     TempData["AlertType"] = "success";
+                   
                     return RedirectToAction("Index");
                 }
                 catch
@@ -84,8 +91,8 @@ namespace SchoolManagmentSystem.Controllers
                 }
             }
 
-           var teachers = _context.Teachers.OrderBy(t => t.Name).ToList();
-           ViewBag.Teachers = new SelectList(teachers, "TeacherId", "Name");
+            var teachers = _context.Staffs.OrderBy(t => t.FirstName).Where(t => t.Role == "Teacher").ToList();
+            ViewBag.Teachers = new SelectList(teachers, "id", "FirstName");
             return View("ReportIncident", model);
         }
 

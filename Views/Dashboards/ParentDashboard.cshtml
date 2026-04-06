@@ -21,7 +21,7 @@ else if (ViewBag.studentNoReg == true)
 {
     //if fees are paid but student has not been registered
 
-    <a href="@Url.Action("Index", "StudentEnrolment", new { studentID = ViewBag.studentID })" class="btn btn-primary">
+    <a href="@Url.Action("Index", "StudentEnrolment", new { parentID = ViewBag.parentID })" class="btn btn-primary">
         Register    </a>
 }
 else if (ViewBag.studentRegistered == true)

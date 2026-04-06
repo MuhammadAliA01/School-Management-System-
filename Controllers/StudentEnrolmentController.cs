@@ -19,14 +19,25 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         [Authorize]
-        public IActionResult Index(int studentID)
+        public IActionResult Index(int parentID)
         {
 
 
             var parentId = User.FindFirst("UserInternalID")?.Value;
 
-            
-            ViewBag.studentID = studentID;
+            if (!int.TryParse(parentId, out int parentIdint))
+            {
+                return Content("Invalid parent ID");
+            }
+
+            var nonregStudent = _context.StudentRegistrations.Where(n => n.ParentId == parentIdint).Select(n => n.Id).FirstOrDefault();
+            var student = _context.Students.Where(n => n.ParentId == parentIdint).Select(n => n.StudentId).FirstOrDefault();
+
+
+
+
+            ViewBag.nonRegstudentID = nonregStudent;
+            ViewBag.studentID = student;
 
             var canAccess = HttpContext.Session.GetString("AccessnonReg");
 
@@ -98,9 +109,36 @@ namespace SchoolManagmentSystem.Controllers
 
             var parent = _context.Parents.Where(p => p.Id == parentId).Select(p => p).FirstOrDefault();
 
+            var studentMain = new Student
+            {
+                ParentId = student.ParentId,
+                ParentName = parent.FirstName,
+                ParentEmail = parentEmail,
+                ParentPhone = "0",
+                TeacherId = 3,
+                Street = student.Street,
+                Suburb = student.Suburb,
+                City = student.City,
+                PostalCode = student.PostalCode,
+                FullName = student.ChildName,
+                ChildDob = student.ChildDob,
+                Gender = student.Gender,
+                AutismLevel = student.AutismLevel,
+                AutismType = student.AutismType,
+                PdfPath = student.PdfPath,
+                Comments = student.Comments,
+                RegistrationDate = DateTime.Today,
+
+            };
+
+            _context.Students.Add(studentMain);
+
+            _context.StudentRegistrations.Remove(student);
+
+            _context.SaveChanges();
 
             var registrationService = new RegistrationService(_context);
-            var document = registrationService.GetRegistration(studentId);
+            var document = registrationService.GetRegistration(studentMain.StudentId);
 
 
 
@@ -139,33 +177,8 @@ namespace SchoolManagmentSystem.Controllers
 
             TempData["FormSubmitted"] = true;
 
-            var studentMain = new Student
-            {
-                ParentId = student.ParentId,
-                ParentName = parent.FirstName,
-                ParentEmail = parent.Email,
-                ParentPhone = "0",
-                TeacherId = 3,
-                Street = student.Street,
-                Suburb = student.Suburb,
-                City = student.City,
-                PostalCode = student.PostalCode,
-                FullName = student.ChildName,
-                ChildDob = student.ChildDob,
-                Gender = student.Gender,
-                AutismLevel = student.AutismLevel,
-                AutismType = student.AutismType,
-                PdfPath = student.PdfPath,
-                Comments = student.Comments,
-                RegistrationDate = DateTime.Today,
+                
 
-            };
-
-            _context.Students.Add(studentMain);
-
-            _context.StudentRegistrations.Remove(student);
-
-            _context.SaveChanges();
 
             return RedirectToAction("RegistrationConfirmation", new { studentId = studentMain.StudentId });
         }
@@ -175,10 +188,14 @@ namespace SchoolManagmentSystem.Controllers
         {
             var parentId = User.FindFirst("UserInternalID")?.Value;
 
+            if (!int.TryParse(parentId, out int parentIdint))
+            {
+                return Content("Invalid parent ID");
+            }
 
-            var canAccess = HttpContext.Session.GetString("AccessnonReg");
+            var canAccess = _context.Students.Where(s => s.ParentId == parentIdint).Select(s => s.StudentId).FirstOrDefault();
 
-            if (canAccess != "true")
+            if (canAccess == null )
             {
                 return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
             }

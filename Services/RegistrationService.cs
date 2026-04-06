@@ -55,7 +55,7 @@ namespace SchoolManagmentSystem.Services
             paragraph.Format.Alignment = ParagraphAlignment.Center;
 
             paragraph = section.AddParagraph();
-            paragraph.AddText("Please review the information below carefully and ensure all details are correct before proceeding with enrolment.");
+            paragraph.AddText("Please review the information below carefully and ensure all details are correct before proceeding with registration.");
             paragraph.Format.SpaceAfter = 15;
             paragraph.Format.Alignment = ParagraphAlignment.Center;
 
@@ -201,8 +201,8 @@ namespace SchoolManagmentSystem.Services
             
 
             // Fetch student from DB
-            var student = _context.StudentRegistrations
-                                  .FirstOrDefault(s => s.Id == studentId); //hardcoded 2 for testing purposes. Replace with "studentId"
+            var student = _context.Students
+                                  .FirstOrDefault(s => s.StudentId == studentId); 
 
             if (student == null)
                 throw new Exception("Student not found");
@@ -217,7 +217,7 @@ namespace SchoolManagmentSystem.Services
         }
 
         
-        private void BuildDocument(Document document, StudentRegistration student)
+        private void BuildDocument(Document document, Student student)
         {
          
 
@@ -263,7 +263,7 @@ namespace SchoolManagmentSystem.Services
             paragraph.AddLineBreak();
 
             paragraph.AddFormattedText("Student Name: ", TextFormat.Bold);
-            var studentName = paragraph.AddFormattedText(student.ChildName);
+            var studentName = paragraph.AddFormattedText(student.FullName);
             studentName.Bold = false;
             paragraph.AddLineBreak();
 

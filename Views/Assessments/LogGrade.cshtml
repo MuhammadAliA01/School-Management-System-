@@ -1,0 +1,43 @@
+﻿@model SchoolManagmentSystem.Models.StudentAssessment
+
+<div class="container mt-5">
+    <div class="card shadow p-4" style="max-width: 600px; margin: auto; border-radius: 15px;">
+        <h2 class="text-center text-primary mb-4">Log Student Grade</h2>
+
+        <form asp-action="LogGrade" method="post">
+            <input type="hidden" asp-for="StudentId" value="@ViewBag.StudentId" />
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Select Subject</label>
+                <select asp-for="SubjectName" class="form-select" required>
+                    <option value="">-- Choose a Subject --</option>
+                    <option value="Creative Development">Creative Development</option>
+                    <option value="Oral skills and Language">Oral skills and Language</option>
+                    <option value="Personal Independence">Personal Independence</option>
+                    <option value="Basic Concepts">Basic Concepts</option>
+                    <option value="Physical and Social">Physical and Social Development</option>
+                    <option value="Social Skills">Social Skills</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Specific Task Assessed</label>
+                <input asp-for="TaskName" class="form-control" placeholder="e.g., Hand washing, Toilet Training..." required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Score (Out of 10)</label>
+                <input asp-for="Score" type="number" min="0" max="10" class="form-control" required />
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">Teacher Comments</label>
+                <textarea asp-for="TeacherComments" class="form-control" rows="3" placeholder="Add context on how the student performed today..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-bold" style="border-radius: 10px;">
+                Save Grade
+            </button>
+        </form>
+    </div>
+</div>

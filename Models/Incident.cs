@@ -37,6 +37,11 @@ namespace SchoolManagmentSystem.Models
 
         [ForeignKey("TeacherId")]
         public virtual Teacher? Teacher { get; set; }
+
+        public int? AISeverity { get; set; }
+        public string? AIImpact { get; set; }
+        public string? AIEvaluation { get; set; }
+        public string? AIAdvice { get; set; }
     }
 }
 

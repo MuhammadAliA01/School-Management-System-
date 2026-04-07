@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.ServicesAi.IncidentAI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,18 @@ namespace SchoolManagmentSystem.Controllers
             return View("ReportView", groupedIncidents);
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var incident = await _context.Incidents.FindAsync(id);
+            if (incident == null) return NotFound();
+
+            var service = new IncidentAnalysisService();
+            var analysis = await service.AnalyzeSingleIncidentAsync(incident);
+
+            ViewBag.AIAnalysis = analysis;
+            return View(incident);
+        }
+
         [Authorize]
         public IActionResult Create()
         {
@@ -62,36 +75,57 @@ namespace SchoolManagmentSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Incident model)
+        public async Task<IActionResult> Create(Incident model) // Change to async Task
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // 1. Fetch names as you were doing
                     model.StudentName = _context.Students
-   .Where(s => s.StudentId == model.StudentId)
-   .Select(s => s.FullName)
-   .FirstOrDefault();
+                        .Where(s => s.StudentId == model.StudentId)
+                        .Select(s => s.FullName)
+                        .FirstOrDefault();
 
                     model.TeacherName = _context.Staffs
                         .Where(t => t.id == model.TeacherId)
                         .Select(t => t.FirstName)
                         .FirstOrDefault();
+
+                    // 2. TRIGGER THE AI ANALYSIS
+                    // We do this BEFORE saving so the analysis is stored with the record
+                    var aiService = new IncidentAnalysisService();
+                    var analysis = await aiService.AnalyzeSingleIncidentAsync(model);
+
+                    // 3. Map the AI results to your model
+                    // Make sure these columns exist in your Incidents table!
+                    model.AISeverity = analysis.SeverityLevel;
+                    model.AIImpact = analysis.Impact;
+                    model.AIEvaluation = analysis.ActionEvaluation;
+                    model.AIAdvice = analysis.ProfessionalAdvice;
+
+                    // 4. Save everything
                     _context.Incidents.Add(model);
-                    _context.SaveChanges();
-                    TempData["AlertMessage"] = "Incident logged successfully.";
+                    await _context.SaveChangesAsync(); // Use Async version
+
+                    TempData["AlertMessage"] = "Incident logged and AI analyzed successfully.";
                     TempData["AlertType"] = "success";
-                   
+
                     return RedirectToAction("Index");
                 }
-                catch
+                catch (Exception ex)
                 {
+                    // Log ex.Message here to debug if AI fails
                     TempData["AlertMessage"] = "An error occurred while saving.";
                     TempData["AlertType"] = "danger";
                 }
             }
 
-            var teachers = _context.Staffs.OrderBy(t => t.FirstName).Where(t => t.Role == "Teacher").ToList();
+            // If we got here, something failed; reload the teacher list for the view
+            var teachers = _context.Staffs
+                .OrderBy(t => t.FirstName)
+                .Where(t => t.Role == "Teacher")
+                .ToList();
             ViewBag.Teachers = new SelectList(teachers, "id", "FirstName");
             return View("ReportIncident", model);
         }

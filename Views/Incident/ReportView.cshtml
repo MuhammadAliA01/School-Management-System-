@@ -8,6 +8,7 @@
 <style>
     :root {
         --brand-primary: #E67E22;
+        --brand-secondary: #3498DB;
         --text-dark: #2C3E50;
         --text-muted: #95A5A6;
         --bg-body: #F4F7F9;
@@ -88,13 +89,11 @@
 
     .incident-row {
         display: grid;
-        grid-template-columns: 70px 1fr 120px; /* Slightly wider for the button */
-        padding: 12px 20px;
+        grid-template-columns: 70px 1fr 120px;
+        padding: 15px 20px;
         border-bottom: 1px solid #F8F8F8;
         align-items: center;
     }
-
-    .incident-row:last-child { border-bottom: none; }
 
     .date-col {
         text-align: center;
@@ -102,8 +101,18 @@
         padding-right: 15px;
     }
 
-    .day-num { font-weight: 800; font-size: 1.1rem; line-height: 1; color: var(--text-dark); }
-    .month-txt { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); }
+    .day-num {
+        font-weight: 800;
+        font-size: 1.1rem;
+        line-height: 1;
+        color: var(--text-dark);
+    }
+
+    .month-txt {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
 
     .action-badge {
         display: inline-block;
@@ -116,47 +125,102 @@
         margin-top: 5px;
     }
 
-    /* Enhanced Delete Button */
-    .btn-delete { 
-        color: var(--danger-red); 
+    /* AI Button & Box */
+    .ai-btn-trigger {
+        background: #EBF5FB;
+        color: var(--brand-secondary);
+        border: 1px solid #AED6F1;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 5px;
+        margin-left: 8px;
+        transition: all 0.2s;
+    }
+
+        .ai-btn-trigger:hover {
+            background: #D6EAF8;
+            text-decoration: none;
+        }
+
+    .ai-collapse-box {
+        background-color: #FDFEFE;
+        border: 1px solid #D6EAF8;
+        border-left: 4px solid var(--brand-secondary);
+        margin: 0 20px 15px 85px;
+        padding: 15px;
+        border-radius: 0 8px 8px 0;
+    }
+
+    .severity-pill {
+        font-size: 0.65rem;
+        padding: 2px 8px;
+        border-radius: 10px;
+        color: white;
+        text-transform: uppercase;
+    }
+
+    .severity-high {
+        background-color: var(--danger-red);
+    }
+
+    .severity-med {
+        background-color: #F39C12;
+    }
+
+    .severity-low {
+        background-color: #27AE60;
+    }
+
+    .btn-delete {
+        color: var(--danger-red);
         background: #FDEDEC;
         border: 1px solid #FADBD8;
         padding: 4px 10px;
         border-radius: 6px;
         font-size: 0.75rem;
         font-weight: 600;
-        transition: all 0.2s ease;
-        text-decoration: none;
-    }
-    
-    .btn-delete:hover { 
-        background: var(--danger-red); 
-        color: white; 
-        text-decoration: none;
-        box-shadow: 0 2px 4px rgba(231, 76, 60, 0.2);
     }
 
-    .btn-clear {
+        .btn-delete:hover {
+            background: var(--danger-red);
+            color: white;
+        }
+
+    /* Processing Pulse */
+    .ai-processing {
+        font-size: 0.7rem;
         color: var(--text-muted);
-        font-size: 0.8rem;
-        text-decoration: none;
-        align-self: center;
-        margin-right: 15px;
-        font-weight: 600;
+        font-style: italic;
+        margin-left: 10px;
+        animation: pulse 1.5s infinite;
     }
-    .btn-clear:hover { color: var(--text-dark); text-decoration: none; }
+
+    @@keyframes pulse {
+        0% {
+            opacity: 0.5;
+        }
+
+        50% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0.5;
+        }
+    }
 </style>
 
 <div class="page-header">
     <div class="container header-container">
         <div>
             <h5 class="mb-0" style="font-weight: 800;">
-                Administrative Log 
-                <a asp-action="Index" class="text-muted ml-1" title="Reload full list">
-                    <i class="fas fa-sync-alt" style="font-size: 0.8rem;"></i>
-                </a>
+                Administrative Log
+                <a asp-action="Index" class="text-muted ml-1" title="Reload list"><i class="fas fa-sync-alt" style="font-size: 0.8rem;"></i></a>
             </h5>
-            <small class="text-muted">Growing Little Minds • Incident History</small>
+            <small class="text-muted">Hybrid Learning Academy • Incident History</small>
         </div>
         <a asp-action="Create" class="btn btn-sm btn-warning text-white px-3" style="font-weight:700; border-radius:6px;">
             <i class="fas fa-plus mr-1"></i> New Entry
@@ -168,14 +232,10 @@
     <div class="search-wrapper">
         <form asp-action="Index" method="get" class="custom-search">
             <input type="text" name="searchString" class="search-input" placeholder="Search by student name..." value="@ViewData["CurrentFilter"]" />
-            
             @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
             {
-                <a asp-action="Index" class="btn-clear">
-                    <i class="fas fa-times-circle"></i> Clear
-                </a>
+                <a asp-action="Index" class="btn-clear py-2 pr-3 text-muted"><i class="fas fa-times-circle"></i> Clear</a>
             }
-            
             <button type="submit" class="btn btn-dark btn-sm px-4" style="border-radius: 20px;">Search</button>
         </form>
     </div>
@@ -184,8 +244,7 @@
     {
         <div class="text-center py-5">
             <i class="fas fa-folder-open text-muted mb-3" style="font-size: 3rem; opacity: 0.3;"></i>
-            <p class="text-muted">No records found matching your search.</p>
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Show All Records</a>
+            <p class="text-muted">No records found.</p>
         </div>
     }
 
@@ -194,40 +253,80 @@
         <div class="teacher-card">
             <div class="teacher-header">
                 <span><i class="fas fa-user-tie mr-2"></i> Class Teacher: @teacherGroup.Key</span>
-                <span style="opacity:0.6; font-size:0.75rem;">@teacherGroup.Count() Total Reports</span>
+                <span style="opacity:0.6; font-size:0.75rem;">@teacherGroup.Count() Reports</span>
             </div>
 
             @foreach (var studentGroup in teacherGroup.GroupBy(i => i.StudentName ?? "Unknown Student"))
             {
-                <div class="student-sub-header">
-                    <i class="fas fa-child mr-2"></i> Student: @studentGroup.Key
-                </div>
+                <div class="student-sub-header"><i class="fas fa-child mr-2"></i> Student: @studentGroup.Key</div>
 
                 @foreach (var item in studentGroup)
                 {
-                    <div class="incident-row">
-                        <div class="date-col">
-                            <div class="day-num">@item.Date.ToString("dd")</div>
-                            <div class="month-txt">@item.Date.ToString("MMM")</div>
+                    <div class="incident-wrapper">
+                        <div class="incident-row">
+                            <div class="date-col">
+                                <div class="day-num">@item.Date.ToString("dd")</div>
+                                <div class="month-txt">@item.Date.ToString("MMM")</div>
+                            </div>
+
+                            <div class="px-3">
+                                <div style="font-size: 0.9rem; color: #444; line-height: 1.4;">@item.Description</div>
+                                <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(item.ActionTaken))
+                                    {
+                                        <div class="action-badge"><i class="fas fa-check-circle mr-1"></i> @item.ActionTaken</div>
+                                    }
+
+                                    @if (item.AISeverity.HasValue)
+                                    {
+                                        <a class="ai-btn-trigger" data-bs-toggle="collapse" href="#aiReport-@item.IncidentId" role="button">
+                                            <i class="fas fa-robot mr-1"></i> AI Insights
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="ai-processing"><i class="fas fa-sync fa-spin mr-1"></i> AI Analyzing...</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="text-right">
+                                <form asp-action="Delete" asp-route-id="@item.IncidentId" method="post" onsubmit="return confirm('Remove this log?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-delete"><i class="fas fa-trash-alt"></i></button>
+                                </form>
+                                <div class="text-muted mt-1" style="font-size: 0.65rem;">@item.Date.Year</div>
+                            </div>
                         </div>
 
-                        <div class="px-3">
-                            <div style="font-size: 0.9rem; color: #444; line-height: 1.4;">@item.Description</div>
-                            @if (!string.IsNullOrEmpty(item.ActionTaken))
-                            {
-                                <div class="action-badge"><i class="fas fa-check-circle mr-1"></i> @item.ActionTaken</div>
-                            }
-                        </div>
-
-                        <div class="text-right">
-                            <form asp-action="Delete" asp-route-id="@item.IncidentId" method="post" onsubmit="return confirm('Remove this log?');">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-delete">
-                                    <i class="fas fa-trash-alt mr-1"></i> Delete
-                                </button>
-                            </form>
-                            <div class="text-muted mt-1" style="font-size: 0.65rem;">@item.Date.Year</div>
-                        </div>
+                        @if (item.AISeverity.HasValue)
+                        {
+                            <div class="collapse" id="aiReport-@item.IncidentId">
+                                <div class="ai-collapse-box">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span style="font-weight:800; font-size:0.75rem; color:var(--brand-secondary);">
+                                            <i class="fas fa-brain mr-1"></i> AI BEHAVIORAL ANALYSIS
+                                        </span>
+                                        @{
+                                            var sCls = item.AISeverity >= 4 ? "severity-high" : (item.AISeverity >= 2 ? "severity-med" : "severity-low");
+                                        }
+                                        <span class="severity-pill @sCls">Severity @item.AISeverity / 5</span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="mb-1" style="font-size: 0.8rem;"><strong>Impact:</strong> @item.AIImpact</p>
+                                            <p class="mb-0" style="font-size: 0.8rem;"><strong>Evaluation:</strong> @item.AIEvaluation</p>
+                                        </div>
+                                        <div class="col-md-6 border-left">
+                                            <p class="mb-0" style="font-size: 0.85rem; color: var(--text-dark); font-style: italic;">
+                                                <strong class="text-success d-block mb-1" style="font-style:normal; font-size:0.7rem;">ADVICE:</strong>
+                                                "@item.AIAdvice"
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 }
             }

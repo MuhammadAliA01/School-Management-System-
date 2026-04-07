@@ -66,7 +66,7 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("EmploymentApplications", (string)null);
+                    b.ToTable("EmploymentApplications");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Incident", b =>
@@ -76,6 +76,18 @@ namespace SchoolManagmentSystem.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IncidentId"));
+
+                    b.Property<string>("AIAdvice")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AIEvaluation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AIImpact")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AISeverity")
+                        .HasColumnType("int");
 
                     b.Property<string>("ActionTaken")
                         .HasColumnType("nvarchar(max)");
@@ -91,8 +103,14 @@ namespace SchoolManagmentSystem.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
+                    b.Property<string>("StudentName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("TeacherId")
                         .HasColumnType("int");
+
+                    b.Property<string>("TeacherName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IncidentId");
 
@@ -100,7 +118,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Incidents", (string)null);
+                    b.ToTable("Incidents");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Parent", b =>
@@ -146,7 +164,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Parents", (string)null);
+                    b.ToTable("Parents");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Staff", b =>
@@ -190,7 +208,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Staffs", (string)null);
+                    b.ToTable("Staffs");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>
@@ -277,7 +295,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.StudentRegistration", b =>
@@ -362,7 +380,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("StudentRegistrations", (string)null);
+                    b.ToTable("StudentRegistrations");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Teacher", b =>
@@ -378,7 +396,7 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.HasKey("TeacherId");
 
-                    b.ToTable("Teachers", (string)null);
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Incident", b =>

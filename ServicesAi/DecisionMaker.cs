@@ -34,7 +34,7 @@ namespace SchoolManagmentSystem.ServicesAi
             2. DO NOT use any introductory or concluding sentences (Do not say 'Here is the list...').
             . Start your response immediately with '1. ' and only provide the 3 methods.";
 
-            string apiKey = "AIzaSyBkyYXI2R303zAbWVzrQ8frurKAoM70gv4";
+            string apiKey = "";
             string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
 
             var package = new { contents = new[] { new { parts = new[] { new { text = masterPrompt } } } } };

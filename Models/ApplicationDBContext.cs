@@ -18,5 +18,6 @@ namespace SchoolManagmentSystem.Models
 
         public DbSet<StudentAssessment> StudentAssessments { get; set; }
         public DbSet<StudentRegistration> StudentRegistrations { get; set; }
+        public DbSet<StudentDocument> StudentDocuments { get; set; }   //NOTE: I HAVEN'T UPDATED TO DATABASE
     }
 }

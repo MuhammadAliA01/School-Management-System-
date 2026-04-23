@@ -40,10 +40,10 @@ namespace SchoolManagmentSystem.Models
         [Required(ErrorMessage = "Required")]
         public string AutismType { get; set; }
 
-    //We save the name of the PDF file here, not the actual file itself
-    public string PdfPath { get; set; }
+        //connects your Student to their Files in a way that the database understands.
+        public virtual ICollection<StudentDocument> Documents { get; set; } = new List<StudentDocument>();  //NOTE: I HAVEN'T UPDATED TO DATABASE
 
-    public string Comments { get; set; } = default!;
+        public string Comments { get; set; } = default!;
 
     public DateTime RegistrationDate { get; set; } = DateTime.Now;
 
@@ -52,5 +52,19 @@ namespace SchoolManagmentSystem.Models
         public bool? feesPaid { get; set; }
         public string? StripeSessionId { get; set; }
 
+    }
+
+
+    public class StudentDocument
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public string FilePath { get; set; } = default!;
+        public string FileName { get; set; } = default!;
+
+        public int StudentRegistrationId { get; set; }
+        [ForeignKey("StudentRegistrationId")]
+        public virtual StudentRegistration StudentRegistration { get; set; } = default!;
     }
 }

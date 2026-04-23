@@ -5,6 +5,8 @@ namespace SchoolManagmentSystem.Models
 {
     public class Student
     {
+        
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int StudentId { get; set; }
@@ -32,8 +34,8 @@ namespace SchoolManagmentSystem.Models
         public string AutismLevel { get; set; }
         public string AutismType { get; set; }
 
-        //We save the name of the PDF file here, not the actual file itself
-        public string PdfPath { get; set; }
+        //connects your Student to their Files in a way that the database understands.
+        public virtual ICollection<StudentDocument> Documents { get; set; } = new List<StudentDocument>();    //NOTE: I HAVEN'T UPDATED TO DATABASE
 
         public string Comments { get; set; }
 

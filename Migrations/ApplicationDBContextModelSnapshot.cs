@@ -266,10 +266,6 @@ namespace SchoolManagmentSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PdfPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -339,6 +335,37 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("StudentAssessments");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.StudentDocument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentRegistrationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("StudentRegistrationId");
+
+                    b.ToTable("StudentDocuments");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.StudentRegistration", b =>
                 {
                     b.Property<int>("Id")
@@ -386,10 +413,6 @@ namespace SchoolManagmentSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ParentPhone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PdfPath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -489,6 +512,21 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("Teacher");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.StudentDocument", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Student", null)
+                        .WithMany("Documents")
+                        .HasForeignKey("StudentId");
+
+                    b.HasOne("SchoolManagmentSystem.Models.StudentRegistration", "StudentRegistration")
+                        .WithMany("Documents")
+                        .HasForeignKey("StudentRegistrationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StudentRegistration");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.StudentRegistration", b =>
                 {
                     b.HasOne("SchoolManagmentSystem.Models.Parent", "Parent")
@@ -498,6 +536,16 @@ namespace SchoolManagmentSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>
+                {
+                    b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.StudentRegistration", b =>
+                {
+                    b.Navigation("Documents");
                 });
 #pragma warning restore 612, 618
         }

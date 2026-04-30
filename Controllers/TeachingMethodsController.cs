@@ -38,13 +38,73 @@ namespace SchoolManagmentSystem.Controllers
                 return View();
             }
 
+            string medicalText = "";
             string folderPath = _env.WebRootPath;
 
-            string physicalPath = Path.Combine(folderPath, student.PdfPath.TrimStart('/'));
+            // 2. Loop through every document linked to this student
+            if (student.Documents != null && student.Documents.Any())
+            {
+                foreach (var doc in student.Documents)
+                {
+                    // Combine the web root with the saved relative path
+                    string physicalPath = Path.Combine(folderPath, doc.FilePath.TrimStart('/'));
+
+                    if (System.IO.File.Exists(physicalPath))
+                    {
+                        using (UglyToad.PdfPig.PdfDocument pdf = UglyToad.PdfPig.PdfDocument.Open(physicalPath))
+                        {
+                            foreach (UglyToad.PdfPig.Content.Page page in pdf.GetPages())
+                            {
+                                medicalText += page.Text + " ";
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 3. Send the combined text from ALL PDFs to the AI
+            var consensusEngine = new SchoolManagmentSystem.ServicesAi.DecisionMaker();
+
+            string answer = await consensusEngine.FindBestMethods(
+                student.AutismLevel,
+                student.AutismType,
+                student.Comments,
+                medicalText // This now contains text from all uploaded files
+            );
+
+            student.AiTeachingPlan = answer;
+            Context.SaveChanges();
+
+            ViewBag.StudentName = student.FullName;
+            ViewBag.AiAdvice = answer;
+            return View();
+
+            /*string medicalText = "";
+            string folderPath = _env.WebRootPath;
+
+            if (student.Documents != null && student.Documents.Any())
+            {
+                foreach (var doc in student.Documents)
+                {
+                    // Combine the web root with the saved relative path
+                    string physicalPath = Path.Combine(folderPath, doc.FilePath.TrimStart('/'));
+
+                    if (System.IO.File.Exists(physicalPath))
+                    {
+                        using (UglyToad.PdfPig.PdfDocument pdf = UglyToad.PdfPig.PdfDocument.Open(physicalPath))
+                        {
+                            foreach (UglyToad.PdfPig.Content.Page page in pdf.GetPages())
+                            {
+                                medicalText += page.Text + " ";
+                            }
+                        }
+                    }
+                }
+            }
 
             var consensusEngine = new SchoolManagmentSystem.ServicesAi.DecisionMaker();
 
-            string medicalText = "";
+            
             using (UglyToad.PdfPig.PdfDocument document = UglyToad.PdfPig.PdfDocument.Open(physicalPath))
             {
                 foreach (UglyToad.PdfPig.Content.Page page in document.GetPages())
@@ -63,7 +123,7 @@ namespace SchoolManagmentSystem.Controllers
             Context.SaveChanges();
             ViewBag.StudentName = student.FullName;
             ViewBag.AiAdvice = answer;
-            return View();
+            return View();*/
         }
     }
 }

@@ -1,43 +1,325 @@
 ﻿@model SchoolManagmentSystem.Models.StudentAssessment
 
-<div class="container mt-5">
-    <div class="card shadow p-4" style="max-width: 600px; margin: auto; border-radius: 15px;">
-        <h2 class="text-center text-primary mb-4">Log Student Grade</h2>
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@@400;600;700&family=Playfair+Display:wght@@700&display=swap');
 
-        <form asp-action="LogGrade" method="post">
-            <input type="hidden" asp-for="StudentId" value="@ViewBag.StudentId" />
+    .lg-wrap {
+        font-family: 'Nunito', sans-serif;
+        padding: 2rem 1rem;
+        display: flex;
+        justify-content: center;
+    }
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Select Subject</label>
-                <select asp-for="SubjectName" class="form-select" required>
-                    <option value="">-- Choose a Subject --</option>
-                    <option value="Creative Development">Creative Development</option>
-                    <option value="Oral skills and Language">Oral skills and Language</option>
-                    <option value="Personal Independence">Personal Independence</option>
-                    <option value="Basic Concepts">Basic Concepts</option>
-                    <option value="Physical and Social">Physical and Social Development</option>
-                    <option value="Social Skills">Social Skills</option>
-                </select>
-            </div>
+    .lg-card {
+        width: 100%;
+        max-width: 560px;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1.5px solid #F5D9B8;
+        background: #FFFBF5;
+    }
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Specific Task Assessed</label>
-                <input asp-for="TaskName" class="form-control" placeholder="e.g., Hand washing, Toilet Training..." required />
-            </div>
+    .lg-header {
+        background: #E8521A;
+        padding: 1.6rem 2rem 1.4rem;
+        position: relative;
+        overflow: hidden;
+    }
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Score (Out of 10)</label>
-                <input asp-for="Score" type="number" min="0" max="10" class="form-control" required />
-            </div>
+    .lg-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 24px;
+        color: #fff;
+        margin: 0 0 3px;
+        position: relative;
+        z-index: 1;
+    }
 
-            <div class="mb-4">
-                <label class="form-label fw-bold">Teacher Comments</label>
-                <textarea asp-for="TeacherComments" class="form-control" rows="3" placeholder="Add context on how the student performed today..."></textarea>
-            </div>
+    .lg-subtitle {
+        font-size: 13px;
+        color: #FFD9B8;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
 
-            <button type="submit" class="btn btn-primary w-100 fw-bold" style="border-radius: 10px;">
-                Save Grade
-            </button>
-        </form>
+    .lg-body {
+        padding: 1.75rem 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+    }
+
+    .lg-field label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #B85C2A;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin-bottom: 5px;
+    }
+
+    .lg-field select, .lg-field input, .lg-field textarea {
+        width: 100%;
+        box-sizing: border-box;
+        background: #FFF5EB;
+        border: 1.5px solid #F5D9B8;
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-family: 'Nunito', sans-serif;
+        font-size: 14px;
+        color: #3D1F0A;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        appearance: none;
+    }
+
+        .lg-field select:focus, .lg-field input:focus, .lg-field textarea:focus {
+            border-color: #E8521A;
+            box-shadow: 0 0 0 3px rgba(232,82,26,0.12);
+            background: #fff;
+        }
+
+    .lg-error {
+        color: #a83232; 
+        font-size: 13px;
+        font-weight: 500;
+        margin-top: 5px;
+        display: none; 
+    }
+
+        .lg-error::before {
+            content: '• ';
+            font-weight: bold;
+        }
+
+    .input-validation-error {
+        border-color: #a83232 !important;
+        background-color: #fdf5f5 !important;
+    }
+ 
+    .lg-select-wrap {
+        position: relative;
+    }
+
+        .lg-select-wrap::after {
+            content: '';
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 5px solid #B85C2A;
+            pointer-events: none;
+        }
+
+    .lg-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .lg-score-wrap {
+        position: relative;
+    }
+
+        .lg-score-wrap input {
+            padding-right: 46px;
+        }
+
+    .lg-score-suffix {
+        position: absolute;
+        right: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 13px;
+        font-weight: 600;
+        color: #B85C2A;
+        pointer-events: none;
+    }
+
+    .lg-divider {
+        height: 1.5px;
+        background: #F5D9B8;
+        margin: 0.25rem 0;
+        border-radius: 2px;
+    }
+
+    .lg-submit {
+        width: 100%;
+        padding: 13px;
+        background: #E8521A;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-family: 'Nunito', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.15s, transform 0.1s;
+    }
+
+        .lg-submit:hover {
+            background: #C23E10;
+        }
+
+        .lg-submit:active {
+            transform: scale(0.98);
+        }
+
+    .lg-check {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.22);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+    }
+</style>
+
+<div class="lg-wrap">
+    <div class="lg-card">
+
+        <div class="lg-header">
+            <h2 class="lg-title">Log Student Grade</h2>
+            <p class="lg-subtitle">Record this week's performance for a student</p>
+        </div>
+
+        <div class="lg-body">
+            <form asp-action="LogGrade" method="post" id="gradeForm" novalidate>
+                <input type="hidden" asp-for="StudentId" value="@ViewBag.StudentId" />
+
+                <div class="lg-field" style="margin-bottom: 1.1rem;">
+                    <label>Subject area</label>
+                    <div class="lg-select-wrap">
+                        <select asp-for="SubjectName" name="SubjectName" required>
+                            <option value="">-- Choose a subject --</option>
+                            <option value="Creative Development">Creative Development</option>
+                            <option value="Oral skills and Language">Oral skills and Language</option>
+                            <option value="Personal Independence">Personal Independence</option>
+                            <option value="Basic Concepts">Basic Concepts</option>
+                            <option value="Physical and Social">Physical and Social Development</option>
+                            <option value="Social Skills">Social Skills</option>
+                        </select>
+                    </div>
+                    <span class="lg-error" id="err-SubjectName"></span>
+                </div>
+
+                <div class="lg-row" style="margin-bottom: 1.1rem;">
+                    <div class="lg-field">
+                        <label>Term</label>
+                        <div class="lg-select-wrap">
+                            <select asp-for="TermNumber" name="TermNumber" required>
+                                <option value="">Select...</option>
+                                <option value="1">Term 1</option>
+                                <option value="2">Term 2</option>
+                                <option value="3">Term 3</option>
+                                <option value="4">Term 4</option>
+                            </select>
+                        </div>
+                        <span class="lg-error" id="err-TermNumber"></span>
+                    </div>
+                    <div class="lg-field">
+                        <label>Week</label>
+                        <div class="lg-select-wrap">
+                            <select asp-for="WeekNumber" name="WeekNumber" required>
+                                <option value="">Select...</option>
+                                @for (int i = 1; i <= 12; i++)
+                                {
+                                    <option value="@i">Week @i</option>
+                                }
+                            </select>
+                        </div>
+                        <span class="lg-error" id="err-WeekNumber"></span>
+                    </div>
+                </div>
+
+                <div class="lg-field" style="margin-bottom: 1.1rem;">
+                    <label>Specific task assessed</label>
+                    <input asp-for="TaskName" name="TaskName" type="text" placeholder="e.g. Hand washing, Toilet training..." required />
+                    <span class="lg-error" id="err-TaskName"></span>
+                </div>
+
+                <div class="lg-field" style="margin-bottom: 1.1rem;">
+                    <label>Score</label>
+                    <div class="lg-score-wrap">
+                        <input asp-for="Score" name="Score" type="number" min="0" max="10" placeholder="0" required />
+                        <span class="lg-score-suffix">/ 10</span>
+                    </div>
+                    <span class="lg-error" id="err-Score"></span>
+                </div>
+
+                <div class="lg-field" style="margin-bottom: 1.1rem;">
+                    <label>Teacher comments</label>
+                    <textarea asp-for="TeacherComments" name="TeacherComments" rows="3" placeholder="Add context on how the student performed today..."></textarea>
+                </div>
+
+                <div class="lg-divider"></div>
+
+                <button type="submit" class="lg-submit">
+                    <div class="lg-check">✓</div>
+                    Save grade
+                </button>
+
+            </form>
+        </div>
     </div>
+
+    <script>
+        document.getElementById('gradeForm').addEventListener('submit', function (e) {
+            let isValid = true;
+
+            function showError(fieldName, message) {
+                let errorSpan = document.getElementById('err-' + fieldName);
+                let inputElement = document.querySelector('[name="' + fieldName + '"]');
+
+                if (errorSpan && inputElement) {
+                    errorSpan.textContent = message;
+                    errorSpan.style.display = 'block'; // Makes the text visible
+                    inputElement.classList.add('input-validation-error'); // Turns the box red
+                }
+                isValid = false;
+            }
+
+            // Clear out any old errors before checking again
+            document.querySelectorAll('.lg-error').forEach(span => {
+                span.style.display = 'none';
+                span.textContent = '';
+            });
+            document.querySelectorAll('.input-validation-error').forEach(input => {
+                input.classList.remove('input-validation-error');
+            });
+
+            var subject = document.querySelector('[name="SubjectName"]').value;
+            var term = document.querySelector('[name="TermNumber"]').value;
+            var week = document.querySelector('[name="WeekNumber"]').value;
+            var task = document.querySelector('[name="TaskName"]').value;
+            var score = document.querySelector('[name="Score"]').value;
+
+            if (!subject) showError('SubjectName', 'Please select a subject.');
+            if (!term) showError('TermNumber', 'Please select a term.');
+            if (!week) showError('WeekNumber', 'Please select a week.');
+            if (!task.trim()) showError('TaskName', 'Please enter the specific task assessed.');
+
+            if (score === '') {
+                showError('Score', 'Please enter a score.');
+            } else if (score < 0 || score > 10) {
+                showError('Score', 'Score must be between 0 and 10.');
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+    </script>
 </div>

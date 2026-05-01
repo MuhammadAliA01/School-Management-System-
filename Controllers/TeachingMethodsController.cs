@@ -19,8 +19,27 @@ namespace SchoolManagmentSystem.Controllers
         [Authorize]
         public IActionResult Dashboard()
         {
+            var now = DateTime.Now;
+            var currentMonth = now.Month;
+            var currentYear = now.Year;
+
             var allStudents = Context.Students.ToList();
-            return View(allStudents); 
+
+            var monthlyAverages = Context.StudentAssessments
+                .Where(a => a.AssessmentDate.Month == currentMonth
+                         && a.AssessmentDate.Year == currentYear)
+                .GroupBy(a => a.StudentId)
+                .Select(g => new
+                {
+                    StudentId = g.Key,
+                    Average = g.Average(a => a.Score)
+                })
+                .ToList();
+
+            ViewBag.StudentAverages = monthlyAverages
+    .ToDictionary(x => x.StudentId, x => Math.Round(x.Average, 1));
+
+            return View(allStudents);
         }
 
         [Authorize]
@@ -32,7 +51,6 @@ namespace SchoolManagmentSystem.Controllers
 
             if (!string.IsNullOrEmpty(student.AiTeachingPlan))
             {
-                // YES! Skip the AI entirely, use the saved plan, and load the page instantly!
                 ViewBag.StudentName = student.FullName;
                 ViewBag.AiAdvice = student.AiTeachingPlan;
                 return View();
@@ -41,12 +59,10 @@ namespace SchoolManagmentSystem.Controllers
             string medicalText = "";
             string folderPath = _env.WebRootPath;
 
-            // 2. Loop through every document linked to this student
             if (student.Documents != null && student.Documents.Any())
             {
                 foreach (var doc in student.Documents)
                 {
-                    // Combine the web root with the saved relative path
                     string physicalPath = Path.Combine(folderPath, doc.FilePath.TrimStart('/'));
 
                     if (System.IO.File.Exists(physicalPath))
@@ -62,14 +78,13 @@ namespace SchoolManagmentSystem.Controllers
                 }
             }
 
-            // 3. Send the combined text from ALL PDFs to the AI
             var consensusEngine = new SchoolManagmentSystem.ServicesAi.DecisionMaker();
 
             string answer = await consensusEngine.FindBestMethods(
                 student.AutismLevel,
                 student.AutismType,
                 student.Comments,
-                medicalText // This now contains text from all uploaded files
+                medicalText 
             );
 
             student.AiTeachingPlan = answer;

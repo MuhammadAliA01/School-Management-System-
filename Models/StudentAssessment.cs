@@ -24,10 +24,13 @@ namespace SchoolManagmentSystem.Models
         [Range(0, 10)]
         public int Score { get; set; }
 
-        // Crucial for special needs: Context on WHY they got that score
         public string TeacherComments { get; set; }
 
-        // When the assessment happened (so you can calculate the monthly average)
         public DateTime AssessmentDate { get; set; }
+        [Range(1, 4)]
+        public int TermNumber { get; set; }
+
+        [Range(1, 12)]
+        public int WeekNumber { get; set; }
     }
 }

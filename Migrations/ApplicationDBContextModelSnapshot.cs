@@ -326,6 +326,12 @@ namespace SchoolManagmentSystem.Migrations
                     b.Property<int>("TeacherId")
                         .HasColumnType("int");
 
+                    b.Property<int>("TermNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WeekNumber")
+                        .HasColumnType("int");
+
                     b.HasKey("AssessmentId");
 
                     b.HasIndex("StudentId");

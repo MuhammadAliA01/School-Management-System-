@@ -4,78 +4,251 @@
     ViewData["Title"] = "ApplicationList";
 }
 
-<h1>ApplicationList</h1>
+<head>
+    <style>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.selectedRole)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.referenceNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SuitabilityScore)
-            </th>
-            <th>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CVLocation)
+        body{
+            background-color: #f3f3f3;
+        }
 
+        .mainContainer{
+            display:flex;
+            gap:60px;
+            align-items: flex-start;
+            
+        }
+
+        .summaryDiv{
+            display:flex;
+            flex-direction:column;
+            width:500px;
+                height:fit-content;
+            background-color: transparent;
+            transition: background-color 0.2s;
+            border-radius: 10px;
+            padding:10px;
+            
+        }
+
+            .summaryDiv.active {
+                background-color: white; 
+                border: 1px dashed grey;
+            }
+
+        .tableDiv{
+            display: flex;
+            justify-content:right;
+
+        }
+
+        .table{
+            font-family:Dubai;
+            text-align:center;
+            font-size:20px;
+            width:auto;
+            table-layout:fixed;
+            border-collapse: collapse;
+            border-radius: 10px;
+        }
+
+        .table th{
+            color:orangered;
+        }
+
+        p{
+            font-size:17px;
+            font-weight:bold;
+            color:black;
+            text-align:center;
+        }
+
+        .searchBar {
+            width: 620px;
+            height: 50px;
+            border-radius: 10px;
+            border: none;
+            background-image: url(/Images/SearchStatusImages/Searchicon.png);
+            background-size: 60px;
+            background-position: left;
+            background-repeat: no-repeat;
+            padding-left: 50px;
+            box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), -5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        @@media screen and (max-width: 950px) {
+            .mainContainer{
+                flex-direction:column;
+                align-items:center;
+            }
+
+            .tableDiv{
+                width: 100px;
+                justify-content: center;
                 
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
+            }
 
-            <td>
-                @Html.DisplayFor(modelItem => item.selectedRole)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.referenceNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SuitabilityScore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AIReviewSummary)
-            </td>
-                <td>
-                    <a href="@Html.DisplayFor(modelItem => item.CVLocation)">
-                        View CV
-                    </a>
-                </td>
-        </tr>
-}
-    </tbody>
-</table>
+            .table {
+                
+                font-size: 10px;
+               
+        }
+
+            .searchBar {
+            width: 300px
+            
+            }
+
+            .summaryDiv {
+                width:300px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="mainContainer">
+        <div class="summaryDiv">
+
+            <p id="rowDetails">
+
+            </p>
+        </div>
+        <div class="otherDiv" style="display:flex; align-items:center; flex-direction:column;">
+            <input type="text" id="searchInput" placeholder="Search..." class="searchBar mb-2">
+            <div class="tableDiv" id="myTable">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.FirstName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.LastName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </th>
+                            <th>
+                                Position Applied
+                            </th>
+                            <th>
+                                Reference Number
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Status)
+                            </th>
+                            <th>
+                                Suitability Score
+                            </th>
+                            <th style="display:none">
+                                AI Review Summary
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CVLocation)
+
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FirstName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LastName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.selectedRole)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.referenceNumber)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SuitabilityScore)
+                                </td>
+                                <td style="display:none">
+                                    @Html.DisplayFor(modelItem => item.AIReviewSummary)
+                                </td>
+                                <td>
+                                    <a href="@Html.DisplayFor(modelItem => item.CVLocation)">
+                                        View CV
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        
+    </div>
+    
+
+</body>
+
+<script>
+    const table = document.getElementById("myTable");
+    const searchInput = document.getElementById("searchInput");
+    const summaryDiv = document.querySelector(".summaryDiv");
+    const details = document.getElementById("rowDetails");
+
+    function addRowClickEvents() {
+        const rows = table.getElementsByTagName("tr");
+        for (let i = 1; i < rows.length; i++) { 
+            rows[i].addEventListener("click", function() {
+                for (let j = 1; j < rows.length; j++) {
+                    rows[j].classList.remove("table-primary");
+                }
+                this.classList.add("table-primary");
+
+                const cells = this.getElementsByTagName("td");
+                const summary = cells[7].innerText; 
+                const score = cells[6].innerText;   
+
+                details.innerHTML = `<h3>Score: ${score}</h3>
+                                     <p>${summary}</p>`;
+                summaryDiv.classList.add("active");
+            });
+        }
+    }
+
+    addRowClickEvents();
+
+    searchInput.addEventListener("keyup", function() {
+        const filter = this.value.toLowerCase();
+        const rows = table.getElementsByTagName("tr");
+        for (let i = 1; i < rows.length; i++) { 
+            const cells = rows[i].getElementsByTagName("td");
+            let match = false;
+
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j].innerText.toLowerCase().indexOf(filter) > -1) {
+                    match = true;
+                    break;
+                }
+            }
+
+            rows[i].style.display = match ? "" : "none";
+        }
+    });
+</script>
+
+
+

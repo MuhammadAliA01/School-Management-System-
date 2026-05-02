@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using SchoolManagmentSystem.Models;
@@ -30,8 +31,15 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        [Authorize]
         public async Task<IActionResult> ApplicationList()
         {
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+            if (User.IsInRole("Parent"))
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
+            }
             return View(await _context.EmploymentApplications.ToListAsync());
 
         }

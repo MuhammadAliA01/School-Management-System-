@@ -7,10 +7,6 @@
 }
 
 
-
-
-@section Scripts {
-    @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
@@ -175,7 +171,7 @@
             <a class="portal-btn btn-review"
                    asp-controller="StudentEnrolment"
                    asp-action="PreviewPdf"
-                   asp-route-studentId=@ViewBag.studentID
+               asp-route-studentId=@ViewBag.nonRegstudentID
                    target="_blank">
                    Review Details
             </a>
@@ -183,8 +179,8 @@
             <a class="portal-btn btn-enrol"
                    asp-controller="StudentEnrolment"
                    asp-action="Enrol"
-               asp-route-studentId=@ViewBag.studentID>
-                   Confirm Enrolment
+               asp-route-studentId=@ViewBag.nonRegstudentID>
+                   Confirm Registration
             </a>
         </div>
     </div>

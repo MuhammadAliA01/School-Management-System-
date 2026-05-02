@@ -15,8 +15,9 @@ namespace SchoolManagmentSystem.Models
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<EmploymentApplication> EmploymentApplications { get; set; }
         public DbSet<Incident> Incidents { get; set; }
-        public DbSet<EventCalendar> CalendarEvents { get; set; }
 
+        public DbSet<StudentAssessment> StudentAssessments { get; set; }
         public DbSet<StudentRegistration> StudentRegistrations { get; set; }
+        public DbSet<StudentDocument> StudentDocuments { get; set; }   //NOTE: I HAVEN'T UPDATED TO DATABASE
     }
 }

@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
 using SchoolManagmentSystem.Services;
+using System.Net;
+using System.Net.Mail;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -14,64 +18,56 @@ namespace SchoolManagmentSystem.Controllers
             _context = context;
         }
 
-
-        public IActionResult Index(int studentID)
+        [Authorize]
+        public IActionResult Index(int parentID)
         {
-            ViewBag.studentID = studentID;
+
+
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+            if (!int.TryParse(parentId, out int parentIdint))
+            {
+                return Content("Invalid parent ID");
+            }
+
+            var nonregStudent = _context.StudentRegistrations.Where(n => n.ParentId == parentIdint).Select(n => n.Id).FirstOrDefault();
+            var student = _context.Students.Where(n => n.ParentId == parentIdint).Select(n => n.StudentId).FirstOrDefault();
+
+
+
+
+            ViewBag.nonRegstudentID = nonregStudent;
+            ViewBag.studentID = student;
+
+            var canAccess = HttpContext.Session.GetString("AccessnonReg");
+
+            if (canAccess != "true")
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
+            }
 
 
             return View();
-        }
-
-        public IActionResult StudentList() 
-        {
-            return View();
-        }
-
-
-
-        [HttpPost]
-        public async Task<IActionResult> Create(StudentRegistration model)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(model);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(model); // Returns to form with error messages
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateStatus(int id, string newStatus)
-        {
-            var student = await _context.StudentRegistrations.FindAsync(id);
-            if (student != null)
-            {
-                student.Status = newStatus;
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction("Index");
         }
 
         
-
-
-
-
-
-
-
 
         public IActionResult RegistrationService()
         {
             return View();
         }
 
+        [Authorize]
         public IActionResult RegistrationConfirmation(int studentId)
         {
-            var student = _context.StudentRegistrations
-                                  .FirstOrDefault(s => s.Id == studentId);
+            if (TempData["FormSubmitted"] == null)
+            {
+                return RedirectToAction("HomePage", "Home");
+            }
+
+
+            var student = _context.Students
+                                  .FirstOrDefault(s => s.StudentId == studentId);
 
             if (student == null)
                 return Content("Student not found");
@@ -81,6 +77,18 @@ namespace SchoolManagmentSystem.Controllers
 
         public IActionResult PreviewPdf(int studentId)
         {
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+
+            var canAccess = HttpContext.Session.GetString("AccessnonReg");
+
+            if (canAccess != "true")
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
+            }
+
+
+
             var service = new RegistrationService(_context);
             var document = service.GetPreviewRegistration(studentId);
 
@@ -93,26 +101,121 @@ namespace SchoolManagmentSystem.Controllers
 
         public IActionResult Enrol(int studentId)
         {
-            var student = _context.StudentRegistrations
+            var student = _context.StudentRegistrations.Include(s => s.Documents)
                                   .FirstOrDefault(s => s.Id == studentId);
+
+            var parentId = _context.StudentRegistrations.Where(p => p.Id == studentId).Select(p => p.ParentId).FirstOrDefault();    
+            var parentEmail = _context.Parents.Where(p=> p.Id == parentId).Select(p=> p.Email).FirstOrDefault();
+
+            var parent = _context.Parents.Where(p => p.Id == parentId).Select(p => p).FirstOrDefault();
+
+            var studentMain = new Student
+            {
+                ParentId = student.ParentId,
+                ParentName = parent.FirstName,
+                ParentEmail = parentEmail,
+                ParentPhone = "0",
+                TeacherId = 3,
+                Street = student.Street,
+                Suburb = student.Suburb,
+                City = student.City,
+                PostalCode = student.PostalCode,
+                FullName = student.ChildName,
+                ChildDob = student.ChildDob,
+                Gender = student.Gender,
+                AutismLevel = student.AutismLevel,
+                AutismType = student.AutismType,
+                Documents = student.Documents.Select(d => new StudentDocument
+                {
+                    FilePath = d.FilePath,
+                    FileName = d.FileName
+                }).ToList(),
+                Comments = student.Comments,
+                RegistrationDate = DateTime.Today,
+                
+
+            };
+
+            _context.Students.Add(studentMain);
+
+            _context.StudentRegistrations.Remove(student);
+
+            _context.SaveChanges();
+
+            var registrationService = new RegistrationService(_context);
+            var document = registrationService.GetRegistration(studentMain.StudentId);
+
+
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+
+                document.Save(stream);
+                byte[] bytes = stream.ToArray();
+
+                var filePath = Path.Combine("wwwroot/PDFUploads", $"ProofOfRegistration_{studentId}.pdf");
+                System.IO.File.WriteAllBytes(filePath, bytes);
+
+                SmtpClient client = new SmtpClient("Smtp.gmail.com");
+                client.Port = 587;
+                client.EnableSsl = true;
+                client.Credentials = new NetworkCredential("Hybridlearnacademy05@gmail.com", "utxw xbwc dsik yysx");
+                MailAddress mailAddress = new MailAddress("Hybridlearnacademy05@gmail.com");
+                MailAddress recipientAddress = new MailAddress(parentEmail);
+                Attachment attachement = new Attachment(filePath);
+                MailMessage mailMessage = new MailMessage();
+
+                mailMessage.From = mailAddress;
+                mailMessage.To.Add(recipientAddress);
+                mailMessage.Subject = " Registration Successful!";
+                mailMessage.Body = "Your registration has been successfully completed. Please find your Proof of Registration attached.";
+                mailMessage.Attachments.Add(attachement);
+
+                
+
+                client.SendMailAsync(mailMessage);
+
+            }
 
             if (student == null)
                 return Content("Student not found");
 
-            return RedirectToAction("RegistrationConfirmation", new { studentId = studentId });
+            TempData["FormSubmitted"] = true;
+
+                
+
+
+            return RedirectToAction("RegistrationConfirmation", new { studentId = studentMain.StudentId });
         }
 
 
         public IActionResult DownloadPdf(int studentId)
         {
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+            if (!int.TryParse(parentId, out int parentIdint))
+            {
+                return Content("Invalid parent ID");
+            }
+
+            var canAccess = _context.Students.Where(s => s.ParentId == parentIdint).Select(s => s.StudentId).FirstOrDefault();
+
+            if (canAccess == null )
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
+            }
 
             try
             {
                 var registrationService = new RegistrationService(_context);
                 var document = registrationService.GetRegistration(studentId);
 
+          
+               
+
                 using (MemoryStream stream = new MemoryStream())
                 {
+
                     document.Save(stream);
                     byte[] bytes = stream.ToArray();
 

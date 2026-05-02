@@ -27,9 +27,13 @@ namespace SchoolManagmentSystem.ServicesAi
             I asked two different experts for teaching methods for a student.
             Expert 1 said: '{advice1}'
             Expert 2 said: '{advice2}'
-            Analyze both lists, find the consistent themes, and give me a final, clean list of exactly 3 agreed-upon teaching methods.";
+            Analyze both lists and give me a final, tailored list of exactly 3 agreed-upon teaching methods. 
 
-            
+            CRITICAL FORMATTING RULES - YOU MUST OBEY THESE:
+            1. DO NOT introduce yourself (Do not say 'As a Coordinator...').
+            2. DO NOT use any introductory or concluding sentences (Do not say 'Here is the list...').
+            . Start your response immediately with '1. ' and only provide the 3 methods.";
+
             string apiKey = "";
             string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
 
@@ -40,9 +44,16 @@ namespace SchoolManagmentSystem.ServicesAi
             var response = await client.PostAsync(url, content);
 
             string rawJson = await response.Content.ReadAsStringAsync();
+            /*if (!response.IsSuccessStatusCode)
+            {
+                return $" MASTER AI (GEMINI) ERROR: {rawJson}";
+            }  */
+            
             JsonNode jsonNode = JsonNode.Parse(rawJson);
 
-            return jsonNode["candidates"][0]["content"]["parts"][0]["text"].ToString();
+            string finalAnswer = jsonNode["candidates"][0]["content"]["parts"][0]["text"].ToString();
+            finalAnswer = finalAnswer.Replace("**", "");
+            return finalAnswer;
         }
     }
 }

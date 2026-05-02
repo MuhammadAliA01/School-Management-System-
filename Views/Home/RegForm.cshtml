@@ -209,7 +209,7 @@
 
     <div class="form-container">
         <div class="header">
-            <h2>Register Child</h2>
+            <h2>Enrolment Form</h2>
         </div>
 
         
@@ -291,16 +291,17 @@
             </div>
 
             <div class="file-upload" onclick="document.getElementById('fileInput').click()">
-                <strong>CLICK TO UPLOAD EVALUATION (PDF) <span style="color:red">*</span></strong>
-                <input type="file" id="fileInput" name="pdfFile" accept=".pdf" style="display:none" required>
+                <strong>CLICK TO UPLOAD EVALUATIONS (PDFs) <span style="color:red">*</span></strong>
+                <input type="file" id="fileInput" name="pdfFiles" accept=".pdf" style="display:none" multiple required>
             </div>
+            <div id="file-list-display" style="margin-top: 10px; font-size: 0.85rem; color: #555;"></div>
 
             <div class="form-group">
                 <label>Additional Comments</label>
                 <textarea name="Comments" rows="4"></textarea>
             </div>
 
-            <button type="submit">Submit Registration</button>
+            <button type="submit">Submit Form</button>
 
            
         </form>
@@ -317,12 +318,22 @@
     </div>
 
     <script>
-        
-        document.getElementById('fileInput').onchange = function () {
-            const fileName = this.files[0] ? this.files[0].name : "CLICK TO UPLOAD EVALUATION (PDF)";
-            document.querySelector('.file-upload strong').innerHTML =
-                `SELECTED: ${fileName} <span style="color:red">*</span>`;
-            document.querySelector('.file-upload').style.borderColor = "#28a745";
+
+            document.getElementById('fileInput').onchange = function () {
+            const files = this.files;
+            const display = document.getElementById('file-list-display');
+
+            if (files.length > 0) {
+                let fileNames = Array.from(files).map(f => f.name).join(", ");
+                document.querySelector('.file-upload strong').innerHTML =
+                    `SELECTED: ${files.length} file(s) <span style="color:red">*</span>`;
+                display.innerHTML = `<strong>Files:</strong> ${fileNames}`;
+                document.querySelector('.file-upload').style.borderColor = "#28a745";
+            } else {
+                document.querySelector('.file-upload strong').innerHTML =
+                    `CLICK TO UPLOAD EVALUATIONS (PDFs) <span style="color:red">*</span>`;
+                display.innerHTML = "";
+            }
         };
 
         

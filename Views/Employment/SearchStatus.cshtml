@@ -1,11 +1,119 @@
-﻿
-<form method="get">
+﻿<head>
 
-    <input type="search" placeholder="Enter your reference Number" name="searchString" />
-    <button type="submit">Search</button>
+    <style>
 
-    <h1>@ViewBag.Status</h1>
+        body{
+        }
 
 
-</form>
+        .mainContent{
+            background-color: #07a4b5;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:500px;
+            background-image: url(/Images/SearchStatusImages/BGImage.jpg?7);
+            background-size:cover;
+        }
+
+        h1{
+            font-family:Dubai;
+            color:white;
+            font-size:50px;
+            font-weight:500;
+            -webkit-text-stroke: 1px grey;
+
+        }
+
+        .otherDiv{
+            display:flex;
+            flex-direction:column;
+            text-align:center;
+        }
+
+        .form{
+            
+        }
+
+        .searchBar{
+            width:620px;
+            height: 50px;
+            border-radius:10px;
+            border:none;
+            background-image: url(/Images/SearchStatusImages/Searchicon.png);
+            background-size:60px;
+            background-position:left;
+            background-repeat:no-repeat;
+            padding-left:50px;
+            box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), -5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+        }
+
+             
+
+        .button{
+            height:50px
+        }
+
+        @@media screen and (max-width: 950px) {
+            .searchBar {
+                width: 300px;
+                height: 50px;
+                
+            }
+
+            .otherDiv {
+                display: flex;
+                flex-direction: column;
+                align-items:center;
+                text-align:center;
+            }
+
+            .mainContent {
+                background-position:right;
+                background-size:300px;
+                background-size:cover;
+            }
+
+            
+        }
+
+
+   
+    </style>
+</head>
+
+<body>
+
+    <div class="mainContent">
+
+        <div class="otherDiv">
+            <h1>Check Your Application Status</h1>
+
+
+                <form method="get" class="form">
+
+                    <input type="search" placeholder="  Enter your reference number" name="searchString" class="searchBar"/>
+
+                @if (ViewBag.Status != null)
+                {
+                    <h1>Status: @ViewBag.Status</h1>
+                }
+                
+
+
+                </form>
+
+            
+        </div>
+       
+
+    </div>
+
+
+    
+
+</body>
+
+
+
 

@@ -2,14 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using SchoolManagmentSystem.Models;
-using System.Diagnostics;
+using Mscc.GenerativeAI.Types;
 using PdfSharp.Fonts;
 using PdfSharp.Snippets.Font;
-using SchoolManagmentSystem.Services;
-using System.IO;
-using System.Drawing;
 using SchoolManagmentSystem.Controllers;
+using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Services;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Security.Claims;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -27,8 +29,8 @@ namespace SchoolManagmentSystem.Controllers
 
         public IActionResult HomePage()
         {
+   
 
-            
             return View();
 
             
@@ -77,8 +79,21 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult RegForm()
         {
+
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+            var access = HttpContext.Session.GetString("AccessnoStudent");
+
+            if (access != "true")
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new {parentID = parentId });
+            }
+
+
+
             return View();
         }
 
@@ -90,17 +105,92 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult Confirmation(StudentRegistration model, IFormFile pdfFile)
+        [Authorize]
+        public async Task<IActionResult> Confirmation(StudentRegistration model, List<IFormFile> pdfFiles)
         {
 
-            if (pdfFile != null && pdfFile.Length > 0)
+            var userIdClaim = User.FindFirst("UserInternalID")?.Value;
+            if (int.TryParse(userIdClaim, out int parentId))
             {
-
+                model.ParentId = parentId;
             }
 
 
-            return View(model);
+            model.ParentName = string.IsNullOrWhiteSpace(model.ParentName) ? "Not Provided" : model.ParentName;
+            model.ParentEmail = string.IsNullOrWhiteSpace(model.ParentEmail) ? "notprovided@example.com" : model.ParentEmail;
+            model.ParentPhone = string.IsNullOrWhiteSpace(model.ParentPhone) ? "000-000-0000" : model.ParentPhone;
+
+            model.Street = string.IsNullOrWhiteSpace(model.Street) ? "N/A" : model.Street;
+            model.Suburb = string.IsNullOrWhiteSpace(model.Suburb) ? "N/A" : model.Suburb;
+            model.City = string.IsNullOrWhiteSpace(model.City) ? "N/A" : model.City;
+            model.PostalCode = string.IsNullOrWhiteSpace(model.PostalCode) ? "0000" : model.PostalCode;
+
+            model.ChildName = string.IsNullOrWhiteSpace(model.ChildName) ? "Unknown Student" : model.ChildName;
+            model.Gender = string.IsNullOrWhiteSpace(model.Gender) ? "Not Specified" : model.Gender;
+            model.AutismLevel = string.IsNullOrWhiteSpace(model.AutismLevel) ? "Pending Assessment" : model.AutismLevel;
+            model.AutismType = string.IsNullOrWhiteSpace(model.AutismType) ? "Pending Assessment" : model.AutismType;
+            model.Comments = string.IsNullOrWhiteSpace(model.Comments) ? "No comments" : model.Comments;
+
+
+            if (model.ChildDob == default)
+            {
+                model.ChildDob = new DateTime(2000, 1, 1);
+            }
+
+
+            
+            if (pdfFiles != null && pdfFiles.Count > 0) //ensures the code doesn't crash if the user clicks "Submit" without selecting any files. It only runs if there is actually work to do.
+            {
+                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");   //It finds the physical path to your wwwroot/uploads folder.
+                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                foreach (var file in pdfFiles)    //Since the user can upload multiple files, the code loops through them one by one. If they upload 3 PDFs, this loop runs 3 times.
+                {
+                    if (file.Length > 0)
+                    {
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;  //If two users upload a file named ID.pdf, the second one would overwrite the first. A GUID (a long string of random letters and numbers like 74a2...) makes the filename unique so no files are ever lost or replaced.
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))   //This takes the data sitting in your computer's "temporary memory" (RAM) and writes it onto the permanent hard drive in the uploads folder.
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+
+                        // Create a new document record for each file
+                        model.Documents.Add(new StudentDocument
+                        {
+                            FilePath = "/uploads/" + uniqueFileName,         //It doesn't save the file in the database. Instead, it saves filePath and fileName
+                            FileName = file.FileName
+                        });
+                    }
+                }
+            }
+
+
+            model.RegistrationDate = DateTime.Now;
+            model.Status = "Pending";
+            model.feesPaid = false;
+
+
+            try
+            {
+
+                ModelState.Clear();
+
+                _context.StudentRegistrations.Add(model);
+                await _context.SaveChangesAsync();
+
+                return View("Confirmation", model);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError($"Database Save Error: {ex.Message}");
+                return Content($"Error saving to database: {ex.InnerException?.Message ?? ex.Message}");
+            }
         }
+
+
 
 
 

@@ -24,13 +24,8 @@ namespace SchoolManagmentSystem.Models
     public string PostalCode { get; set; } = default!;
 
     public string ChildName { get; set; } = default!;
-        [Required(ErrorMessage = "Child's name is required")]
-
-        public string ChildName { get; set; }
-
+        
         [Required(ErrorMessage = "Child's DOB is required")]
-
-
         public DateTime ChildDob { get; set; }
 
     public string Gender { get; set; }

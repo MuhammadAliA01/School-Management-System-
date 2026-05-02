@@ -28,8 +28,6 @@ namespace SchoolManagmentSystem.Models
         public string ChildName { get; set; }
 
         [Required(ErrorMessage = "Child's DOB is required")]
-
-
         public DateTime ChildDob { get; set; }
 
     public string Gender { get; set; }

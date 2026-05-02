@@ -1,0 +1,248 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #eef2f6;
+            margin: 0;
+        }
+
+       
+        .training-header {
+            text-align: center;
+            padding-top: 40px;
+            margin-bottom: -20px; 
+        }
+
+            .training-header h1 {
+                font-family: Dubai, 'Segoe UI', sans-serif;
+                font-weight: bold;
+                color: #2c3e50;
+                font-size: 42px;
+                margin: 0;
+            }
+
+        .dashboard-container {
+            display: flex;
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+            width: 100%;
+        }
+
+        .actionsDiv {
+            display: grid;
+            grid-template-columns: repeat(2, 400px);
+            gap: 40px;
+            margin-top: 40px; 
+        }
+
+        .module-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .customActionBox {
+            width: 400px;
+            height: 300px;
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: none;
+            color: black;
+            font-family: Dubai;
+            font-size: 25px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+            .customActionBox:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+                color: #3498db;
+            }
+
+        .tutorial-link-btn {
+            background-color: #34495e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-family: Dubai;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: fit-content;
+        }
+
+        #classroomCard {
+            background: white url(/Images/StaffDashboardImages/TeachingMethods.png) no-repeat center 40% / 130px;
+        }
+
+        #incidentlist {
+            background: white url(/Images/StaffDashboardImages/IncidentList.png) no-repeat center 40% / 130px;
+        }
+
+        #videoModal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-content {
+            width: 90%;
+            max-width: 900px;
+            background: #000;
+            position: relative;
+            border-radius: 15px;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        #videoModal.active {
+            display: flex;
+        }
+
+            #videoModal.active .video-content {
+                transform: scale(1);
+            }
+
+        .close-video {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 2001;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<div class="dashboard-container">
+    <!-- Added Header Section -->
+    <div class="training-header">
+        <h1>Welcome to Training</h1>
+    </div>
+
+    <div class="actionsDiv">
+        <div class="module-group" id="group-classroom">
+            <a asp-action="TrainingViewTeachingMethod" asp-controller="Training" class="customActionBox" id="classroomCard">Classroom</a>
+            <div style="display:flex; gap: 10px;">
+                <button class="tutorial-link-btn" onclick="playTutorial('/Videos/LogGradeTraining.mp4')">
+                    <i class="bi bi-play-circle-fill"></i> Grade Tutorial
+                </button>
+                <button class="tutorial-link-btn" onclick="playTutorial('/Videos/AIPlanTraining.mp4')">
+                    <i class="bi bi-play-circle-fill"></i> Method Tutorial
+                </button>
+            </div>
+        </div>
+
+        <div class="module-group" id="group-incident">
+            <a asp-action="TrainingIncidentReport" asp-controller="Training" class="customActionBox" id="incidentlist">Incident Report</a>
+            <button class="tutorial-link-btn" onclick="playTutorial('/Videos/IncidentTraining.mp4')">
+                <i class="bi bi-play-circle-fill"></i> Incident Tutorial
+            </button>
+        </div>
+    </div>
+
+    <div id="videoModal" onclick="closeTutorial()">
+        <div class="video-content" onclick="event.stopPropagation()">
+            <span class="close-video" onclick="closeTutorial()">&times;</span>
+            <video id="tutorialPlayer" width="100%" controls preload="auto">
+                <source id="videoSource" src="" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <div id="completionModal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+        <div style="background-color: white; padding: 40px; border-radius: 10px; text-align: center; max-width: 400px;">
+            <h2 style="color: #2ecc71;">🎉 Training Completed!</h2>
+            <p>Congratulations! You have successfully completed all modules.</p>
+            <a asp-action="StaffDashboard" asp-controller="Dashboards" class="btn" style="display: inline-block; padding: 12px 25px; background-color: #3498db; color: white; text-decoration: none; border-radius: 5px;">Return to Dashboard</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const videoModal = document.getElementById('videoModal');
+    const player = document.getElementById('tutorialPlayer');
+    const videoSource = document.getElementById('videoSource');
+
+    function playTutorial(videoUrl) {
+        videoSource.src = videoUrl;
+        player.load();
+        videoModal.style.display = 'flex';
+        setTimeout(() => { videoModal.classList.add('active'); player.play(); }, 10);
+    }
+
+    function closeTutorial() {
+        player.pause();
+        videoModal.classList.remove('active');
+        setTimeout(() => { videoModal.style.display = 'none'; }, 300);
+    }
+
+    function checkTasks() {
+        const gradeDone = sessionStorage.getItem('gradeTaskComplete') === 'true';
+        const methodDone = sessionStorage.getItem('methodTaskComplete') === 'true';
+        const incidentDone = sessionStorage.getItem('incidentTaskComplete') === 'true';
+
+        if (gradeDone && methodDone) {
+            disableModule('group-classroom', 'classroomCard');
+        }
+
+        if (incidentDone) {
+            disableModule('group-incident', 'incidentlist');
+        }
+
+        if (gradeDone && methodDone && incidentDone) {
+            const modal = document.getElementById('completionModal');
+            modal.style.display = 'flex';
+        }
+    }
+
+    function disableModule(groupId, cardId) {
+        const group = document.getElementById(groupId);
+        const card = document.getElementById(cardId);
+        if (card) {
+            card.style.pointerEvents = 'none';
+            card.style.filter = 'grayscale(100%)';
+            card.style.opacity = '0.6';
+            if (!card.innerHTML.includes('✔')) {
+                card.innerHTML = 'Completed <i class="bi bi-patch-check-fill" style="color:#2ecc71; margin-left:10px;"></i>';
+            }
+        }
+        const btns = group.querySelectorAll('.tutorial-link-btn');
+        btns.forEach(btn => btn.style.visibility = 'hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', checkTasks);
+</script>

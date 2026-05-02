@@ -1,0 +1,65 @@
+﻿
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container mt-4">
+    
+    <div id="successAlert" class="alert alert-success alert-dismissible fade show text-center border-0 shadow-sm mb-4" role="alert" style="display: none; border-radius: 10px;">
+        <strong>Success!</strong> Teaching strategy has been logged.
+        
+        <div class="mt-2">
+            <a href="/Training/TrainingDashboard" class="btn btn-sm btn-outline-success">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0" style="border-radius: 15px;">
+                <div class="card-header bg-primary text-white py-3" style="border-radius: 15px 15px 0 0;">
+                    <h3 class="mb-0 text-center">AI Teaching Strategy</h3>
+                </div>
+
+                <div class="card-body p-5">
+                    <h4 class="text-secondary mb-4 text-center">Custom Plan for: <span class="text-dark fw-bold">Alex Thompson</span></h4>
+
+                  
+                    <form id="methodForm">
+                        <div class="bg-light p-4 shadow-sm mb-4" style="border-radius: 10px; white-space: pre-wrap; font-size: 1.1rem; line-height: 1.8; border-left: 5px solid #0d6efd;">
+                            <h5 class="fw-bold text-primary">Recommended Strategy: Kinesthetic Scaffolding</h5>
+
+                            1. **Visual Aids:** Utilize interactive coordinate geometry software.
+                            2. **Hands-on Practice:** Assign the "Bridge Builder" module.
+                            3. **Pacing:** Focus on three complex "challenge" problems per session.
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-save px-5 py-2 fw-bold">
+                                Log Strategy <i class="fas fa-save ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+       
+        $('#methodForm').on('submit', function (e) {
+            e.preventDefault();
+
+            sessionStorage.setItem('methodTaskComplete', 'true');
+            $('#successAlert').fadeIn();
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+
+            $('.btn-save')
+                .attr('disabled', true)
+                .css({ 'opacity': '0.7', 'pointer-events': 'none' })
+                .removeClass('btn-primary')
+                .addClass('btn-success')
+                .html('Strategy Logged <i class="fas fa-check ms-2"></i>');
+        });
+    });
+</script>

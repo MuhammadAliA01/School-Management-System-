@@ -18,12 +18,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.5.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
     <PackageReference Include="Mscc.GenerativeAI" Version="3.1.0" />
     <PackageReference Include="PdfPig" Version="0.1.14" />
      <PackageReference Include="PDFsharp-MigraDoc-GDI" Version="6.2.4" />
      <PackageReference Include="Stripe.net" Version="51.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Training\" />
   </ItemGroup>
 
 </Project>

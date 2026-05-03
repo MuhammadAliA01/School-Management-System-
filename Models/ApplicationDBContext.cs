@@ -20,5 +20,7 @@ namespace SchoolManagmentSystem.Models
         public DbSet<StudentRegistration> StudentRegistrations { get; set; }
         public DbSet<StudentDocument> StudentDocuments { get; set; }   //NOTE: I HAVEN'T UPDATED TO DATABASE
         public DbSet<Attendance>Attendances { get; set; }
+        public DbSet<EventCalendar> EventCalendars { get; set; }
+
     }
 }

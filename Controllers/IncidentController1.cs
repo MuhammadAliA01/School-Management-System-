@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.ServicesAi.EmploymentAI;
 using SchoolManagmentSystem.ServicesAi.IncidentAI;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,13 @@ namespace SchoolManagmentSystem.Controllers
     public class IncidentController : Controller
     {
         private readonly ApplicationDBContext _context;
+        private readonly IncidentAnalysisService _inService;
 
-        public IncidentController(ApplicationDBContext context)
+
+        public IncidentController(ApplicationDBContext context, IncidentAnalysisService inService)
         {
             _context = context;
+            _inService = inService;
         }
 
         [Authorize]
@@ -44,8 +48,7 @@ namespace SchoolManagmentSystem.Controllers
             var incident = await _context.Incidents.FindAsync(id);
             if (incident == null) return NotFound();
 
-            var service = new IncidentAnalysisService();
-            var analysis = await service.AnalyzeSingleIncidentAsync(incident);
+            var analysis = await _inService.AnalyzeSingleIncidentAsync(incident);
 
             ViewBag.AIAnalysis = analysis;
             return View(incident);
@@ -94,8 +97,7 @@ namespace SchoolManagmentSystem.Controllers
 
                     // 2. TRIGGER THE AI ANALYSIS
                     // We do this BEFORE saving so the analysis is stored with the record
-                    var aiService = new IncidentAnalysisService();
-                    var analysis = await aiService.AnalyzeSingleIncidentAsync(model);
+                    var analysis = await _inService.AnalyzeSingleIncidentAsync(model);
 
                     // 3. Map the AI results to your model
                     // Make sure these columns exist in your Incidents table!

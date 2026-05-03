@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using SchoolManagmentSystem.Models;
 using SchoolManagmentSystem.ServicesAi.EmploymentAI;
+using Stripe;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -15,10 +17,12 @@ namespace SchoolManagmentSystem.Controllers
     {
         private readonly ApplicationDBContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly AIScoringService _aiService;
 
-        public EmploymentController(ApplicationDBContext context, IWebHostEnvironment environment)
+        public EmploymentController(ApplicationDBContext context, IWebHostEnvironment environment, AIScoringService aiService)
         {
             _context = context;
+            _aiService = aiService;
             _environment = environment;
         }
 
@@ -148,9 +152,8 @@ namespace SchoolManagmentSystem.Controllers
 
                     MailMessage mailMessage = new MailMessage();
                     var cvService = new CVService();
-                    var aiService = new AIScoringService();
                     var cvText = await cvService.ExtractTextFromPDFAsync(cvFile);
-                    var aiFeedback = await aiService.GetSuitabilityScore(cvText, employmentApplication.selectedRole);
+                    var aiFeedback = await _aiService.GetSuitabilityScore(cvText, employmentApplication.selectedRole);
 
 
                     employmentApplication.Status = "Pending";

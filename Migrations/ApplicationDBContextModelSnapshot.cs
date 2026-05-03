@@ -94,6 +94,36 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("EmploymentApplications");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.EventCalendar", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AttendeeCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Desc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EventCalendars");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Incident", b =>
                 {
                     b.Property<int>("IncidentId")

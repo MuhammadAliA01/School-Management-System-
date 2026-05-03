@@ -8,7 +8,13 @@ namespace SchoolManagmentSystem.ServicesAi.IncidentAI
 {
     public class IncidentAnalysisService
     {
+        
         private readonly string _apikey = "";
+
+        public IncidentAnalysisService(IConfiguration configuration)
+        {
+            _apikey = configuration["ApiSettings:ApiKey"];
+        }
 
         public async Task<IncidentAnalysisResult> AnalyzeSingleIncidentAsync(Incident incident)
         {

@@ -1,0 +1,288 @@
+﻿<style>
+
+    :root {
+        --primary-brand: #E67E22;
+        --brand-hover: #D35400;
+        --slate-text: #34495E;
+        --border-color: #DCDDE1;
+    }
+
+
+
+    body {
+        background-color: #F0F2F5;
+        color: var(--slate-text);
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+
+
+    .report-page {
+        background-color: white;
+        max-width: 850px;
+        margin: 40px auto;
+        padding: 50px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border-top: 6px solid var(--primary-brand);
+        border-radius: 12px;
+        position: relative;
+    }
+
+
+
+    .school-header {
+        border-bottom: 1px solid #EEE;
+        margin-bottom: 35px;
+        padding-bottom: 25px;
+    }
+
+
+
+    .report-title {
+        letter-spacing: 1px;
+        font-weight: 800;
+        color: var(--slate-text);
+    }
+
+
+
+    .form-section-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--primary-brand);
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        display: block;
+        letter-spacing: 1.5px;
+    }
+
+
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        padding: 12px 15px;
+        background-color: #FAFAFA;
+        transition: all 0.2s ease-in-out;
+    }
+
+
+
+        .form-control:focus {
+            border-color: var(--primary-brand);
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+            background-color: #fff;
+            outline: none;
+        }
+
+
+
+    label {
+        font-weight: 600;
+        color: #5D6D7E;
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+    }
+
+
+
+    .btn-save {
+        background-color: var(--primary-brand);
+        color: white;
+        padding: 14px 40px;
+        font-weight: 700;
+        border-radius: 8px;
+        border: none;
+        transition: 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+    }
+
+
+
+        .btn-save:hover {
+            background-color: var(--brand-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.25);
+        }
+
+
+
+    .watermark {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 0.65rem;
+        color: #BDC3C7;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+
+
+    .back-link {
+        color: #95A5A6;
+        font-size: 0.9rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+
+
+        .back-link:hover {
+            color: var(--primary-brand);
+        }
+
+
+
+    .tip-container {
+        background-color: #FDF2E9; 
+        border-radius: 15px;
+        padding: 15px 25px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .tip-content {
+        color: #D35400; 
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    .tip-label {
+        font-weight: 800;
+        margin-right: 5px;
+    }
+
+    .tip-icon {
+        color: #D35400;
+        margin-right: 12px;
+        font-size: 1.1rem;
+    }
+</style>
+
+
+
+
+<div class="container mt-5">
+    
+    <div class="tip-container">
+        <i class="fas fa-lightbulb tip-icon"></i>
+        <p class="tip-content">
+            <span class="tip-label">Teacher Tip:</span>
+            Focus on objective language. Instead of "The student was angry," try "The student raised their voice and exited the classroom."
+        </p>
+    </div>
+
+    <div class="report-page">
+       
+        <div class="watermark">DEMO-MODE-2026</div>
+
+        <div class="training-banner" style="background: #f8f9fa; padding: 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-bottom: 20px; color: #7f8c8d;">
+            <i class="fas fa-graduation-cap"></i> TEACHER TRAINING MODULE: PRACTICE FORM
+        </div>
+
+        <div class="school-header text-center">
+            <h3 class="report-title mb-1">Incident Report Entry</h3>
+            <p class="text-muted small mb-0">Hybrid Learning Academy • Official Log Practice</p>
+        </div>
+
+        
+        <div id="successAlert" class="alert alert-success border-0 shadow-sm mb-4" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center">
+                <span><strong><i class="fas fa-check-circle"></i> Practice Report Submitted Successfully!</strong></span>
+                <a asp-action="TrainingDashboard" asp-controller="Training" class="btn btn-sm btn-success ml-3">Return to Dashboard</a>
+            </div>
+        </div>
+
+        <form id="incidentForm">
+            <div class="row">
+                <div class="col-md-6 pr-md-4">
+                    <span class="form-section-title">01. Identification</span>
+
+                    <div class="form-group mb-3">
+                        <label>Assigned Teacher / Reporter</label>
+                        <select id="TeacherSelect" class="form-control" required>
+                            <option value="">Select Staff Member</option>
+                            <option value="1">Mr. Anderson (Demo)</option>
+                            <option value="2">Ms. Stevens (Demo)</option>
+                            <option value="3">Coach Miller (Demo)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Student Involved</label>
+                        <select id="StudentDropdown" class="form-control" required>
+                            <option value="">Select Student</option>
+                            <option value="101">John Doe (Grade 10)</option>
+                            <option value="102">Jane Smith (Grade 9)</option>
+                            <option value="103">Billy Brown (Grade 11)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Date of Incident</label>
+                        <input type="date" class="form-control" value="2026-04-29" required />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <span class="form-section-title">02. Incident Details</span>
+
+                    <div class="form-group mb-3">
+                        <label>Factual Description</label>
+                        <textarea class="form-control" rows="10"
+                                  placeholder="Provide a clear, objective account of the event..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12">
+                    <span class="form-section-title">03. Immediate Response</span>
+                    <div class="form-group mb-3">
+                        <label>Action Taken</label>
+                        <input class="form-control"
+                               placeholder="e.g., Calming techniques used, first aid, parent notified..." />
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-5" style="border-top: 1px solid #EEE;" />
+
+            <div class="d-flex justify-content-between align-items-center">
+                <a asp-action="Index" asp-controller="Home" class="back-link">
+                    <i class="fas fa-arrow-left mr-1"></i> Exit Training
+                </a>
+                <button type="submit" class="btn btn-save shadow-sm">
+                    Submit Final Report
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#incidentForm').on('submit', function (e) {
+            e.preventDefault();
+
+           
+            sessionStorage.setItem('incidentTaskComplete', 'true');
+
+            
+            $('#successAlert').fadeIn();
+
+            
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+
+            
+            $('.btn-save').attr('disabled', true).css('opacity', '0.5').text('Report Logged');
+        });
+    });
+</script>

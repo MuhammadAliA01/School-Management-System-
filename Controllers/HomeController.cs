@@ -106,7 +106,7 @@ namespace SchoolManagmentSystem.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Confirmation(StudentRegistration model, IFormFile pdfFile)
+        public async Task<IActionResult> Confirmation(StudentRegistration model, List<IFormFile> pdfFiles)
         {
 
             var userIdClaim = User.FindFirst("UserInternalID")?.Value;
@@ -138,23 +138,32 @@ namespace SchoolManagmentSystem.Controllers
             }
 
 
-            if (pdfFile != null && pdfFile.Length > 0)
+            
+            if (pdfFiles != null && pdfFiles.Count > 0) //ensures the code doesn't crash if the user clicks "Submit" without selecting any files. It only runs if there is actually work to do.
             {
-                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");   //It finds the physical path to your wwwroot/uploads folder.
                 if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + pdfFile.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                foreach (var file in pdfFiles)    //Since the user can upload multiple files, the code loops through them one by one. If they upload 3 PDFs, this loop runs 3 times.
                 {
-                    await pdfFile.CopyToAsync(fileStream);
+                    if (file.Length > 0)
+                    {
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;  //If two users upload a file named ID.pdf, the second one would overwrite the first. A GUID (a long string of random letters and numbers like 74a2...) makes the filename unique so no files are ever lost or replaced.
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))   //This takes the data sitting in your computer's "temporary memory" (RAM) and writes it onto the permanent hard drive in the uploads folder.
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+
+                        // Create a new document record for each file
+                        model.Documents.Add(new StudentDocument
+                        {
+                            FilePath = "/uploads/" + uniqueFileName,         //It doesn't save the file in the database. Instead, it saves filePath and fileName
+                            FileName = file.FileName
+                        });
+                    }
                 }
-                model.PdfPath = "/uploads/" + uniqueFileName;
-            }
-            else
-            {
-                model.PdfPath = "No-File-Uploaded.pdf";
             }
 
 

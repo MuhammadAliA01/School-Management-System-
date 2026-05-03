@@ -113,5 +113,6 @@ namespace SchoolManagmentSystem.Controllers
             }
             return View();
         }
+
     }
 }

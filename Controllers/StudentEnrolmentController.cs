@@ -101,7 +101,7 @@ namespace SchoolManagmentSystem.Controllers
 
         public IActionResult Enrol(int studentId)
         {
-            var student = _context.StudentRegistrations
+            var student = _context.StudentRegistrations.Include(s => s.Documents)
                                   .FirstOrDefault(s => s.Id == studentId);
 
             var parentId = _context.StudentRegistrations.Where(p => p.Id == studentId).Select(p => p.ParentId).FirstOrDefault();    
@@ -125,9 +125,14 @@ namespace SchoolManagmentSystem.Controllers
                 Gender = student.Gender,
                 AutismLevel = student.AutismLevel,
                 AutismType = student.AutismType,
-                PdfPath = student.PdfPath,
+                Documents = student.Documents.Select(d => new StudentDocument
+                {
+                    FilePath = d.FilePath,
+                    FileName = d.FileName
+                }).ToList(),
                 Comments = student.Comments,
                 RegistrationDate = DateTime.Today,
+                
 
             };
 

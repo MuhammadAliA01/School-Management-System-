@@ -1,0 +1,75 @@
+﻿@model SchoolManagmentSystem.Models.InsightsOnStudentAttendance
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+<style>
+    body { font-family: 'Nunito', sans-serif; background: #FFFBF5; }
+    .dashboard-container { max-width: 900px; margin: 40px auto; }
+    .header { background: #E8521A; color: white; padding: 25px; border-radius: 15px 15px 0 0; text-align: center; }
+    .header h2 { margin: 0; font-family: 'Playfair Display', serif; font-size: 32px; }
+    
+    /* The 3 stat boxes at the top */
+    .stats-grid { display: flex; gap: 20px; padding: 20px 0; }
+    .stat-box { flex: 1; background: white; padding: 25px; border-radius: 12px; text-align: center; border: 2px solid #F5D9B8; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .stat-number { font-size: 36px; font-weight: 700; color: #E8521A; margin: 10px 0 0 0; }
+    .stat-label { color: #B85C2A; font-weight: 600; text-transform: uppercase; font-size: 14px; }
+
+    /* The Danger Zone table */
+    .danger-zone { background: white; border: 2px solid #ffcdd2; border-radius: 12px; padding: 25px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .danger-title { color: #d32f2f; font-family: 'Playfair Display', serif; margin-top: 0; border-bottom: 2px solid #ffebee; padding-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th { text-align: left; background: #ffebee; color: #d32f2f; padding: 12px; font-size: 14px; text-transform: uppercase; }
+    td { padding: 15px 12px; border-bottom: 1px solid #eee; color: #3D1F0A; font-weight: 600; }
+    .badge { background: #d32f2f; color: white; padding: 5px 10px; border-radius: 20px; font-size: 14px; }
+    
+    .all-good { background: #d4edda; color: #155724; padding: 20px; border-radius: 8px; text-align: center; font-weight: bold; border: 1px solid #c3e6cb; margin-top: 20px; }
+</style>
+
+<div class="dashboard-container">
+    <div class="header">
+        <h2>Principal's Analytics Dashboard</h2>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="stat-label">Total Enrolled</div>
+            <div class="stat-number">@Model.TotalStudents</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Present Today</div>
+            <div class="stat-number">@Model.PresentToday</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Daily Attendance Rate</div>
+            <div class="stat-number">@Model.DailyAttendanceRate%</div>
+        </div>
+    </div>
+
+    <div class="danger-zone">
+        <h3 class="danger-title">⚠️ Chronic Absenteeism Warning</h3>
+        <p style="color: #666; margin-bottom: 20px;">Students flagged for missing 3 or more days of school.</p>
+
+        @if (Model.AtRiskStudents.Count == 0)
+        {
+            <div class="all-good">🎉 Great news! No students are currently hitting the chronic absenteeism threshold.</div>
+        }
+        else
+        {
+            <table>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Total Days Absent</th>
+                    <th>Status</th>
+                </tr>
+                @foreach (var student in Model.AtRiskStudents)
+                {
+                    <tr>
+                        <td>@student.Name</td>
+                        <td><span class="badge">@student.TotalAbsences Days</span></td>
+                        <td style="color: #d32f2f; font-weight: bold;">Action Required</td>
+                    </tr>
+                }
+            </table>
+        }
+    </div>
+</div>

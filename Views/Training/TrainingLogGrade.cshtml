@@ -1,0 +1,257 @@
+﻿
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    .lg-wrap {
+        font-family: 'Nunito', sans-serif;
+        padding: 2rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #FFFBF5;
+        min-height: 100vh;
+    }
+
+    .lg-card {
+        width: 100%;
+        max-width: 560px;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1.5px solid #F5D9B8;
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(184, 92, 42, 0.05);
+    }
+
+    .lg-header {
+        background: #E8521A;
+        padding: 1.6rem 2rem 1.4rem;
+        color: #fff;
+    }
+
+    .lg-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 24px;
+        margin: 0 0 3px;
+    }
+
+    .lg-subtitle {
+        font-size: 13px;
+        color: #FFD9B8;
+        margin: 0;
+    }
+
+    .lg-body {
+        padding: 1.75rem 2rem;
+    }
+
+    .lg-field {
+        margin-bottom: 1.1rem;
+    }
+
+        .lg-field label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: #B85C2A;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 5px;
+        }
+
+        .lg-field select, .lg-field input, .lg-field textarea {
+            width: 100%;
+            box-sizing: border-box;
+            background: #FFF5EB;
+            border: 2px solid #F5D9B8;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            color: #3D1F0A;
+            transition: all 0.2s ease;
+        }
+
+            .lg-field select:focus, .lg-field input:focus, .lg-field textarea:focus {
+                border-color: #E8521A;
+                box-shadow: 0 0 0 3px rgba(232,82,26,0.1);
+                background: #fff;
+                outline: none;
+            }
+
+    #successAlert {
+        display: none;
+        width: 100%;
+        max-width: 560px;
+        background-color: #d4edda;
+        border: 1.5px solid #c3e6cb;
+        color: #155724;
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    
+    .input-validation-error {
+        border-color: #a83232 !important;
+        background-color: #fdf5f5 !important;
+    }
+
+    .lg-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .lg-submit {
+        width: 100%;
+        padding: 13px;
+        background: #E8521A;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+        .lg-submit:hover:not(:disabled) {
+            background: #C23E10;
+            transform: translateY(-1px);
+        }
+
+        .lg-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+</style>
+
+<div class="lg-wrap">
+
+    
+    <div id="successAlert" class="shadow-sm">
+        <i class="fas fa-check-circle me-2"></i>
+        <strong>Grade Logged!</strong> The record has been synced successfully.
+        <div class="mt-2">
+            <a href="/Training/TrainingDashboard" style="color: #155724; font-size: 12px;">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="lg-card">
+        <div class="lg-header">
+            <h2 class="lg-title">Log Student Grade</h2>
+            <p class="lg-subtitle">Record performance to trigger AI insights</p>
+        </div>
+
+        <div class="lg-body">
+            <form id="gradeForm" method="post" novalidate>
+                <div class="lg-field">
+                    <label>Subject area</label>
+                    <select name="SubjectName" required>
+                        <option value="">-- Choose a subject --</option>
+                        <option value="Creative Development">Creative Development</option>
+                        <option value="Oral skills and Language">Oral skills and Language</option>
+                        <option value="Personal Independence">Personal Independence</option>
+                        <option value="Basic Concepts">Basic Concepts</option>
+                        <option value="Physical and Social">Physical and Social Development</option>
+                    </select>
+                </div>
+
+                <div class="lg-row">
+                    <div class="lg-field">
+                        <label>Term</label>
+                        <select name="TermNumber" required>
+                            <option value="">Select...</option>
+                            <option value="1">Term 1</option>
+                            <option value="2">Term 2</option>
+                            <option value="3">Term 3</option>
+                        </select>
+                    </div>
+                    <div class="lg-field">
+                        <label>Week</label>
+                        <select name="WeekNumber" required>
+                            <option value="">Select...</option>
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option value="@i">Week @i</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="lg-field">
+                    <label>Task Name</label>
+                    <input name="TaskName" type="text" placeholder="e.g. Hand washing" required />
+                </div>
+
+                <div class="lg-field">
+                    <label>Score (0-10)</label>
+                    <input name="Score" type="number" min="0" max="10" placeholder="8" required />
+                </div>
+
+                <div class="lg-field">
+                    <label>Teacher comments</label>
+                    <textarea name="TeacherComments" rows="3" placeholder="How did they do?"></textarea>
+                </div>
+
+                <button type="submit" id="btnSave" class="lg-submit">
+                    Submit Grade <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#gradeForm').on('submit', function (e) {
+            e.preventDefault();
+
+            let isValid = true;
+
+            
+            $(this).find('input[required], select[required]').each(function() {
+                if (!$(this).val()) {
+                    $(this).addClass('input-validation-error');
+                    isValid = false;
+                } else {
+                    $(this).removeClass('input-validation-error');
+                }
+            });
+
+            const score = $('input[name="Score"]').val();
+            if (score < 0 || score > 10 || score === "") {
+                $('input[name="Score"]').addClass('input-validation-error');
+                isValid = false;
+            }
+
+            if (isValid) {
+               
+                sessionStorage.setItem('gradeTaskComplete', 'true');
+
+                
+                $('#successAlert').fadeIn();
+                $('html, body').animate({ scrollTop: 0 }, 'slow');
+
+                
+                $('#btnSave')
+                    .attr('disabled', true)
+                    .html('Grade Logged <i class="fas fa-check ms-2"></i>');
+            }
+        });
+
+       
+        $('input, select').on('change input', function() {
+            $(this).removeClass('input-validation-error');
+        });
+    });
+</script>

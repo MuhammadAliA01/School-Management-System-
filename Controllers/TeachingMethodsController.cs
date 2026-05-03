@@ -19,8 +19,27 @@ namespace SchoolManagmentSystem.Controllers
         [Authorize]
         public IActionResult Dashboard()
         {
+            var now = DateTime.Now;
+            var currentMonth = now.Month;
+            var currentYear = now.Year;
+
             var allStudents = Context.Students.ToList();
-            return View(allStudents); 
+
+            var monthlyAverages = Context.StudentAssessments
+                .Where(a => a.AssessmentDate.Month == currentMonth
+                         && a.AssessmentDate.Year == currentYear)
+                .GroupBy(a => a.StudentId)
+                .Select(g => new
+                {
+                    StudentId = g.Key,
+                    Average = g.Average(a => a.Score)
+                })
+                .ToList();
+
+            ViewBag.StudentAverages = monthlyAverages
+    .ToDictionary(x => x.StudentId, x => Math.Round(x.Average, 1));
+
+            return View(allStudents);
         }
 
         [Authorize]
@@ -32,19 +51,75 @@ namespace SchoolManagmentSystem.Controllers
 
             if (!string.IsNullOrEmpty(student.AiTeachingPlan))
             {
-                // YES! Skip the AI entirely, use the saved plan, and load the page instantly!
                 ViewBag.StudentName = student.FullName;
                 ViewBag.AiAdvice = student.AiTeachingPlan;
                 return View();
             }
 
+            string medicalText = "";
             string folderPath = _env.WebRootPath;
 
-            string physicalPath = Path.Combine(folderPath, student.PdfPath.TrimStart('/'));
+            if (student.Documents != null && student.Documents.Any())
+            {
+                foreach (var doc in student.Documents)
+                {
+                    string physicalPath = Path.Combine(folderPath, doc.FilePath.TrimStart('/'));
+
+                    if (System.IO.File.Exists(physicalPath))
+                    {
+                        using (UglyToad.PdfPig.PdfDocument pdf = UglyToad.PdfPig.PdfDocument.Open(physicalPath))
+                        {
+                            foreach (UglyToad.PdfPig.Content.Page page in pdf.GetPages())
+                            {
+                                medicalText += page.Text + " ";
+                            }
+                        }
+                    }
+                }
+            }
 
             var consensusEngine = new SchoolManagmentSystem.ServicesAi.DecisionMaker();
 
-            string medicalText = "";
+            string answer = await consensusEngine.FindBestMethods(
+                student.AutismLevel,
+                student.AutismType,
+                student.Comments,
+                medicalText 
+            );
+
+            student.AiTeachingPlan = answer;
+            Context.SaveChanges();
+
+            ViewBag.StudentName = student.FullName;
+            ViewBag.AiAdvice = answer;
+            return View();
+
+            /*string medicalText = "";
+            string folderPath = _env.WebRootPath;
+
+            if (student.Documents != null && student.Documents.Any())
+            {
+                foreach (var doc in student.Documents)
+                {
+                    // Combine the web root with the saved relative path
+                    string physicalPath = Path.Combine(folderPath, doc.FilePath.TrimStart('/'));
+
+                    if (System.IO.File.Exists(physicalPath))
+                    {
+                        using (UglyToad.PdfPig.PdfDocument pdf = UglyToad.PdfPig.PdfDocument.Open(physicalPath))
+                        {
+                            foreach (UglyToad.PdfPig.Content.Page page in pdf.GetPages())
+                            {
+                                medicalText += page.Text + " ";
+                            }
+                        }
+                    }
+                }
+            }
+
+            var consensusEngine = new SchoolManagmentSystem.ServicesAi.DecisionMaker();
+
+            
             using (UglyToad.PdfPig.PdfDocument document = UglyToad.PdfPig.PdfDocument.Open(physicalPath))
             {
                 foreach (UglyToad.PdfPig.Content.Page page in document.GetPages())
@@ -63,7 +138,7 @@ namespace SchoolManagmentSystem.Controllers
             Context.SaveChanges();
             ViewBag.StudentName = student.FullName;
             ViewBag.AiAdvice = answer;
-            return View();
+            return View();*/
         }
     }
 }

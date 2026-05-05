@@ -8,6 +8,11 @@ namespace SchoolManagmentSystem.ServicesAi.EmploymentAI
     {
         private readonly string _apikey = "";
 
+        public AIScoringService(IConfiguration configuration)
+        {
+            _apikey = configuration["ApiSettings:ApiKey2"];
+        }
+
         public async Task<(int Score, string Summary)> GetSuitabilityScore(string cvText, string role)
         {
             try

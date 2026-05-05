@@ -127,7 +127,7 @@
                             <span class="badge-custom">@student.AutismLevel</span>
 
                             <span class="badge bg-success ms-2 text-white" style="border-radius: 8px; padding: 5px 10px;">
-                                Avg Score: @(ViewBag.StudentAverages != null && ViewBag.StudentAverages.ContainsKey(student.StudentId) ? ViewBag.StudentAverages[student.StudentId] : 0) / 10
+                                Avg Score: @(ViewBag.StudentAverages != null && ViewBag.StudentAverages.ContainsKey(student.StudentId) ? ViewBag.StudentAverages[student.StudentId] : 0) / 10 (@DateTime.Now.ToString("MMM"))
                             </span>
                         </div>
 

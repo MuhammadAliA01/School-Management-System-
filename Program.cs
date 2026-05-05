@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using SchoolManagmentSystem.Models;
-using SchoolManagmentSystem.Services;
+using SchoolManagmentSystem.ServicesAi.EmploymentAI;
+using SchoolManagmentSystem.ServicesAi.IncidentAI;
+using Stripe; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,10 @@ builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
-    
+builder.Services.AddScoped<AIScoringService>();
+builder.Services.AddScoped<IncidentAnalysisService>();
+
+
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

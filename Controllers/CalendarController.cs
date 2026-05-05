@@ -23,12 +23,12 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         [HttpGet("events")]
-        public async Task<IActionResult> GetEvents() => Ok(await _context.CalendarEvents.ToListAsync());
+        public async Task<IActionResult> GetEvents() => Ok(await _context.EventCalendars.ToListAsync());
 
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] EventCalendar ev)
         {
-            _context.CalendarEvents.Add(ev);
+            _context.EventCalendars.Add(ev);
             await _context.SaveChangesAsync();
             return Ok(ev);
         }
@@ -36,7 +36,7 @@ namespace SchoolManagmentSystem.Controllers
         [HttpPost("rsvp/{id}")]
         public async Task<IActionResult> RSVP(int id)
         {
-            var ev = await _context.CalendarEvents.FindAsync(id);
+            var ev = await _context.EventCalendars.FindAsync(id);
             if (ev == null) return NotFound();
             ev.AttendeeCount++;
             await _context.SaveChangesAsync();

@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SchoolManagmentSystem.styles.css" asp-append-version="true" />
-    <script src="https://jsdelivr.net"></script>
 </head>
 <body>
     <header>
@@ -30,9 +29,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="HomePage">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>  
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
                         </li>
@@ -52,8 +49,6 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             
-                                @if (User.IsInRole("Staff"))
-                                {
 
                             @if (User.IsInRole("Staff"))
                             {
@@ -76,37 +71,32 @@
                                 </li>
                                 
 
-                                }
-                                else if (User.IsInRole("Parent"))
-                                {
-
                             }
-                            else if (User.IsInRole("Parent"))
-                            {
-                                <li>
-                                    @User.Identity.Name
-                                </li>
 
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
-                                </li>
-                                <li class="nav-item">
-                                    @{
-                                        var parentId = User.FindFirst("UserInternalID")?.Value;
+                             else if (User.IsInRole("Parent"))
+                                    {
+                                        <li>
+                                            @User.Identity.Name
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            @{
+                                                var parentId = User.FindFirst("UserInternalID")?.Value;
+                                            }
+
+                                            <a href="@Url.Action("ParentDashboard", "Dashboards", new { parentID = parentId })" class="nav-link text-dark">
+                                                Dashboard
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <span class="nav-link">@User.Identity.Name</span>
+                                        </li>
+
+
                                     }
-
-                                    <a href="@Url.Action("ParentDashboard", "Dashboards", new { parentID = parentId })" class="nav-link text-dark">
-                                        Dashboard
-                                    </a>
-                                </li>
-                                <li>
-                                    <span class="nav-link">@User.Identity.Name</span>
-                                </li>
-
-                                
-                                }
-                            
-                            }
 
                         }
                         else

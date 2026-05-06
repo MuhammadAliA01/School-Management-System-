@@ -5,7 +5,8 @@ using Microsoft.Extensions.AI;
 using SchoolManagmentSystem.Models;
 using SchoolManagmentSystem.ServicesAi.EmploymentAI;
 using SchoolManagmentSystem.ServicesAi.IncidentAI;
-using Stripe; 
+using Stripe;
+using SchoolManagmentSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

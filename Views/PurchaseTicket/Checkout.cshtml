@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Secure Checkout";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-dark text-white text-center py-3">
+                    <h4 class="mb-0"><i class="bi bi-shield-lock-fill"></i> Stripe Secure Payment</h4>
+                </div>
+                <div class="card-body p-4 bg-light">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div>
+                            <h6 class="text-muted mb-0">Booking For</h6>
+                            <strong>@ViewBag.Quantity Ticket(s)</strong>
+                        </div>
+                        <div class="text-end">
+                            <h6 class="text-muted mb-0">Total Due</h6>
+                            <h3 class="text-success mb-0">R @ViewBag.Amount.ToString("F2")</h3>
+                        </div>
+                    </div>
+
+                    <form asp-action="ProcessStripePayment" method="post">
+                        <input type="hidden" name="eventId" value="@ViewBag.EventId" />
+                        <input type="hidden" name="quantity" value="@ViewBag.Quantity" />
+                        <input type="hidden" name="amount" value="@ViewBag.Amount" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Cardholder Name</label>
+                            <input type="text" name="cardHolderName" class="form-control form-control-lg" placeholder="Full Name as on card" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Card Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="bi bi-credit-card-2-front"></i></span>
+                                <input type="text" class="form-control form-control-lg border-start-0" placeholder="4242 4242 4242 4242" maxlength="19" required />
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <label class="form-label fw-bold">Expiration</label>
+                                <input type="text" class="form-control form-control-lg" placeholder="MM / YY" maxlength="5" required />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold">CVC</label>
+                                <input type="text" class="form-control form-control-lg" placeholder="123" maxlength="3" required />
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm py-3">
+                                Pay R @ViewBag.Amount.ToString("F2")
+                            </button>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="bi bi-shield-check text-success"></i>
+                                This is a secure encrypted transaction processed by <strong>Stripe</strong>.
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a asp-controller="Event" asp-action="Index" class="text-decoration-none text-secondary">
+                    <i class="bi bi-arrow-left"></i> Cancel and go back
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -9,6 +9,46 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SchoolManagmentSystem.styles.css" asp-append-version="true" />
+
+    <style>
+
+
+
+        .navbar {
+            position: relative;
+        }
+
+
+        .customNavBar {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            font-family: Dubai;
+            font-size: 20px;
+        }
+
+
+
+
+
+            .customNavBar .navbar-nav {
+                justify-content: center;
+                width: 100%;
+                gap: 20px;
+            }
+
+
+
+
+
+        .username-right {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+    </style>
 </head>
 <body>
     <header>
@@ -52,9 +92,7 @@
 
                             @if (User.IsInRole("Staff"))
                             {
-                                <li>
-                                    @User.Identity.Name
-                                </li>
+                               
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
                                 </li>

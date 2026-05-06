@@ -341,5 +341,91 @@ namespace SchoolManagmentSystem.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Login");
         }
+
+        [HttpGet]
+        public IActionResult CreateStaffAccount(string email)
+        {
+            if (string.IsNullOrEmpty(email)) return RedirectToAction("Login");
+
+            var model = new Staff { Email = email };
+            ViewBag.Email = email; 
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateStaffAccount(Staff staff)
+        {
+            ModelState.Remove("Role");
+            ModelState.Remove("IDNumber"); 
+
+            
+            ModelState.Remove("CVLocation");
+            ModelState.Remove("ContractLocation");
+            ModelState.Remove("IdCopyLocation");
+            ModelState.Remove("SACELocation");
+            ModelState.Remove("PoliceClearanceLocation");
+            ModelState.Remove("BankLetterLocation");
+            ModelState.Remove("Salt");
+
+
+            ViewBag.Email = staff.Email;
+
+            var application = await _context.EmploymentApplications
+                .FirstOrDefaultAsync(a => a.Email == staff.Email && a.Status == "Awaiting Account Creation");
+
+            if (application == null)
+            {
+                ModelState.AddModelError("", "No approved application found.");
+                return View(staff);
+            }
+
+            if (ModelState.IsValid)
+            {
+                
+
+                if (Regex.IsMatch(staff.Password, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"))
+                {
+                    byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
+                    staff.Salt = Convert.ToBase64String(salt);
+
+                    string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: staff.Password,
+                        salt: salt,
+                        prf: KeyDerivationPrf.HMACSHA256,
+                        iterationCount: 100000,
+                        numBytesRequested: 256 / 8
+                    ));
+
+                    staff.Password = hashedPassword;
+
+                    staff.Role = application.selectedRole;
+
+
+                    staff.CVLocation = application.CVLocation;
+                    staff.ContractLocation = application.ContractLocation;
+                    staff.IdCopyLocation = application.IdCopyLocation;
+                    staff.SACELocation = application.SACELocation;
+                    staff.PoliceClearanceLocation = application.PoliceClearanceLocation;
+                    staff.BankLetterLocation = application.BankLetterLocation;
+
+                    _context.Staffs.Add(staff);
+
+                    _context.EmploymentApplications.Remove(application);
+
+                    
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+
+                    
+
+            return View(staff);
+        }
+
+
+
     }
 }

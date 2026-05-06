@@ -17,6 +17,8 @@ namespace SchoolManagmentSystem.Controllers
         // Returns the page
         public IActionResult Index(int studentId)
         {
+            
+
             var student = _context.Students.FirstOrDefault(s => s.StudentId == studentId);
             if (student == null) return NotFound();
 

@@ -58,7 +58,13 @@ namespace SchoolManagmentSystem.Migrations
                     b.Property<string>("AIReviewSummary")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("BankLetterLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CVLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContractLocation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -69,8 +75,38 @@ namespace SchoolManagmentSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdCopyLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MCQ1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MCQ2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MCQ3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MCQ4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OEQ1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OEQ2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OEQ3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PoliceClearanceLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SACELocation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
@@ -78,6 +114,21 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.Property<int?>("SuitabilityScore")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("dateSent")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("interviewDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("interviewType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("meetingLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("notes")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("referenceNumber")
                         .HasColumnType("nvarchar(max)");
@@ -230,6 +281,15 @@ namespace SchoolManagmentSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<string>("BankLetterLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CVLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContractLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -242,12 +302,21 @@ namespace SchoolManagmentSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdCopyLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PoliceClearanceLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Role")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SACELocation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Salt")

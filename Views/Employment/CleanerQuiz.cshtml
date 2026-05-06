@@ -1,0 +1,126 @@
+﻿@model SchoolManagmentSystem.Models.EmploymentApplication
+
+@{
+    ViewData["Title"] = "Cleaner Competency Quiz";
+}
+
+
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card shadow border-0">
+                <div class="card-header bg-dark text-white py-3">
+                    <h3 class="mb-0">Cleaner Application: Competency Quiz</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="TeacherQuiz" method="post">
+                        <input type="hidden" asp-for="id" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <!-- SECTION: Multiple Choice -->
+                        <h5 class="text-primary mb-3">Section 1: Situational & Professional Knowledge</h5>
+
+                        <!-- MCQ 1 -->
+                        <div class="mb-4">
+                            <label class="fw-bold">1. What does the "Contact Time" on a disinfectant label refer to?</label>
+                            <div class="ps-3 mt-2">
+                                @foreach (var option in new[] { ("A", "The time it takes to pour the liquid into a bucket."), ("B", "How long the surface must remain visibly wet with the disinfectant to kill germs."), ("C", "The expiration date of the cleaning solution."), ("D", "The amount of time the cleaner is allowed to be in the building.") })
+                                {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" asp-for="MCQ1" value="@option.Item1" id="q1@option.Item1">
+                                        <label class="form-check-label" for="q1@option.Item1">@option.Item1) @option.Item2</label>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="MCQ1" class="text-danger"></span>
+                        </div>
+
+                        <!-- MCQ 2 -->
+                        <div class="mb-4">
+                            <label class="fw-bold">2. A If you accidentally mix bleach with an ammonia-based cleaner, what is the result?</label>
+                            <div class="ps-3 mt-2">
+                                @foreach (var option in new[] { ("A", "A) A more powerful cleaning solution for tough stains."), ("B", "A pleasant-smelling soap."), ("C", "The creation of toxic chloramine gas, which is highly dangerous."), ("D", "The creation of toxic chloramine gas, which is highly dangerous.") })
+                                {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" asp-for="MCQ2" value="@option.Item1" id="q2@option.Item1">
+                                        <label class="form-check-label" for="q2@option.Item1">@option.Item1) @option.Item2</label>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="MCQ2" class="text-danger"></span>
+                        </div>
+
+                        <!-- MCQ 3 -->
+                        <div class="mb-4">
+                            <label class="fw-bold">3. You are cleaning a glass entrance door and notice a small crack in the pane. What is the correct procedure?</label>
+                            <div class="ps-3 mt-2">
+                                @foreach (var option in new[] { ("A", "Tape it over and continue cleaning."), ("B", "Ignore it, as it is a maintenance issue, not a cleaning issue."), ("C", "Clean the other side only to avoid breaking it further."), ("D", "Document the damage and report it to your supervisor immediately for safety reasons.") })
+                                {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" asp-for="MCQ3" value="@option.Item1" id="q3@option.Item1">
+                                        <label class="form-check-label" for="q3@option.Item1">@option.Item1) @option.Item2</label>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="MCQ3" class="text-danger"></span>
+                        </div>
+
+                        <!-- MCQ 4 -->
+                        <div class="mb-4">
+                            <label class="fw-bold">4. Which of the following is an example of "Cross-Contamination" in a cleaning context?</label>
+                            <div class="ps-3 mt-2">
+                                @foreach (var option in new[] { ("A", "Using a different colored cloth for the bathroom and the breakroom."), ("B", "Using the same mop head to clean a restroom floor and then a cafeteria floor."), ("C", "Wearing gloves while handling trash."), ("D", "Refilling a soap dispenser before it is completely empty.") })
+                                {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" asp-for="MCQ4" value="@option.Item1" id="q4@option.Item1">
+                                        <label class="form-check-label" for="q4@option.Item1">@option.Item1) @option.Item2</label>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="MCQ4" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- SECTION: Open Ended -->
+                        <h5 class="text-primary mb-3">Section 2: Short Answer Responses</h5>
+
+                        <!-- OEQ 1 -->
+                        <div class="mb-4">
+                            <label asp-for="OEQ1" class="fw-bold mb-2">5. Efficiency: You have two hours to clean five offices and a large conference room. How do you prioritize your tasks to ensure the highest quality of work?</label>
+                            <textarea asp-for="OEQ1" class="form-control" rows="4" placeholder="Write your response here..."></textarea>
+                            <span asp-validation-for="OEQ1" class="text-danger"></span>
+                        </div>
+
+                        <!-- OEQ 2 -->
+                        <div class="mb-4">
+                            <label asp-for="OEQ2" class="fw-bold mb-2">6. Safety Awareness: Describe the steps you take to protect yourself and others when cleaning up a spill involving broken glass.</label>
+                            <textarea asp-for="OEQ2" class="form-control" rows="4" placeholder="Write your response here..."></textarea>
+                            <span asp-validation-for="OEQ2" class="text-danger"></span>
+                        </div>
+
+                        <!-- OEQ 3 -->
+                        <div class="mb-4">
+                            <label asp-for="OEQ3" class="fw-bold mb-2">7. Reliability: Our facility requires high standards of cleanliness for health reasons. Describe your personal process for double-checking your work before leaving a room.</label>
+                            <textarea asp-for="OEQ3" class="form-control" rows="4" placeholder="Write your response here..."></textarea>
+                            <span asp-validation-for="OEQ3" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-5">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

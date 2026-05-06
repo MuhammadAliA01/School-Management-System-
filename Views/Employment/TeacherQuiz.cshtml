@@ -1,0 +1,123 @@
+﻿@model SchoolManagmentSystem.Models.EmploymentApplication
+
+@{
+    ViewData["Title"] = "Teacher Competency Quiz";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card shadow border-0">
+                <div class="card-header bg-dark text-white py-3">
+                    <h3 class="mb-0">Teacher Application: Professional Competency Quiz</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="TeacherQuiz" method="post">
+                        <input type="hidden" asp-for="id" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <!-- SECTION: Multiple Choice -->
+                        <h5 class="text-primary mb-3">Section 1: Situational & Professional Knowledge</h5>
+
+                        <!-- MCQ 1 -->
+                        <div class="mb-4">
+                            <label class="fw-bold">1. When designing a lesson plan, which of the "Three Pillars of Backward Design" should be determined first?</label>
+                            <div class="ps-3 mt-2">
+                                @foreach (var option in new[] { ("A", "Selecting the learning activities and textbooks"), ("B", "Identifying the desired results (learning objectives)"), ("C", "Planning the classroom layout"), ("D", "Determining the homework schedule") })
+                                {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" asp-for="MCQ1" value="@option.Item1" id="q1@option.Item1">
+                                        <label class="form-check-label" for="q1@option.Item1">@option.Item1) @option.Item2</label>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="MCQ1" class="text-danger"></span>
+                        </div>
+
+                        <!-- MCQ 2 -->
+                        <div class="mb-4">
+                            <label class="fw-bold">2. A student becomes suddenly withdrawn and grades drop. What is your initial response?</label>
+                            <div class="ps-3 mt-2">
+                                @foreach (var option in new[] { ("A", "Give them a failing grade to motivate them"), ("B", "Mention it to the class as an example"), ("C", "Request a private check-in with the student to offer support"), ("D", "Immediately call a board meeting") })
+                                {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" asp-for="MCQ2" value="@option.Item1" id="q2@option.Item1">
+                                        <label class="form-check-label" for="q2@option.Item1">@option.Item1) @option.Item2</label>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="MCQ2" class="text-danger"></span>
+                        </div>
+
+                        <!-- MCQ 3 -->
+                        <div class="mb-4">
+                            <label class="fw-bold">3. Which strategy best promotes "Active Learning" in a classroom?</label>
+                            <div class="ps-3 mt-2">
+                                @foreach (var option in new[] { ("A", "Reading the textbook aloud"), ("B", "Students engaging in a 'Think-Pair-Share' discussion"), ("C", "Handing out pre-written notes for memorization"), ("D", "Watching a movie without follow-up") })
+                                {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" asp-for="MCQ3" value="@option.Item1" id="q3@option.Item1">
+                                        <label class="form-check-label" for="q3@option.Item1">@option.Item1) @option.Item2</label>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="MCQ3" class="text-danger"></span>
+                        </div>
+
+                        <!-- MCQ 4 -->
+                        <div class="mb-4">
+                            <label class="fw-bold">4. According to privacy guidelines (FERPA), it is acceptable to:</label>
+                            <div class="ps-3 mt-2">
+                                @foreach (var option in new[] { ("A", "Post student grades by name on the door"), ("B", "Discuss behavior with another student's parent"), ("C", "Share records with officials who have legitimate educational interest"), ("D", "Give home addresses to local businesses") })
+                                {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" asp-for="MCQ4" value="@option.Item1" id="q4@option.Item1">
+                                        <label class="form-check-label" for="q4@option.Item1">@option.Item1) @option.Item2</label>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="MCQ4" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- SECTION: Open Ended -->
+                        <h5 class="text-primary mb-3">Section 2: Short Answer Responses</h5>
+
+                        <!-- OEQ 1 -->
+                        <div class="mb-4">
+                            <label asp-for="OEQ1" class="fw-bold mb-2">5. Describe a time you had to adapt a lesson on the fly because students weren't grasping a concept. What did you change?</label>
+                            <textarea asp-for="OEQ1" class="form-control" rows="4" placeholder="Write your response here..."></textarea>
+                            <span asp-validation-for="OEQ1" class="text-danger"></span>
+                        </div>
+
+                        <!-- OEQ 2 -->
+                        <div class="mb-4">
+                            <label asp-for="OEQ2" class="fw-bold mb-2">6. How do you handle a situation where two students are involved in a heated verbal disagreement during your instruction?</label>
+                            <textarea asp-for="OEQ2" class="form-control" rows="4" placeholder="Write your response here..."></textarea>
+                            <span asp-validation-for="OEQ2" class="text-danger"></span>
+                        </div>
+
+                        <!-- OEQ 3 -->
+                        <div class="mb-4">
+                            <label asp-for="OEQ3" class="fw-bold mb-2">7. How do you ensure that students with varying physical or cognitive abilities feel fully included in your daily classroom activities?</label>
+                            <textarea asp-for="OEQ3" class="form-control" rows="4" placeholder="Write your response here..."></textarea>
+                            <span asp-validation-for="OEQ3" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-5">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

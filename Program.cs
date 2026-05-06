@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
 using SchoolManagmentSystem.Models;
 using SchoolManagmentSystem.ServicesAi.EmploymentAI;
 using SchoolManagmentSystem.ServicesAi.IncidentAI;
-using Stripe; 
+using Stripe;
+using SchoolManagmentSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-StripeConfiguration.ApiKey = "sk_test_51TJFAXDIXUjRCxCOU2wcbElHd3Flfgdskyg3tm55S6wPQ526nd3SnQyJdOSn4czh2aYmViwmA9zUtHjvuHb9JD7s00fw76O3NH";
+
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -16,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();

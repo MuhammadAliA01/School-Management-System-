@@ -41,5 +41,12 @@ namespace SchoolManagmentSystem.Models
 
         public string? Salt { get; set; }
 
+        public string? CVLocation { get; set; }
+        public string? ContractLocation { get; set; }
+        public string? IdCopyLocation { get; set; }
+        public string? SACELocation { get; set; }
+        public string? PoliceClearanceLocation { get; set; }
+        public string? BankLetterLocation { get; set; }
+
     }
 }

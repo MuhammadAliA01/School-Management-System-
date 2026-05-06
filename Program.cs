@@ -24,6 +24,7 @@ builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<AIScoringService>();
 builder.Services.AddScoped<IncidentAnalysisService>();
+builder.Services.AddScoped<EmploymentService>();
 
 
 

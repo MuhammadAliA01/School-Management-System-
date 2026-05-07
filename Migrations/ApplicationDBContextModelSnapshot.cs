@@ -875,6 +875,25 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.TicketBooking", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.EventCalendar", "EventCalendar")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SchoolManagmentSystem.Models.Parent", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EventCalendar");
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>
                 {
                     b.Navigation("Documents");

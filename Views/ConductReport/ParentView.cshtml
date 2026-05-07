@@ -1,0 +1,117 @@
+﻿@model SchoolManagmentSystem.Models.ConductReport
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Official Report";
+}
+
+<div class="container py-5">
+    <div class="card shadow-sm border-0 mx-auto overflow-hidden" style="max-width: 850px; border-radius: 15px; background: #ffffff;">
+        
+        <div class="card-header border-0 p-4 d-flex justify-content-between align-items-center" 
+             style="background-color: #1e293b; color: white;">
+            <div>
+                <h5 class="mb-0 fw-bold">Official Conduct Report</h5>
+                <p class="small mb-0 opacity-75">Case ID: #@Model.Id</p>
+            </div>
+            <button onclick="window.print()" class="btn btn-outline-light btn-sm rounded-pill px-3 d-print-none">
+                <i class="bi bi-printer me-2"></i>Print Report
+            </button>
+        </div>
+
+        <div class="card-body p-5">
+            <div class="d-flex justify-content-between align-items-start mb-4 pb-3 border-bottom">
+                <div>
+                    <h6 class="text-uppercase text-muted fw-bold small mb-1">Student Information</h6>
+                    <h3 class="fw-bold text-dark mb-0">@Model.Student?.FullName</h3>
+                </div>
+                <div class="text-end">
+                    @if (Model.Severity == "High")
+                    {
+                        <span class="badge rounded-pill px-3 py-2 shadow-sm" style="background-color: #dc3545; color: white;">High Severity</span>
+                    }
+                    else if (Model.Severity == "Medium")
+                    {
+                        <span class="badge rounded-pill px-3 py-2 shadow-sm" style="background-color: #fd7e14; color: white;">Medium Severity</span>
+                    }
+                    else
+                    {
+                        <span class="badge rounded-pill px-3 py-2 shadow-sm text-dark" style="background-color: #ffc107;">Low Severity</span>
+                    }
+                    <p class="mt-2 mb-0 text-muted small">@Model.IncidentDate.ToString("dd MMMM yyyy")</p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="text-uppercase text-muted fw-bold small mb-2">Reported Incident</h6>
+                <div class="p-3 rounded-3 bg-light border">
+                    <h6 class="fw-bold text-dark">@Model.Title</h6>
+                    <p class="text-secondary mb-0">@Model.Description</p>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <h6 class="text-uppercase text-muted fw-bold small mb-2">AI Intervention Plan</h6>
+                <div class="p-3 rounded-3" style="background-color: #f0f7ff; border: 1px solid #cce3ff;">
+                    <p class="mb-0 text-dark" style="white-space: pre-wrap; line-height: 1.6; font-size: 0.95rem;">@Model.InterventionPlan</p>
+                </div>
+            </div>
+
+            <hr class="my-4 opacity-25">
+
+            <div class="parent-feedback-section">
+                <h6 class="text-uppercase text-muted fw-bold small mb-3">Parent Acknowledgment</h6>
+
+                @if (Model.IsViewedByParent && !ViewBag.IsEditing == true)
+                {
+                    <div class="p-3 rounded-3 border-start border-success border-4" style="background-color: #f8fff9;">
+                        <p class="small text-muted fw-bold mb-1">Your Feedback:</p>
+                        <p class="fst-italic text-dark mb-0">"@(string.IsNullOrEmpty(Model.ParentMessage) ? "Report acknowledged." : Model.ParentMessage)"</p>
+                        
+                        <div class="mt-3 d-print-none">
+                            <a href="@Url.Action("ParentView", new { id = Model.Id, edit = true })" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                <i class="bi bi-pencil"></i> Edit Response
+                            </a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-print-none">
+                        <form asp-action="SubmitParentResponse" method="post">
+                            <input type="hidden" name="Id" value="@Model.Id" />
+                            <div class="mb-3">
+                                <textarea name="parentMessage" class="form-control border shadow-sm" rows="4" 
+                                          style="border-radius: 10px;"
+                                          placeholder="Type your response here...">@Model.ParentMessage</textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-lg w-100 fw-bold rounded-pill text-white shadow-sm" 
+                                    style="background-color: #ff6b35; border: none;">
+                                @(Model.IsViewedByParent ? "Update Response" : "Submit Acknowledgment")
+                            </button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card-footer bg-light border-0 text-center py-3">
+            <p class="text-muted extra-small mb-0">
+                Official Document • Generated by Durban University of Technology SMS
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
+    .extra-small { font-size: 0.75rem; }
+    
+    @@media print {
+        .d-print-none { display: none !important; }
+        .card { border: none !important; box-shadow: none !important; }
+        body { background-color: white !important; }
+        .bg-light { background-color: #f8f9fa !important; }
+    }
+</style>

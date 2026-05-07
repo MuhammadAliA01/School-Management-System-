@@ -134,6 +134,10 @@
         {
             //if student is registered
             <h4 class="text-success">Fully registered </h4>
+
+            <a href="@Url.Action("Index", "Event", new { studentID = ViewBag.studentID })" class="btn btn-primary customActionBox" id="">
+                Events
+            </a>
         }
         else
         {

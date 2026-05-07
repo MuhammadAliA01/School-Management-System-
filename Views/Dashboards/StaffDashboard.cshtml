@@ -75,7 +75,7 @@
         }
         
         #incidentlist{
-            background-image: url(/Images/StaffDashboardImages/IncidentList.png);
+            background-image: url(https://www.freeiconspng.com/thumbs/error-icon/orange-error-icon-0.png);
             background-size: cover;
             background-size: 130px;
             background-repeat: no-repeat;
@@ -83,13 +83,44 @@
         }
 
         #teachingmethods{
-            background-image: url(/Images/StaffDashboardImages/TeachingMethods.png);
+            background-image: url(https://cdn-icons-png.flaticon.com/512/7941/7941461.png);
             background-size: cover;
             background-size: 130px;
             background-repeat: no-repeat;
             background-position: center;
         }
 
+        #Training {
+            background-image: url(https://cdn-icons-png.flaticon.com/512/7872/7872038.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #Attendance {
+            background-image: url(https://cdn-icons-png.freepik.com/256/18491/18491641.png?semt=ais_white_label);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #AttendanceInsights {
+            background-image: url(https://cdn-icons-png.flaticon.com/512/12044/12044015.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #IED {
+            background-image: url(https://cdn-icons-png.flaticon.com/512/5276/5276183.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
     </style>
 </head>
 
@@ -104,13 +135,13 @@
 
             <a asp-action="Dashboard" asp-controller="TeachingMethods" class="btn btn-primary customActionBox" id="teachingmethods">Students</a>
 
-            <a asp-action="Index" asp-controller="Attendance" class="btn btn-primary customActionBox" id="">Log Attendance</a>
+            <a asp-action="Index" asp-controller="Attendance" class="btn btn-primary customActionBox" id="Attendance">Log Attendance</a>
 
-            <a asp-action="Index" asp-controller="AttendanceInsights" class="btn btn-primary customActionBox" id="">Attendance Insights</a>
+            <a asp-action="Index" asp-controller="AttendanceInsights" class="btn btn-primary customActionBox" id="AttendanceInsights">Attendance Insights</a>
 
-            <a asp-action="TrainingDashboard" asp-controller="Training" class="btn btn-primary customActionBox" id="">Training</a>
+            <a asp-action="TrainingDashboard" asp-controller="Training" class="btn btn-primary customActionBox" id="Training">Training</a>
 
-            <a asp-action="Index" asp-controller="IEP" class="btn btn-primary customActionBox" id="">Individual Education Plans</a>
+            <a asp-action="Index" asp-controller="IEP" class="btn btn-primary customActionBox" id="IED">Individual Education Plans</a>
 
 
 

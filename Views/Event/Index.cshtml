@@ -1,74 +1,303 @@
 ﻿@model IEnumerable<SchoolManagmentSystem.Models.EventCalendar>
 
 @{
-    ViewData["Title"] = "Upcoming Events";
+    ViewData["Title"] = "Upcoming Events Calendar";
 }
 
-<div class="container mt-4">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    body {
+        background: #f4f7fb;
+    }
+
+
+
+    .calendar-header {
+        background: linear-gradient( #c20416);
+        border-radius: 10px;
+        padding: 2rem;
+        color: white;
+        box-shadow: 0 10px 30px rgba(13, 110, 253, 0.2);
+        margin-bottom: 2rem;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        
+        
+    }
+
+    .calendar-header h2 {
+        font-weight: 700;
+        text-align:center;
+        margin-bottom: 0.5rem;
+    }
+
+    .calendar-header p {
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .calendar-card {
+        border: none;
+        border-radius: 5px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .calendar-card .card-body {
+        padding: 1.5rem;
+    }
+
+    #calendar {
+        min-height: 750px;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .fc .fc-button {
+        border-radius: 12px !important;
+        padding: 0.45rem 1rem !important;
+        border: none !important;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        box-shadow: none !important;
+    }
+
+    .fc .fc-button-primary {
+        background: #ff4500 !important;
+    }
+
+    .fc .fc-button-primary:hover {
+        background: #ff4500 !important;
+        transform: translateY(-1px);
+    }
+
+    .fc-theme-standard td,
+    .fc-theme-standard th,
+    .fc-theme-standard .fc-scrollgrid {
+        border-color: #edf1f7;
+    }
+
+    .fc-col-header-cell {
+        background: #f8fafc;
+        padding: 10px 10px;
+        font-weight: 700;
+    }
+
+    .fc-daygrid-day {
+        transition: background 0.2s ease;
+    }
+
+    .fc-daygrid-day:hover {
+        background: #f8fbff;
+    }
+
+    .fc-event {
+        border: none !important;
+        border-radius: 5px !important;
+        padding: 4px 8px !important;
+        font-weight: 600;
+        color:white;
+        background: linear-gradient( #c20416) !important;
+        box-shadow: 0 4px 10px rgba(13, 110, 253, 0.15);
+    }
+
+    .fc-event:hover {
+        transform: scale(1);
+                background-color: #c20416 !important;
+                        color:black;
+
+        transition: 0.2s ease;
+        cursor: pointer;
+    }
+
+    .alert-custom {
+        border: none;
+        border-left: 5px solid #198754 !important;
+        color:white;
+        border-radius: 16px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+
+    .quick-stats {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-box {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        padding: 1rem 1.3rem;
+        border-radius: 16px;
+        min-width: 150px;
+    }
+
+    .stat-box h5 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
+
+    .stat-box span {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+
+    
+</style>
+
+<div class="container py-4">
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" role="alert" style="border-left: 5px solid #198754 !important;">
+        <div class="alert alert-success alert-dismissible fade show alert-custom mb-4" role="alert">
             <div class="d-flex align-items-center">
-                <i class="bi bi-check-circle-fill fs-4 me-3 text-success"></i>
+                <i class="bi bi-check-circle-fill fs-3 me-3"></i>
                 <div>
                     <strong>Success!</strong> @TempData["SuccessMessage"]
                 </div>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
         </div>
     }
 
-    <h2 class="mb-4 text-primary fw-bold">Upcoming School & Therapy Events</h2>
+    <div class="calendar-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2>
+                    
+                   School & Therapy Events
+                </h2>
 
-    <div class="row">
-        @foreach (var item in Model)
-        {
-            <div class="col-md-6 mb-4">
-                <div class="card h-100 shadow-sm border-light">
-                    <div class="card-header bg-primary text-white py-3">
-                        <h5 class="card-title mb-0">@item.Title</h5>
-                    </div>
-
-                    <div class="card-body">
-                        <p class="card-text text-muted">@item.Desc</p>
-                        <hr />
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2">
-                                <i class="bi bi-calendar3 me-2 text-primary"></i>
-                                <strong>Start:</strong> @item.StartTime.ToString("dddd, dd MMM yyyy HH:mm")
-                            </li>
-                            <li class="mb-2">
-                                <i class="bi bi-calendar3-range me-2 text-primary"></i>
-                                <strong>End:</strong> @item.EndTime.ToString("dddd, dd MMM yyyy HH:mm")
-                            </li>
-                            <li>
-                                <i class="bi bi-people-fill me-2 text-primary"></i>
-                                <strong>Confirmed Attendees:</strong>
-                                <span class="badge bg-info text-dark ms-1">@item.AttendeeCount</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="card-footer bg-white border-top-0 pb-4">
-                        <a asp-controller="Event" asp-action="Purchase" asp-route-id="@item.Id" class="btn btn-success btn-lg w-100 fw-bold shadow-sm">
-                            Get Tickets
-                        </a>
-                    </div>
-                </div>
+               
             </div>
-        }
+
+            
+        </div>
+
+        <div class="quick-stats">
+            <div class="stat-box">
+                <h5>@Model.Count()</h5>
+                <span>Total Events</span>
+            </div>
+
+            <div class="stat-box">
+                <h5>@Model.Count(e => e.StartTime.Date >= DateTime.Today)</h5>
+                <span>Upcoming</span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="calendar-card">
+        <div class="card-body">
+            <div id="calendar"></div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
     <script>
         setTimeout(function () {
             let alert = document.querySelector(".alert");
+
             if (alert) {
                 let bsAlert = new bootstrap.Alert(alert);
                 bsAlert.close();
             }
         }, 8000);
+
+        const calendarEvents = @Html.Raw(Json.Serialize(Model.Select(e => new {
+            id = e.Id,
+            title = e.Title,
+            start = e.StartTime.ToString("yyyy-MM-ddTHH:mm:ss"),
+            end = e.EndTime.ToString("yyyy-MM-ddTHH:mm:ss"),
+            description = e.Desc,
+            url = Url.Action("Purchase", "Event", new { id = e.Id }),
+            extendedProps = new {
+                attendees = e.AttendeeCount
+            }
+        })));
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+
+                initialView: 'dayGridMonth',
+
+                height: "auto",
+
+                themeSystem: 'bootstrap5',
+               
+
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                },
+
+                buttonText: {
+                    today: 'Today',
+                    month: 'Month',
+                    week: 'Week',
+                    day: 'Day',
+                    list: 'Agenda'
+                },
+
+                events: calendarEvents,
+
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: true
+                },
+
+                dayMaxEvents: true,
+
+                navLinks: true,
+
+                nowIndicator: true,
+
+                eventClick: function (info) {
+
+                    if (info.event.url) {
+
+                        info.jsEvent.preventDefault();
+
+                        window.location.href = info.event.url;
+                    }
+                },
+
+                eventDidMount: function (info) {
+
+                    info.el.title =
+                        info.event.title +
+                        "\n\n" +
+                        info.event.extendedProps.description +
+                        "\nAttendees: " +
+                        info.event.extendedProps.attendees;
+                }
+            });
+
+            calendar.render();
+        });
     </script>
 }

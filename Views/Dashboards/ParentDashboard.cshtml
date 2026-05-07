@@ -91,6 +91,23 @@
             background-repeat: no-repeat;
             background-position: center;
         }
+
+        #Events{
+            background-image: url(https://www.pngkey.com/png/full/256-2560866_events-calander-png-orange-calendar-png-icon.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #Incidents{
+            background-image: url(https://www.freeiconspng.com/thumbs/error-icon/orange-error-icon-0.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
     </style>
 </head>
 
@@ -135,12 +152,12 @@
             //if student is registered
             
 
-            <a href="@Url.Action("Index", "Event", new { studentID = ViewBag.studentID })" class="btn btn-primary customActionBox" id="">
+            <a href="@Url.Action("Index", "Event", new { studentID = ViewBag.studentID })" class="btn btn-primary customActionBox" id="Events">
                 Events
             </a>
 
 
-            <a href="@Url.Action("ParentIndex", "ConductReport", new { studentID = ViewBag.studentID })" class="btn btn-primary customActionBox" id="">
+            <a href="@Url.Action("ParentIndex", "ConductReport", new { studentID = ViewBag.studentID })" class="btn btn-primary customActionBox" id="Incidents">
                 Student Incidents
             </a>
 

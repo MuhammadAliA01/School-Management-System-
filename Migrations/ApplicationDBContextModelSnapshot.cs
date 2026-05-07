@@ -494,6 +494,9 @@ namespace SchoolManagmentSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comments")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -542,6 +545,8 @@ namespace SchoolManagmentSystem.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("StudentId");
+
+                    b.HasIndex("ClassId");
 
                     b.HasIndex("ParentId");
 
@@ -788,11 +793,17 @@ namespace SchoolManagmentSystem.Migrations
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>
                 {
+                    b.HasOne("SchoolManagmentSystem.Models.AssignedClassStudent", "AssignedClassStudents")
+                        .WithMany()
+                        .HasForeignKey("ClassId");
+
                     b.HasOne("SchoolManagmentSystem.Models.Parent", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AssignedClassStudents");
 
                     b.Navigation("Parent");
                 });

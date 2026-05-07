@@ -77,6 +77,9 @@ namespace SchoolManagmentSystem.Controllers
             {
                 var randomClass = classes[random.Next(classes.Count)];
                 ViewBag.AssignedClassName = randomClass.ClassName;
+                student.ClassId = randomClass.ClassId;
+                _context.Students.Update(student);
+                _context.SaveChanges();
             }
             else
             {

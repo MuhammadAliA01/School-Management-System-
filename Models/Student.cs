@@ -54,5 +54,10 @@ namespace SchoolManagmentSystem.Models
             get { return TotalFees - AmountPaid; }
         }
 
+        public int? ClassId { get; set; }
+
+        [ForeignKey("ClassId")]
+        public virtual AssignedClassStudent AssignedClassStudents { get; set; }
+
     }
 }

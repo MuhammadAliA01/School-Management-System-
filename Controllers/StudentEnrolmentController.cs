@@ -71,8 +71,19 @@ namespace SchoolManagmentSystem.Controllers
 
             if (student == null)
                 return Content("Student not found");
+            var random = new Random();  //assigns a random class to the student for the confirmation page
+            var classes = _context.AssignedClassStudents.ToList();
+            if (classes.Any())
+            {
+                var randomClass = classes[random.Next(classes.Count)];
+                ViewBag.AssignedClassName = randomClass.ClassName;
+            }
+            else
+            {
+                ViewBag.AssignedClassName = "To Be Assigned";
+            }
 
-            return View(student); // This will use your RegistrationConfirmation.cshtml view
+            return View(student); 
         }
 
         public IActionResult PreviewPdf(int studentId)

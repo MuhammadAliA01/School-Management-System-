@@ -1,0 +1,147 @@
+﻿@model IEnumerable<SchoolManagmentSystem.Models.StaffPerformanceViewModel>
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@@400;600;700&family=Playfair+Display:wght@@700&display=swap');
+
+    body {
+        background: #FFFAF0;
+        font-family: 'Nunito', sans-serif;
+    }
+
+    .sp-banner {
+        background: #E8521A;
+        padding: 2rem 2rem 3.5rem;
+        border-radius: 0 0 40px 40px;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+        .sp-banner h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin: 0 0 4px;
+        }
+
+        .sp-banner p {
+            color: #FFD9B8;
+            font-size: 14px;
+            margin: 0;
+        }
+
+    .perf-card {
+        background: white;
+        border: 1.5px solid #F5D9B8;
+        border-radius: 16px;
+        padding: 1.4rem;
+        margin-bottom: 1rem;
+        transition: 0.2s;
+    }
+
+        .perf-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(232,82,26,0.1);
+        }
+
+    .staff-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 18px;
+        color: #3D1F0A;
+        margin: 0 0 4px;
+    }
+
+    .staff-role {
+        font-size: 12px;
+        color: #B85C2A;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .metric {
+        text-align: center;
+        padding: 0.5rem;
+    }
+
+        .metric .val {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: #E8521A;
+            display: block;
+        }
+
+        .metric .lbl {
+            font-size: 11px;
+            font-weight: 700;
+            color: #B85C2A;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+    .score-bar-wrap {
+        background: #FFF5EB;
+        border-radius: 20px;
+        height: 8px;
+        margin-top: 6px;
+        overflow: hidden;
+    }
+
+    .score-bar {
+        height: 8px;
+        border-radius: 20px;
+        background: #E8521A;
+        transition: width 0.5s ease;
+    }
+
+    .avatar-circle {
+        width: 48px;
+        height: 48px;
+        background: #FFF5EB;
+        color: #E8521A;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+</style>
+
+<div class="sp-banner">
+    <div class="container">
+        <h1>Staff Performance</h1>
+        <p>Overview of therapist assessment activity and student outcomes</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+    @foreach (var staff in Model)
+    {
+        <div class="perf-card">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="avatar-circle">@staff.FullName.Substring(0, 1)</div>
+                <div>
+                    <div class="staff-name">@staff.FullName</div>
+                    <div class="staff-role">@staff.Role</div>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-4 metric">
+                    <span class="val">@staff.AverageScore<small style="font-size:13px">/10</small></span>
+                    <span class="lbl">Avg Student Score</span>
+                    <div class="score-bar-wrap">
+                        <div class="score-bar" style="width: @(staff.AverageScore * 10)%"></div>
+                    </div>
+                </div>
+                <div class="col-4 metric">
+                    <span class="val">@staff.WeeksLogged</span>
+                    <span class="lbl">Weeks Active</span>
+                </div>
+                <div class="col-4 metric">
+                    <span class="val">@staff.TotalAssessments</span>
+                    <span class="lbl">Total Assessments</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>

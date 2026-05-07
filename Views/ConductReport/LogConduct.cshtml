@@ -1,0 +1,170 @@
+﻿@using SchoolManagmentSystem.Models
+@model ConductReport
+
+@{
+    ViewData["Title"] = "Log Student Conduct";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+@section Styles {
+    <style>
+        :root {
+            --school-orange: #FF6B35;
+            --dark-gradient: linear-gradient(135deg, #2d3436 0%, #000000 100%);
+        }
+        
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .report-card {
+            border-radius: 25px;
+            border: none;
+            background-color: white;
+            overflow: hidden;
+        }
+
+        .report-header {
+            background: var(--dark-gradient);
+            color: white;
+            padding: 3rem 2rem;
+            position: relative;
+        }
+
+            .report-header i {
+                font-size: 3rem;
+                opacity: 0.2;
+                position: absolute;
+                right: 20px;
+                top: 20px;
+            }
+
+        .form-label {
+            color: #495057;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--school-orange);
+                box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.1);
+            }
+
+        .btn-submit {
+            background-color: var(--school-orange);
+            border: none;
+            color: white;
+            padding: 16px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.4s;
+        }
+
+            .btn-submit:hover {
+                background-color: #E85A2A;
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(232, 90, 42, 0.3);
+                color: white;
+            }
+
+        .ai-badge {
+            background-color: #f0f7ff;
+            color: #0d6efd;
+            border-radius: 10px;
+            padding: 10px 15px;
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card report-card shadow-lg">
+                <div class="card-header report-header text-center">
+                    <i class="bi bi-shield-check"></i>
+                    <h2 class="fw-bold mb-1">New Conduct Report</h2>
+                    <p class="mb-0 opacity-75">AI will automatically generate a parent intervention plan</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4 small"></div>
+
+                        <div class="text-center">
+                            <div class="ai-badge border border-primary-subtle">
+                                <i class="bi bi-robot me-2 fs-5"></i>
+                                <span><strong>Smart Log:</strong> Details provided here will fuel the AI recommendation.</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> Student Name</label>
+                            <select asp-for="StudentId" class="form-select" asp-items="ViewBag.StudentList">
+                                <option value="">-- Select Student --</option>
+                            </select>
+                            <span asp-validation-for="StudentId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Title" class="form-label fw-bold"><i class="bi bi-tag me-1"></i> Incident Title</label>
+                            <input asp-for="Title" class="form-control" placeholder="e.g. Repeated Class Disruption" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-bold"><i class="bi bi-pencil-square me-1"></i> Details</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Be specific about the behavior..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-5">
+                            <div class="col-md-6">
+                                <label asp-for="Severity" class="form-label fw-bold"><i class="bi bi-exclamation-triangle me-1"></i> Severity</label>
+                                <select asp-for="Severity" class="form-select">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="IncidentDate" class="form-label fw-bold"><i class="bi bi-calendar-event me-1"></i> Date</label>
+                                <input asp-for="IncidentDate" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="btn btn-submit w-100 shadow-sm">
+                                <i class="bi bi-send-fill me-2"></i> Submit & Generate Plan
+                            </button>
+                            <div class="text-center mt-4">
+                                <a asp-action="Index" class="text-muted text-decoration-none small hover-link">
+                                    <i class="bi bi-arrow-left"></i> Cancel and go back
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

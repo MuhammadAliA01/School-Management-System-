@@ -94,13 +94,13 @@ $.getJSON(`/StudentProgressVisualization/GetChartData?studentId=${studentId}`, f
 });
 
 function buildLineData(term) {
-    const filtered = chartData.weeklyData.filter(d => d.term === term);
-    const weeks = [...new Set(filtered.map(d => d.week))].sort((a, b) => a - b);
+    const filtered = chartData.weeklyData.filter(d => d.term === term);// filter the data according to the selected term
+    const weeks = [...new Set(filtered.map(d => d.week))].sort((a, b) => a - b);   //new set removes duplicates, then we sort the weeks in ascending order
     return {
-        labels: weeks.map(w => 'Week ' + w),
-        datasets: chartData.subjects.map((s, i) => ({
+        labels: weeks.map(w => 'Week ' + w),// label for x-axis
+        datasets: chartData.subjects.map((s, i) => ({   // loop through subjects to create a dataset for each subject
             label: s,
-            data: weeks.map(w => {
+            data: weeks.map(w => {  // makes the data points for the line chart by finding the average score for each week and for each subject
                 const r = filtered.find(d => d.subject === s && d.week === w);
                 return r ? r.avg : null;
             }),

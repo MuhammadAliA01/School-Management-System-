@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Models
 {
@@ -6,8 +7,8 @@ namespace SchoolManagmentSystem.Models
     {
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
-
         }
+
 
         public DbSet<Parent> Parents { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
@@ -19,8 +20,11 @@ namespace SchoolManagmentSystem.Models
         public DbSet<StudentAssessment> StudentAssessments { get; set; }
         public DbSet<StudentRegistration> StudentRegistrations { get; set; }
         public DbSet<StudentDocument> StudentDocuments { get; set; }   //NOTE: I HAVEN'T UPDATED TO DATABASE
-        public DbSet<Attendance>Attendances { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
         public DbSet<EventCalendar> EventCalendars { get; set; }
+        public DbSet<ConductReport> ConductReports { get; set; }
+        public DbSet<IEP> IEPs { get; set; }
+        public DbSet<AssignedClassStudent> AssignedClassStudents { get; set; }
         public DbSet<TicketBooking> TicketBookings { get; set; }
 
 

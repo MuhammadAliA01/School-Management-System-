@@ -1,0 +1,119 @@
+﻿@model SchoolManagmentSystem.Models.IEP
+
+@{
+    ViewData["Title"] = "IEP Details";
+}
+
+@section Styles {
+    <style>
+        :root {
+            --school-orange: #FF6B35;
+            --soft-orange: #FFF4F0;
+            --academic-blue: #007bff;
+            --behaviour-gold: #ffc107;
+            --dev-green: #28a745;
+        }
+
+        .details-card {
+            border-radius: 20px;
+            border: none;
+            overflow: hidden;
+        }
+
+        .details-header {
+            background: linear-gradient(135deg, var(--school-orange), #FF9166);
+            color: white;
+            padding: 2.5rem;
+        }
+
+        .goal-box {
+            border-radius: 15px;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-left: 5px solid;
+        }
+
+        .academic-border { border-left-color: var(--academic-blue); }
+        .behaviour-border { border-left-color: var(--behaviour-gold); }
+        .dev-border { border-left-color: var(--dev-green); }
+
+        .meta-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Using @@ to escape the media query for Razor */
+        @@media print {
+            .btn, .no-print { display: none !important; }
+            .details-card { box-shadow: none !important; border: 1px solid #eee; }
+            .details-header { background: #FF6B35 !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card details-card shadow-lg">
+                
+                <div class="card-header details-header border-0">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <span class="meta-label">Individualized Education Program</span>
+                            <h1 class="display-5 fw-bold mb-0">
+                                @(Model.Student?.FullName ?? "Student ID: " + Model.StudentId)
+                            </h1>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <div class="badge bg-white text-dark px-3 py-2 rounded-pill shadow-sm">
+                                📅 @Model.Term
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-5">
+                    <div class="row text-center mb-5 bg-light py-3 rounded-3 mx-1">
+                        <div class="col-6 border-end">
+                            <small class="text-muted d-block text-uppercase">Target Date</small>
+                            <span class="fw-bold text-dark">@Model.TargetDate.ToString("dd MMMM yyyy")</span>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block text-uppercase">Created On</small>
+                            <span class="fw-bold text-dark">@Model.DateCreated.ToShortDateString()</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <h5 class="text-primary mb-3"><i class="fas fa-book-open me-2"></i> Academic Goals</h5>
+                        <div class="goal-box academic-border shadow-sm" style="white-space: pre-wrap;">@Model.AcademicGoals</div>
+                    </div>
+
+                    <div class="mb-5">
+                        <h5 class="text-warning mb-3"><i class="fas fa-smile me-2"></i> Behavioural Goals</h5>
+                        <div class="goal-box behaviour-border shadow-sm" style="white-space: pre-wrap;">@Model.BehaviouralGoals</div>
+                    </div>
+
+                    <div class="mb-5">
+                        <h5 class="text-success mb-3"><i class="fas fa-seedling me-2"></i> Developmental Goals</h5>
+                        <div class="goal-box dev-border shadow-sm" style="white-space: pre-wrap;">@Model.DevelopmentalGoals</div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-white p-4 d-flex justify-content-between align-items-center no-print">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4 rounded-pill">
+                        ← Back to Students
+                    </a>
+                    <button class="btn btn-primary px-4 rounded-pill shadow-sm" 
+                            style="background-color: var(--school-orange); border: none;" 
+                            onclick="window.print()">
+                        <i class="fas fa-print me-2"></i> Print Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

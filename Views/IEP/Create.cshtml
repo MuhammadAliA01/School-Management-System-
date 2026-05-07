@@ -1,0 +1,150 @@
+﻿@model SchoolManagmentSystem.Models.IEP
+
+@{
+    ViewData["Title"] = "Create IEP";
+}
+
+@section Styles {
+    <style>
+        :root {
+            --school-orange: #FF6B35;
+            --soft-orange: #FFF4F0;
+        }
+
+        .iep-card {
+            border-radius: 20px;
+            border: none;
+            background-color: white;
+        }
+
+        .iep-header {
+            background: linear-gradient(135deg, var(--school-orange), #FF9166);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 2rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--school-orange);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        }
+
+        .btn-save {
+            background-color: var(--school-orange);
+            border: none;
+            color: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+            .btn-save:hover {
+                background-color: #E85A2A;
+                color: white;
+                transform: translateY(-2px);
+            }
+
+        .form-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        /* Styling the joined input for Period */
+        .period-group .form-control {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .period-group .form-select {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            max-width: 130px;
+        }
+    </style>
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card iep-card shadow-lg">
+                <div class="card-header iep-header text-center text-md-start">
+                    <h2 class="mb-1">New Program</h2>
+                    <p class="mb-0 opacity-75">Developing a bright future for our students</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Select Student</label>
+                            <select asp-for="StudentId" class="form-select" asp-items="ViewBag.StudentList">
+                                <option value="">-- Choose a student --</option>
+                            </select>
+                            <span asp-validation-for="StudentId" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4" style="opacity: 0.1;">
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="AcademicGoals" class="form-label">📘 Academic Goals</label>
+                                <textarea asp-for="AcademicGoals" class="form-control" rows="3" placeholder="What are the learning objectives?"></textarea>
+                                <span asp-validation-for="AcademicGoals" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="BehaviouralGoals" class="form-label">🤝 Behavioural Goals</label>
+                                <textarea asp-for="BehaviouralGoals" class="form-control" rows="3" placeholder="Social and interaction targets..."></textarea>
+                                <span asp-validation-for="BehaviouralGoals" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 mb-4">
+                                <label asp-for="DevelopmentalGoals" class="form-label">🌱 Developmental Goals</label>
+                                <textarea asp-for="DevelopmentalGoals" class="form-control" rows="3" placeholder="Physical or personal growth goals..."></textarea>
+                                <span asp-validation-for="DevelopmentalGoals" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row bg-light p-4 rounded-3 g-3">
+                            <div class="col-md-7">
+                                <label class="form-label">Duration / Period</label>
+                                <div class="input-group period-group">
+                                    <input type="number" name="PeriodAmount" class="form-control" placeholder="e.g. 3" min="1" required />
+                                    <select name="PeriodUnit" class="form-select">
+                                        <option value="Days">Days</option>
+                                        <option value="Weeks">Weeks</option>
+                                        <option value="Months" selected>Months</option>
+                                        <option value="Years">Years</option>
+                                    </select>
+                                </div>
+                                <small class="text-muted">Choose how long this IEP is active.</small>
+                            </div>
+
+                            <div class="col-md-5">
+                                <label asp-for="TargetDate" class="form-label">Date</label>
+                                <input asp-for="TargetDate" type="date" class="form-control"
+                                       value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="TargetDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="text-muted text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i> Back to List
+                            </a>
+                            <button type="submit" class="btn btn-save shadow">Create IEP</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

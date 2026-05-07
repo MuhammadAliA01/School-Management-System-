@@ -22,6 +22,44 @@ namespace SchoolManagmentSystem.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.AssignedClassStudent", b =>
+                {
+                    b.Property<int>("ClassId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClassId"));
+
+                    b.Property<string>("ClassName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Room")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TermNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WeekNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("ClassId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("AssignedClassStudents");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Attendance", b =>
                 {
                     b.Property<int>("AttendanceId")
@@ -45,6 +83,58 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("Attendances");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.ConductReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateLogged")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateViewed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("IncidentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InterventionPlan")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsReviewedByAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsViewedByParent")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ParentMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("ConductReports");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.EmploymentApplication", b =>
@@ -173,6 +263,46 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EventCalendars");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.IEP", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AcademicGoals")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BehaviouralGoals")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DevelopmentalGoals")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TargetDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Term")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("IEPs");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Incident", b =>
@@ -364,6 +494,9 @@ namespace SchoolManagmentSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comments")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -412,6 +545,8 @@ namespace SchoolManagmentSystem.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("StudentId");
+
+                    b.HasIndex("ClassId");
 
                     b.HasIndex("ParentId");
 
@@ -593,6 +728,17 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("Teachers");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.AssignedClassStudent", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Staff", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Teacher");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.TicketBooking", b =>
                 {
                     b.Property<int>("Id")
@@ -636,6 +782,28 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.ConductReport", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.IEP", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Incident", b =>
                 {
                     b.HasOne("SchoolManagmentSystem.Models.Student", "Student")
@@ -657,11 +825,17 @@ namespace SchoolManagmentSystem.Migrations
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>
                 {
+                    b.HasOne("SchoolManagmentSystem.Models.AssignedClassStudent", "AssignedClassStudents")
+                        .WithMany()
+                        .HasForeignKey("ClassId");
+
                     b.HasOne("SchoolManagmentSystem.Models.Parent", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AssignedClassStudents");
 
                     b.Navigation("Parent");
                 });

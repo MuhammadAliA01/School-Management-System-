@@ -58,6 +58,8 @@ nunit-*.xml
 [Rr]eleasePS/
 dlldata.c
 
+wwwroot/uploads/
+
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
 

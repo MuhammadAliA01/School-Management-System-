@@ -107,10 +107,36 @@ namespace SchoolManagmentSystem.Controllers
         {
             var parentId = User.FindFirst("UserInternalID")?.Value;
 
+
+            
+
             if (User.IsInRole("Parent"))
             {
                 return RedirectToAction("ParentDashboard", "Dashboards", new { parentID = parentId });
             }
+            if (User.IsInRole("Staff"))
+            {
+                bool teacher = false;
+                bool admin = false;
+                var LoggedInUser = _context.Staffs.Where(l => l.id == Convert.ToInt32(parentId)).Select(l => l).FirstOrDefault();
+
+                if (LoggedInUser.Role == "Teacher")
+                {
+                    teacher = true;
+                    admin = false;
+
+                }
+                else if (LoggedInUser.Role == "Admin")
+                {
+                    teacher = false;
+                    admin = true;
+                }
+
+                ViewBag.teacher = teacher;
+                ViewBag.admin = admin;
+            }
+
+
             return View();
         }
 

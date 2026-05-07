@@ -5,7 +5,8 @@ using Microsoft.Extensions.AI;
 using SchoolManagmentSystem.Models;
 using SchoolManagmentSystem.ServicesAi.EmploymentAI;
 using SchoolManagmentSystem.ServicesAi.IncidentAI;
-using Stripe; 
+using Stripe;
+using SchoolManagmentSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,9 @@ builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<AIScoringService>();
 builder.Services.AddScoped<IncidentAnalysisService>();
+builder.Services.AddScoped<EmploymentService>();
+builder.Services.AddScoped<AttendanceReportService>();
+builder.Services.AddHostedService<WeeklyReportWorker>();
 
 
 

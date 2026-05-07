@@ -22,31 +22,6 @@ namespace SchoolManagmentSystem.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SchoolManagmentSystem.Models.Attendance", b =>
-                {
-                    b.Property<int>("AttendanceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AttendanceId"));
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AttendanceId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("Attendances");
-                });
-
             modelBuilder.Entity("SchoolManagmentSystem.Models.EmploymentApplication", b =>
                 {
                     b.Property<int>("id")
@@ -58,7 +33,13 @@ namespace SchoolManagmentSystem.Migrations
                     b.Property<string>("AIReviewSummary")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("BankLetterLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CVLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContractLocation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -69,8 +50,38 @@ namespace SchoolManagmentSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdCopyLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MCQ1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MCQ2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MCQ3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MCQ4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OEQ1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OEQ2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OEQ3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PoliceClearanceLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SACELocation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
@@ -78,6 +89,21 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.Property<int?>("SuitabilityScore")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("dateSent")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("interviewDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("interviewType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("meetingLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("notes")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("referenceNumber")
                         .HasColumnType("nvarchar(max)");
@@ -92,36 +118,6 @@ namespace SchoolManagmentSystem.Migrations
                         .IsUnique();
 
                     b.ToTable("EmploymentApplications");
-                });
-
-            modelBuilder.Entity("SchoolManagmentSystem.Models.EventCalendar", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AttendeeCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Desc")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EventCalendars");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Incident", b =>
@@ -230,6 +226,15 @@ namespace SchoolManagmentSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<string>("BankLetterLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CVLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContractLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -242,12 +247,21 @@ namespace SchoolManagmentSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdCopyLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PoliceClearanceLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Role")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SACELocation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Salt")
@@ -522,17 +536,6 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasKey("TeacherId");
 
                     b.ToTable("Teachers");
-                });
-
-            modelBuilder.Entity("SchoolManagmentSystem.Models.Attendance", b =>
-                {
-                    b.HasOne("SchoolManagmentSystem.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Incident", b =>

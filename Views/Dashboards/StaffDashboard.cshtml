@@ -95,13 +95,37 @@
 
 <body>
     <div class="actionsDiv">
-        <a asp-action="StudentList" asp-controller="StudentApplications" class="btn btn-primary customActionBox" id="enrolmentlist">Enrolment Applications</a>
 
-        <a asp-action="ApplicationList" asp-controller="Employment" class="btn btn-primary customActionBox" id="employmentlist">Employment Applications</a>
+        @if (ViewBag.teacher == true)
+        {
+            //this dashboard is for teachers
 
-        <a asp-action="Index" asp-controller="Incident" class="btn btn-primary customActionBox" id="incidentlist">View Incidents</a>
+            <a asp-action="Index" asp-controller="Incident" class="btn btn-primary customActionBox" id="incidentlist">View Incidents</a>
 
-        <a asp-action="Dashboard" asp-controller="TeachingMethods" class="btn btn-primary customActionBox" id="teachingmethods">Teaching Methods</a>
+            <a asp-action="Dashboard" asp-controller="TeachingMethods" class="btn btn-primary customActionBox" id="teachingmethods">Students</a>
+
+            <a asp-action="Index" asp-controller="Attendance" class="btn btn-primary customActionBox" id="">Log Attendance</a>
+
+            <a asp-action="Index" asp-controller="AttendanceInsights" class="btn btn-primary customActionBox" id="">Attendance Insights</a>
+
+            <a asp-action="Index" asp-controller="Calendar" class="btn btn-primary customActionBox" id="">Calendar</a>
+
+            <a asp-action="TrainingDashboard" asp-controller="Training" class="btn btn-primary customActionBox" id="">Training</a>
+        }
+        else if (ViewBag.admin = true)
+        {
+             //this dashboard is for admins
+
+            <a asp-action="StudentList" asp-controller="StudentApplications" class="btn btn-primary customActionBox" id="enrolmentlist">Enrolment Applications</a>
+
+            <a asp-action="ApplicationList" asp-controller="Employment" class="btn btn-primary customActionBox" id="employmentlist">Employment Applications</a>
+        }
+
+        
+
+        
+
+
 
     </div>
     

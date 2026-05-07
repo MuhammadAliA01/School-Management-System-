@@ -1,0 +1,91 @@
+﻿@model SchoolManagmentSystem.Models.ConductReport
+
+@{
+    ViewData["Title"] = "Incident Details";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow border-0" style="border-radius: 20px; overflow: hidden;">
+                
+                <div class="card-header border-0 p-4" style="background: linear-gradient(135deg, #0d6efd 0%, #003d99 100%);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="text-white mb-0 fw-bold">
+                            <i class="bi bi-file-earmark-text me-2"></i>Incident Report
+                        </h3>
+                        <span class="badge rounded-pill bg-white text-primary px-3 py-2 fw-bold">
+                            @Model.Severity Severity
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="row mb-4">
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-bold mb-1">Student Name</label>
+                            <h4 class="fw-bold text-dark">@Model.Student?.FullName</h4>
+                        </div>
+                        <div class="col-sm-6 text-sm-end">
+                            <label class="text-muted small text-uppercase fw-bold mb-1">Date Logged</label>
+                            <h5 class="text-dark">@Model.DateLogged.ToString("dd MMMM yyyy")</h5>
+                        </div>
+                    </div>
+
+                    <hr class="opacity-10">
+
+                    <div class="mb-4">
+                        <label class="text-muted small text-uppercase fw-bold mb-2">Incident Title</label>
+                        <p class="fs-5 fw-semibold text-dark">@Model.Title</p>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="text-muted small text-uppercase fw-bold mb-2">Teacher's Description</label>
+                        <div class="p-3 rounded-3 bg-light border-start border-4 border-primary">
+                            <p class="mb-0 text-secondary italic">@Model.Description</p>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-4" style="background-color: #f8faff; border-radius: 15px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-robot fs-5"></i>
+                                </div>
+                                <h5 class="mb-0 text-primary fw-bold">AI Support Plan for Parents</h5>
+                            </div>
+                            <p class="card-text fs-5 text-dark" style="line-height: 1.6;">
+                                "@Model.InterventionPlan"
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-5">
+                        <a asp-action="Index" class="btn btn-link text-decoration-none text-muted p-0">
+                            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+                        </a>
+                        <button class="btn btn-outline-primary rounded-pill px-4" onclick="window.print()">
+                            <i class="bi bi-printer me-2"></i> Print Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f4f7f6;
+    }
+
+    .card {
+        transition: transform 0.2s ease;
+    }
+
+    .italic {
+        font-style: italic;
+    }
+</style>

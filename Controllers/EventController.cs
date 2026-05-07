@@ -1,85 +1,57 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchoolManagmentSystem.Models;
-using Microsoft.EntityFrameworkCore;
-using Mscc.GenerativeAI;
-using Mscc.GenerativeAI.Types;
-using System.Collections.Generic;
+using SchoolManagmentSystem.Models; // Your namespace
+using System.Linq;
 
 namespace SchoolManagmentSystem.Controllers
 {
     public class EventController : Controller
     {
-
         private readonly ApplicationDBContext _context;
         private readonly string _apiKey = "YOUR_GEMINI_API_KEY"; // Get from Google AI Studio
 
-       
-        public EventController(ApplicationDBContext context) => _context = context;
-
-        public async Task<IActionResult> Index()
         {
-            return View(await _context.Events.Include(e => e.RSVPs).ToListAsync());
         }
 
+        {
+        }
+        {
+
+            {
+            }
+
+
+            return View(selectedEvent);
+        }
+
+        // 4. Processes the submitted order securely
         [HttpPost]
-        public async Task<IActionResult> GenerateDescription(string title)
+        public IActionResult ProcessOrder(int EventId, int quantity)
         {
-            var googleAI = new GoogleAI(_apiKey);
-            var model = googleAI.GenerativeModel(Model.Gemini25Flash);
-            var response = await model.GenerateContent($"Write a fun description for an event: {title}");
-            return Json(new { description = response.Text });
+            decimal ticketPrice = 150.00m;
+            int freeTicketsAllowed = 2;
+
+            // Backend calculation: always recalculate on the server for security
+            int billableTickets = quantity - freeTicketsAllowed;
+            if (billableTickets < 0) billableTickets = 0;
+
+            decimal finalTotalCost = billableTickets * ticketPrice;
+
+            if (finalTotalCost == 0)
+            {
+                // Free transaction - bypass payment
+                TempData["SuccessMessage"] = $"Successfully claimed {quantity} free ticket(s)!";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                // Paid transaction - proceed to the checkout controller (we will build this in Step 5)
+                return RedirectToAction("Checkout", "PurchaseTicket", new
+                {
+                    eventId = EventId,
+                    quantity = quantity,
+                    amount = finalTotalCost
+                });
+            }
         }
-
-        [HttpPost]
-        public async Task<IActionResult> RSVP(int eventId, string userName, bool attending)
-        {
-            var rsvp = new RSVP { EventId = eventId, UserName = userName, IsAttending = attending };
-            _context.RSVPs.Add(rsvp);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-
-        [HttpGet]
-        public async Task<JsonResult> GetCalendarEvents()
-        {
-            var events = await _context.Events.Select(e => new {
-                id = e.EventId,
-                title = e.Title,
-                start = e.EventDate.ToString("yyyy-MM-dd"),
-                description = e.Description
-            }).ToListAsync();
-
-            return Json(events);
-        }
-
-        // Standard CRUD (Create, Edit, Delete) logic here...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

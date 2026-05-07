@@ -119,7 +119,33 @@
             </p>
         </div>
         <div class="otherDiv" style="display:flex; align-items:center; flex-direction:column;">
-            <input type="text" id="searchInput" placeholder="Search..." class="searchBar mb-2">
+            <input type="text" id="searchInput" placeholder="Searching..." class="searchBar mb-2">
+
+            <div class="filter-container mb-3" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <select id="positionFilter" class="form-control" style="width: 200px; border-radius: 10px;">
+                    <option value="">All Positions</option>
+                    @foreach (var pos in Model.Select(m => m.selectedRole).Distinct())
+                    {
+                        <option value="@pos">@pos</option>
+                    }
+                </select>
+
+                <select id="statusFilter" class="form-control" style="width: 150px; border-radius: 10px;">
+                    <option value="">All Statuses</option>
+                    @foreach (var status in Model.Select(m => m.Status).Distinct())
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </select>
+
+                <select id="scoreFilter" class="form-control" style="width: 150px; border-radius: 10px;">
+                    <option value="">All Scores</option>
+                    <option value="8">8 and above</option>
+                    <option value="6">6 and above</option>
+                    <option value="4">4 and above</option>
+                </select>
+            </div>
+
             <div class="tableDiv" id="myTable">
 
                 <table class="table">
@@ -154,6 +180,7 @@
 
 
                             </th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -186,10 +213,106 @@
                                     @Html.DisplayFor(modelItem => item.AIReviewSummary)
                                 </td>
                                 <td>
-                                    <a href="@Html.DisplayFor(modelItem => item.CVLocation)">
-                                        View CV
-                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            onclick="viewDocuments('@item.CVLocation', '@item.ContractLocation', '@item.IdCopyLocation', '@item.SACELocation', '@item.PoliceClearanceLocation', '@item.BankLetterLocation')">
+                                        <i class="bi bi-folder2-open"></i> View All Docs
+                                    </button>
                                 </td>
+
+                                @if (item.Status == "Pending")
+                                {
+                                    <td>
+                                        <a class="btn btn-primary" href="@Url.Action("ApplicationAccept", "Employment", new { id = item.id })" onclick="return confirm('Are you sure you want to proceed?')">
+                                            Accept for Quiz
+                                        </a>
+                                        <a class="btn btn-danger" href="@Url.Action("ApplicationReject", "Employment", new { id = item.id })" onclick="return confirm('Are you sure you want to reject?')">
+                                            Reject Application
+                                        </a>
+                                    </td>
+                                }
+                                else if (item.Status == "Quiz Sent")
+                                {
+                                    <td>
+                                        
+                                    </td>
+                                }
+
+                                else if (item.Status == "Quiz Complete")
+                                {
+                                    <td>
+
+                                        <button type="button" class="btn btn-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#scheduleModal"
+                                                data-appid="@item.id"
+                                                data-appname="@item.FirstName @item.LastName"
+                                                onclick="openScheduleModal(this)">
+                                            Schedule Interview
+                                        </button>
+                                        <a class="btn btn-danger" href="@Url.Action("ApplicationReject", "Employment", new { id = item.id })" onclick="return confirm('Are you sure you want to reject?')">
+                                            Remove Application
+                                        </a>
+                                    </td>
+                                }
+
+                                else if (item.Status == "No Response")
+                                {
+                                    <td>
+                                        <a class="btn btn-danger" href="@Url.Action("ApplicationReject", "Employment", new { id = item.id })" onclick="return confirm('Are you sure you want to reject?')">
+                                            Remove Application
+                                        </a>
+
+                                    </td>
+                                }
+
+                                else if (item.Status == "Interview Scheduled")
+                                {
+                                    <td>
+                                        @if (item.interviewDate.HasValue && item.interviewDate.Value <= DateTime.Now)
+                                        {
+                                            <button type="button" class="btn btn-success"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#conductModal"
+                                                    data-appid="@item.id"
+                                                    data-appname="@item.FirstName @item.LastName"
+                                                    onclick="openConductModal(this)">
+                                                Conduct Interview
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <span style="font-size: 14px; color: gray;">
+                                                Scheduled for: @item.interviewDate?.ToString("MMM dd, yyyy HH:mm")
+                                            </span>
+                                        }
+                                    </td>
+                                }
+                                else if (item.Status == "Interview Completed")
+                                {
+                                    <td>
+                                        <a class="btn btn-primary" href="@Url.Action("SendContract", "Employment", new { id = item.id })" onclick="return confirm('Are you sure you want to Accept?')">
+                                            Finalize Application
+                                        </a>
+                                        <a class="btn btn-danger" href="@Url.Action("ApplicationReject", "Employment", new { id = item.id })" onclick="return confirm('Are you sure you want to reject?')">
+                                            Reject Applicant
+                                        </a>
+
+                                    </td>
+                                }
+                                else if (item.Status == "Contract/Documents Uploaded. \n Awaiting Verification")
+                                {
+                                    <td>
+                                        <a class="btn btn-primary" href="@Url.Action("AcceptApplicant", "Employment", new { id = item.id })" onclick="return confirm('Are you sure you want to Accept?')">
+                                            Accept Applicant
+                                        </a>
+                                        <a class="btn btn-danger" href="@Url.Action("ApplicationReject", "Employment", new { id = item.id })" onclick="return confirm('Are you sure you want to reject?')">
+                                            Reject Applicant
+                                        </a>
+                                    </td>
+                                    
+                                }
+
+                               
                             </tr>
                         }
                     </tbody>
@@ -200,18 +323,123 @@
         
     </div>
     
+    <div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scheduleModalLabel">Schedule Interview</h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form method="post" action="@Url.Action("ScheduleInterview", "Employment")">
+                    <div class="modal-body">
+                        <p id="candidateNameDisplay" style="text-align: left; font-weight: normal; margin-bottom: 15px;"></p>
+
+                        <input type="hidden" id="modalApplicationId" name="id" value="" />
+
+                        <div class="form-group text-start">
+                            <label for="interviewDateTime" style="font-weight: bold;">Select Date and Time:</label>
+                            <input type="datetime-local" class="form-control mt-2" id="interviewDateTime" name="interviewDateTime" required />
+                        </div>
+
+                        <div class="form-group text-start mt-3">
+                            <label for="interviewType" style="font-weight: bold;">Interview Format:</label>
+                            <select class="form-control mt-2" id="interviewType" name="interviewType" onchange="toggleLocationInput()" required>
+                                <option value="">Select Meeting Type</option>
+                                <option value="In-Person">In-Person Meeting</option>
+                                <option value="Teams">Online MS Teams Meeting</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group text-start mt-3" id="locationContainer" style="display: none;">
+                            <label id="locationLabel" for="locationDetails" style="font-weight: bold;">Location Details:</label>
+                            <input type="text" class="form-control mt-2" id="locationDetails" name="locationDetails" />
+                            <small id="teamsHelpText" class="form-text text-muted mt-1" style="display: none;">
+                                Please generate a meeting in Outlook/Teams and paste the join link above.
+                            </small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="conductModal" tabindex="-1" aria-labelledby="conductModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="conductModalLabel">Conduct Interview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form method="post" action="@Url.Action("SubmitInterviewNotes", "Employment")">
+                    <div class="modal-body">
+                        <p id="conductCandidateNameDisplay" style="text-align: left; font-weight: bold; margin-bottom: 15px; font-size: 18px;"></p>
+
+                        <input type="hidden" id="conductApplicationId" name="id" value="" />
+
+                        <div class="form-group text-start">
+                            <label for="interviewNotes" style="font-weight: bold;">Interview Notes & Assessment:</label>
+                            <textarea class="form-control mt-2" id="interviewNotes" name="interviewNotes" rows="10" placeholder="Type your observations, technical assessment, and cultural fit notes here..." required></textarea>
+                        </div>
+
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Save Notes & Complete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="docModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Applicant Documentation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="d-flex" style="height: 75vh;">
+                        <div class="bg-light border-end" style="width: 250px; overflow-y: auto;">
+                            <div class="list-group list-group-flush" id="docList">
+                                
+                            </div>
+                        </div>
+
+                        <div class="flex-grow-1">
+                            <iframe id="docPreview" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+                            <div id="noDocMessage" class="h-100 d-flex align-items-center justify-content-center d-none">
+                                <p class="text-muted">Select a document to preview</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 
 <script>
-    const table = document.getElementById("myTable");
+    const tableDiv = document.getElementById("myTable");
+    const table = tableDiv.querySelector("table");
     const searchInput = document.getElementById("searchInput");
     const summaryDiv = document.querySelector(".summaryDiv");
     const details = document.getElementById("rowDetails");
 
+    const posFilter = document.getElementById("positionFilter");
+    const statFilter = document.getElementById("statusFilter");
+    const scoreFilter = document.getElementById("scoreFilter");
+
+    
     function addRowClickEvents() {
         const rows = table.getElementsByTagName("tr");
-        for (let i = 1; i < rows.length; i++) { 
+        for (let i = 1; i < rows.length; i++) {
             rows[i].addEventListener("click", function() {
                 for (let j = 1; j < rows.length; j++) {
                     rows[j].classList.remove("table-primary");
@@ -219,35 +447,163 @@
                 this.classList.add("table-primary");
 
                 const cells = this.getElementsByTagName("td");
-                const summary = cells[7].innerText; 
-                const score = cells[6].innerText;   
+
+                
+                const score = cells[6].innerText;
+                const summary = cells[7].innerText;
 
                 details.innerHTML = `<h3>Score: ${score}</h3>
-                                     <p>${summary}</p>`;
+                                     <p style="text-align:left; font-weight:normal;">${summary}</p>`;
                 summaryDiv.classList.add("active");
             });
         }
     }
 
+    
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const posValue = posFilter.value.toLowerCase();
+        const statValue = statFilter.value.toLowerCase();
+        const minScore = parseFloat(scoreFilter.value) || 0;
+
+        const rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName("td");
+            if (cells.length === 0) continue;
+
+         
+            const rowText = rows[i].innerText.toLowerCase();
+            const rowPosition = cells[3].innerText.toLowerCase();
+            const rowStatus = cells[5].innerText.toLowerCase();
+            const rowScore = parseFloat(cells[6].innerText) || 0;
+
+            const matchesSearch = rowText.indexOf(searchTerm) > -1;
+            const matchesPosition = posValue === "" || rowPosition.includes(posValue);
+            const matchesStatus = statValue === "" || rowStatus.includes(statValue);
+            const matchesScore = rowScore >= minScore;
+
+            if (matchesSearch && matchesPosition && matchesStatus && matchesScore) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
     addRowClickEvents();
 
-    searchInput.addEventListener("keyup", function() {
-        const filter = this.value.toLowerCase();
-        const rows = table.getElementsByTagName("tr");
-        for (let i = 1; i < rows.length; i++) { 
-            const cells = rows[i].getElementsByTagName("td");
-            let match = false;
+    searchInput.addEventListener("keyup", filterTable);
 
-            for (let j = 0; j < cells.length; j++) {
-                if (cells[j].innerText.toLowerCase().indexOf(filter) > -1) {
-                    match = true;
-                    break;
-                }
-            }
+    if(posFilter) posFilter.addEventListener("change", filterTable);
+    if(statFilter) statFilter.addEventListener("change", filterTable);
+    if(scoreFilter) scoreFilter.addEventListener("change", filterTable);
 
-            rows[i].style.display = match ? "" : "none";
+
+
+    function openScheduleModal(button) {
+        const appId = button.getAttribute("data-appid");
+        const appName = button.getAttribute("data-appname");
+
+        document.getElementById("modalApplicationId").value = appId;
+
+        document.getElementById("candidateNameDisplay").innerHTML = `Scheduling interview for <strong>${appName}</strong>.`;
+
+            document.getElementById("interviewDateTime").value = "";
+            document.getElementById("interviewType").value = "";
+            toggleLocationInput();
+    }
+
+
+        function openConductModal(button) {
+        const appId = button.getAttribute("data-appid");
+        const appName = button.getAttribute("data-appname");
+
+        document.getElementById("conductApplicationId").value = appId;
+
+        document.getElementById("conductCandidateNameDisplay").innerHTML = `Interviewing: ${appName}`;
+
+        document.getElementById("interviewNotes").value = "";
+        
+    }
+
+
+        function toggleLocationInput() {
+        const type = document.getElementById("interviewType").value;
+        const container = document.getElementById("locationContainer");
+        const input = document.getElementById("locationDetails");
+        const label = document.getElementById("locationLabel");
+        const helpText = document.getElementById("teamsHelpText");
+
+        if (type === "In-Person") {
+            container.style.display = "block";
+            input.style.display = "block";
+            input.required = true;
+            input.placeholder = "Recommended: 51 Tourmalin Ave, Chatsworth";
+            label.innerText = "Room / Location Details:";
+            helpText.style.display = "none";
+        } else if (type === "Teams") {
+            container.style.display = "block";
+            input.style.display = "block";
+            input.required = true;
+            input.placeholder = "Paste the MS Teams Join link here";
+            label.innerText = "MS Teams Meeting Link:";
+            helpText.style.display = "block";
+        } else {
+            container.style.display = "none";
+            input.required = false;
+            input.value = ""; 
         }
-    });
+    }
+
+
+        function viewDocuments(cv, contract, idCopy, sace, police, bank) {
+        const docList = document.getElementById("docList");
+        const preview = document.getElementById("docPreview");
+        docList.innerHTML = ""; 
+
+      
+        const docs = [
+            { name: "Original CV", path: cv },
+            { name: "Signed Contract", path: contract },
+            { name: "Identity Document", path: idCopy },
+            { name: "SACE Certificate", path: sace },
+            { name: "Police Clearance", path: police },
+            { name: "Bank Confirmation", path: bank }
+        ];
+
+        let firstAvailable = null;
+
+        docs.forEach(doc => {
+            if (doc.path && doc.path !== "" && doc.path !== "null") {
+                const btn = document.createElement("button");
+                btn.className = "list-group-item list-group-item-action";
+                btn.innerText = doc.name;
+                btn.onclick = function() {
+
+                    document.querySelectorAll('#docList button').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    preview.src = doc.path;
+                    preview.classList.remove("d-none");
+                };
+
+                docList.appendChild(btn);
+                if (!firstAvailable) firstAvailable = btn;
+            }
+        });
+
+        if (firstAvailable) {
+            firstAvailable.click(); 
+            document.getElementById("noDocMessage").classList.add("d-none");
+        } else {
+            preview.classList.add("d-none");
+            document.getElementById("noDocMessage").classList.remove("d-none");
+        }
+
+        const myModal = new bootstrap.Modal(document.getElementById('docModal'));
+        myModal.show();
+    }
 </script>
 
 

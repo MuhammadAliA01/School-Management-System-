@@ -1,9 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.ServicesAi.EmploymentAI;
+using SchoolManagmentSystem.ServicesAi.IncidentAI;
+using Stripe;
+using SchoolManagmentSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -11,6 +18,16 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
+
+builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddScoped<AIScoringService>();
+builder.Services.AddScoped<IncidentAnalysisService>();
+builder.Services.AddScoped<EmploymentService>();
+builder.Services.AddScoped<AttendanceReportService>();
+builder.Services.AddHostedService<WeeklyReportWorker>();
+
 
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
@@ -49,8 +66,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
+app.UseSession();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=FAQ}/{id?}");
+    pattern: "{controller=Home}/{action=HomePage}/{id?}");
 
 app.Run();

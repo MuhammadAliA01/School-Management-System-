@@ -1,6 +1,27 @@
-﻿@{
+﻿@model SchoolManagmentSystem.Models.StudentRegistration;
+
+
+
+@{
     ViewData["Title"] = "Registration";
 }
+
+
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 <style>
    
     body {
@@ -148,18 +169,18 @@
 
         <div class="btn-group">
             <a class="portal-btn btn-review"
-                   asp-controller="Home"
+                   asp-controller="StudentEnrolment"
                    asp-action="PreviewPdf"
-                   asp-route-studentId="2"
+               asp-route-studentId=@ViewBag.nonRegstudentID
                    target="_blank">
                    Review Details
             </a>
 
             <a class="portal-btn btn-enrol"
-                   asp-controller="Home"
+                   asp-controller="StudentEnrolment"
                    asp-action="Enrol"
-                   asp-route-studentId="2">
-                   Confirm Enrolment
+               asp-route-studentId=@ViewBag.nonRegstudentID>
+                   Confirm Registration
             </a>
         </div>
     </div>

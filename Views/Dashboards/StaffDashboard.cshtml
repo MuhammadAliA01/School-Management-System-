@@ -1,1 +1,140 @@
-﻿<h1>Staff Dashboard</h1>
+﻿<head>
+    <style>
+        body{
+            background-color:#eef2f6;
+        }
+
+
+        .actionsDiv{
+            display:grid;
+            grid-template-columns: 400px 400px 400px 400px;
+            justify-content:center;
+            gap: 30px;
+        }
+
+        .customActionBox{
+            width:400px;
+            height:300px;
+            background-color:white;
+            box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), -5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+            border: none;
+            color: black;
+            font-family:Dubai;
+            font-size:25px;
+        }
+
+            .customActionBox:hover {
+                width: 400px;
+                height: 300px;
+                background-color: white;
+                box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), -5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+                border: none;
+                color: black;
+                font-family: Dubai;
+                font-size: 25px;
+            transform: scale(1.1);
+            transition: ease 0.2s all;
+        }
+
+            .customActionBox:active {
+                width: 400px;
+                height: 300px;
+                background-color: white;
+                box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), -5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+                border: none;
+                color: black;
+                font-family: Dubai;
+                font-size: 25px;
+        }
+
+            .customActionBox:focus-within {
+                width: 400px;
+                height: 300px;
+                background-color: white;
+                box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), -5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+                border: none;
+                color: black;
+                font-family: Dubai;
+                font-size: 25px;
+        }
+
+        #enrolmentlist{
+            background-image: url(/Images/StaffDashboardImages/Enrolmentlist.png);
+            background-size:cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #employmentlist{
+            background-image: url(/Images/StaffDashboardImages/EmploymentList.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        #incidentlist{
+            background-image: url(/Images/StaffDashboardImages/IncidentList.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #teachingmethods{
+            background-image: url(/Images/StaffDashboardImages/TeachingMethods.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="actionsDiv">
+
+        @if (ViewBag.teacher == true)
+        {
+            //this dashboard is for teachers
+
+            <a asp-action="Index" asp-controller="Incident" class="btn btn-primary customActionBox" id="incidentlist">View Incidents</a>
+
+            <a asp-action="Dashboard" asp-controller="TeachingMethods" class="btn btn-primary customActionBox" id="teachingmethods">Students</a>
+
+            <a asp-action="Index" asp-controller="Attendance" class="btn btn-primary customActionBox" id="">Log Attendance</a>
+
+            <a asp-action="Index" asp-controller="AttendanceInsights" class="btn btn-primary customActionBox" id="">Attendance Insights</a>
+
+            <a asp-action="Index" asp-controller="Calendar" class="btn btn-primary customActionBox" id="">Calendar</a>
+
+            <a asp-action="TrainingDashboard" asp-controller="Training" class="btn btn-primary customActionBox" id="">Training</a>
+        }
+        else if (ViewBag.admin = true)
+        {
+             //this dashboard is for admins
+
+            <a asp-action="StudentList" asp-controller="StudentApplications" class="btn btn-primary customActionBox" id="enrolmentlist">Enrolment Applications</a>
+
+            <a asp-action="ApplicationList" asp-controller="Employment" class="btn btn-primary customActionBox" id="employmentlist">Employment Applications</a>
+        }
+
+        
+
+        
+
+
+
+    </div>
+    
+</body>
+
+
+
+
+
+
+
+

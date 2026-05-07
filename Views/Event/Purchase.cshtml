@@ -1,0 +1,91 @@
+﻿@model SchoolManagmentSystem.Models.EventCalendar
+
+@{
+    ViewData["Title"] = "Purchase Tickets";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+
+            <a asp-action="Index" class="btn btn-outline-secondary mb-3">&larr; Back to Events</a>
+
+            <div class="card shadow border-light">
+                <div class="card-body">
+                    <h2 class="text-primary">@Model.Title</h2>
+                    <p class="lead">@Model.Desc</p>
+                    <hr />
+
+                    <div class="row mb-4">
+                        <div class="col-sm-6">
+                            <p><strong>Start:</strong> <br />@Model.StartTime.ToString("dddd, dd MMMM yyyy HH:mm")</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p><strong>End:</strong> <br />@Model.EndTime.ToString("dddd, dd MMMM yyyy HH:mm")</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-light p-3 rounded mb-4 border">
+                        <h5 class="mb-2">Ticket Pricing</h5>
+                        <p class="mb-1"><strong>Standard Ticket:</strong> R @ViewBag.TicketPrice</p>
+                        <p class="mb-0 text-muted"><small><em>Note: Every parent is allocated 2 free tickets per event.</em></small></p>
+                    </div>
+
+                    <form asp-action="ProcessOrder" method="post">
+                        <input type="hidden" name="EventId" value="@Model.Id" />
+
+                        <div class="form-group mb-4">
+                            <label for="quantity" class="form-label fw-bold">How many tickets do you need?</label>
+                            <input type="number" id="quantity" name="quantity" class="form-control form-control-lg" min="1" max="10" value="1" required oninput="calculateTotal()" />
+                        </div>
+
+                        <div class="p-3 rounded mb-4 text-center border">
+                            <h5 class="text-muted">Estimated Total</h5>
+                            <h2 id="displayTotal" class="text-success">R 0.00</h2>
+                            <small id="discountNote" class="text-muted">Calculating...</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold">Proceed to Checkout</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // FIXED: Wrapping Razor variables in quotes and forcing a decimal replacement
+        // This prevents JavaScript from crashing if the server renders 150,00 instead of 150.00
+        const ticketPrice = parseFloat("@ViewBag.TicketPrice".replace(',', '.'));
+        const freeTickets = parseInt("@ViewBag.FreeTicketsAllowed") || 2;
+
+        function calculateTotal() {
+            let quantity = document.getElementById('quantity').value;
+            quantity = parseInt(quantity) || 0;
+
+            let billableTickets = quantity - freeTickets;
+            if (billableTickets < 0) billableTickets = 0;
+
+            let totalCost = billableTickets * ticketPrice;
+
+            // Update the big total number
+            document.getElementById('displayTotal').innerText = "R " + totalCost.toFixed(2);
+
+            // Update the little helper text underneath
+            let noteText = "";
+            if (quantity <= freeTickets) {
+                noteText = `Standard allocation covers ${quantity} ticket(s). No payment required.`;
+            } else {
+                noteText = `Standard allocation covers ${freeTickets} ticket(s). Charging for ${billableTickets} additional ticket(s).`;
+            }
+            document.getElementById('discountNote').innerText = noteText;
+        }
+
+        // Run the math once as soon as the page loads
+        window.onload = calculateTotal;
+    </script>
+}

@@ -1,1 +1,160 @@
-﻿<h1>Parent Dashboard</h1>
+﻿@model SchoolManagmentSystem.Models.StudentRegistration
+
+<head>
+    <style>
+        body {
+            background-color: #eef2f6;
+        }
+
+
+        .actionsDiv {
+            display: grid;
+            grid-template-columns: 400px 400px 400px 400px;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .customActionBox {
+            width: 400px;
+            height: 300px;
+            background-color: white;
+            box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), -5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+            border: none;
+            color: black;
+            font-family: Dubai;
+            font-size: 25px;
+        }
+
+        .customActionBox:hover {
+            width: 400px;
+            height: 300px;
+            background-color: white;
+            box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), -5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+            border: none;
+            color: black;
+            font-family: Dubai;
+            font-size: 25px;
+            transform: scale(1.1);
+            transition: ease 0.2s all;
+        }
+
+        .customActionBox:active {
+            width: 400px;
+            height: 300px;
+            background-color: white;
+            box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), -5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+            border: none;
+            color: black;
+            font-family: Dubai;
+            font-size: 25px;
+        }
+
+        customActionBox:focus-within {
+            width: 400px;
+            height: 300px;
+            background-color: white;
+            box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1), -5px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1);
+            border: none;
+            color: black;
+            font-family: Dubai;
+            font-size: 25px;
+        }
+
+        #registrationfees{
+            background-image: url(/Images/ParentDashboardImages/RegistrationFees.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #enrolment {
+            background-image: url(/Images/ParentDashboardImages/Enrolment.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #enrolment2{
+            background-image: url(/Images/ParentDashboardImages/Enrolment.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #register{
+            background-image: url(/Images/ParentDashboardImages/Register.png);
+            background-size: cover;
+            background-size: 130px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="actionsDiv">
+        @if (ViewBag.noStudent == true)
+        {
+            //if parent has no application yet
+            <a href="@Url.Action("RegForm", "Home", new { parentID = ViewBag.ParentID })" class="btn btn-primary customActionBox" id="enrolment">
+                Apply for Enrollment
+            </a>
+
+
+        }
+        else if (ViewBag.studentNoVerify == true)
+        {
+            <h4 class="text-warning">Application Under Review </h4>
+            <p>Please wait while the administration verifies your application.</p>
+        }
+        else if (ViewBag.studentNoFees == true)
+        {
+
+            @if (Model != null)
+            {
+                <form asp-action="PayDeposit" asp-controller="Payments" method="post" class="mt-4">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn btn-success customActionBox" id="registrationfees" style="display:flex; align-items:flex-start; text-align:center; justify-content:center;">
+                        Pay Registration Fees
+                    </button>
+                </form>
+            }
+        }
+        else if (ViewBag.studentNoReg == true)
+        {
+            //if fees are paid but student has not been registered
+            <a href="@Url.Action("Index", "StudentEnrolment", new { studentID = ViewBag.studentID })" class="btn btn-primary customActionBox" id="register">
+                Register
+            </a>
+        }
+        else if (ViewBag.studentRegistered == true)
+        {
+            //if student is registered
+            <h4 class="text-success">Fully registered </h4>
+        }
+        else
+        {
+            //if application is rejected
+            <a href="@Url.Action("RegForm", "Home", new { parentID = ViewBag.ParentID })" class="btn btn-primary customActionBox" id="enrolment2">
+                Apply for Enrollment
+            </a>
+        }
+    </div>
+   
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+

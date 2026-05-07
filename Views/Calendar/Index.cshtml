@@ -1,0 +1,38 @@
+﻿<div id="calendar"></div>
+
+@section Scripts {
+    <!-- 2. Your JavaScript code -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: '/api/calendar/events',
+                dateClick: function(info) {
+                    // Trigger "Create Event" Modal
+                    $('#eventModal').modal('show');
+                    $('#startDate').val(info.dateStr);
+                },
+                eventContent: function(arg) {
+                    // Add "Details..." link and RSVP count to the calendar cell
+                    let container = document.createElement('div');
+
+                    let detailsLink = document.createElement('a');
+                    detailsLink.innerHTML = "Details...";
+                    detailsLink.className = "btn btn-sm btn-link p-0"; // Optional: makes it look cleaner
+                    detailsLink.href = `/Events/Details/${arg.event.id}`;
+
+                    let count = document.createElement('div');
+                    count.className = "small text-muted";
+                    count.innerText = `Attendees: ${arg.event.extendedProps.attendeeCount || 0}`;
+
+                    container.appendChild(detailsLink);
+                    container.appendChild(count);
+
+                    return { domNodes: [container] };
+                }
+            });
+            calendar.render();
+        });
+    </script>
+}

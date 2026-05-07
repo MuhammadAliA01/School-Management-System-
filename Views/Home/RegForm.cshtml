@@ -73,7 +73,7 @@
             text-transform: uppercase;
         }
 
-            /* Red asterisk for required fields */
+           
             label.required::after {
                 content: " *";
                 color: var(--error-color);
@@ -209,11 +209,11 @@
 
     <div class="form-container">
         <div class="header">
-            <h2>Register Child</h2>
+            <h2>Enrolment Form</h2>
         </div>
 
-        @* Redirects directly to the Confirmation page URL *@
-        <form action="/Home/Confirmation" method="get">
+        
+       <form asp-controller="Home" asp-action="Confirmation" method="post" enctype="multipart/form-data">
 
             <input type="hidden" name="ParentId" value="1" />
 
@@ -291,16 +291,17 @@
             </div>
 
             <div class="file-upload" onclick="document.getElementById('fileInput').click()">
-                <strong>CLICK TO UPLOAD EVALUATION (PDF) <span style="color:red">*</span></strong>
-                <input type="file" id="fileInput" name="pdfFile" accept=".pdf" style="display:none" required>
+                <strong>CLICK TO UPLOAD EVALUATIONS (PDFs) <span style="color:red">*</span></strong>
+                <input type="file" id="fileInput" name="pdfFiles" accept=".pdf" style="display:none" multiple required>
             </div>
+            <div id="file-list-display" style="margin-top: 10px; font-size: 0.85rem; color: #555;"></div>
 
             <div class="form-group">
                 <label>Additional Comments</label>
                 <textarea name="Comments" rows="4"></textarea>
             </div>
 
-            <button type="submit">Submit Registration</button>
+            <button type="submit">Submit Form</button>
 
            
         </form>
@@ -317,33 +318,42 @@
     </div>
 
     <script>
-        // 1. File Upload Logic (Existing)
-        document.getElementById('fileInput').onchange = function () {
-            const fileName = this.files[0] ? this.files[0].name : "CLICK TO UPLOAD EVALUATION (PDF)";
-            document.querySelector('.file-upload strong').innerHTML =
-                `SELECTED: ${fileName} <span style="color:red">*</span>`;
-            document.querySelector('.file-upload').style.borderColor = "#28a745";
+
+            document.getElementById('fileInput').onchange = function () {
+            const files = this.files;
+            const display = document.getElementById('file-list-display');
+
+            if (files.length > 0) {
+                let fileNames = Array.from(files).map(f => f.name).join(", ");
+                document.querySelector('.file-upload strong').innerHTML =
+                    `SELECTED: ${files.length} file(s) <span style="color:red">*</span>`;
+                display.innerHTML = `<strong>Files:</strong> ${fileNames}`;
+                document.querySelector('.file-upload').style.borderColor = "#28a745";
+            } else {
+                document.querySelector('.file-upload strong').innerHTML =
+                    `CLICK TO UPLOAD EVALUATIONS (PDFs) <span style="color:red">*</span>`;
+                display.innerHTML = "";
+            }
         };
 
-        // 2. Date of Birth Validation Logic
+        
         const dobInput = document.getElementById('ChildDob');
         const dobError = document.getElementById('dobError');
         const today = new Date();
 
-        // Calculate dates
-        // Max date (Youngest: 8 years ago)
+        
         const maxDate = new Date(today.getFullYear() - 8, today.getMonth(), today.getDate());
-        // Min date (Oldest: 15 years ago)
+        
         const minDate = new Date(today.getFullYear() - 15, today.getMonth(), today.getDate());
 
-        // Format to YYYY-MM-DD for the HTML input attributes
+        
         const formatDate = (date) => date.toISOString().split('T')[0];
 
-        // Set constraints on the input field
+        
         dobInput.setAttribute('min', formatDate(minDate));
         dobInput.setAttribute('max', formatDate(maxDate));
 
-        // Optional: Add a visual warning if they type/select an invalid date manually
+       
         dobInput.addEventListener('change', function() {
             const selectedDate = new Date(this.value);
             if (selectedDate > maxDate || selectedDate < minDate) {
@@ -355,7 +365,7 @@
             }
         });
 
-        // Prevent form submission if DOB is invalid
+        
         document.querySelector('form').onsubmit = function(e) {
             const selectedDate = new Date(dobInput.value);
             if (selectedDate > maxDate || selectedDate < minDate) {

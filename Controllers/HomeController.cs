@@ -2,14 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using SchoolManagmentSystem.Models;
-using System.Diagnostics;
+using Mscc.GenerativeAI.Types;
 using PdfSharp.Fonts;
 using PdfSharp.Snippets.Font;
-using SchoolManagmentSystem.Services;
-using System.IO;
-using System.Drawing;
 using SchoolManagmentSystem.Controllers;
+using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Services;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Security.Claims;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -27,8 +29,8 @@ namespace SchoolManagmentSystem.Controllers
 
         public IActionResult HomePage()
         {
+   
 
-            
             return View();
 
             
@@ -77,17 +79,23 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult RegForm()
         {
+
+            var parentId = User.FindFirst("UserInternalID")?.Value;
+
+            var access = HttpContext.Session.GetString("AccessnoStudent");
+
+            if (access != "true")
+            {
+                return RedirectToAction("ParentDashboard", "Dashboards", new {parentID = parentId });
+            }
+
+
+
             return View();
         }
-
-
-        // Add the DB Context to your constructor
-        
-
-
- 
 
 
 
@@ -96,136 +104,91 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
-       
-
-     
-        public IActionResult RegistrationService()
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Confirmation(StudentRegistration model, List<IFormFile> pdfFiles)
         {
-            return View();
-        }
 
-        public IActionResult RegistrationConfirmation(int studentId)
-        {
-            var student = _context.StudentRegistrations
-                                  .FirstOrDefault(s => s.Id == studentId);
-
-            if (student == null)
-                return Content("Student not found");
-
-            return View(student); // This will use your RegistrationConfirmation.cshtml view
-        }
-
-        public IActionResult PreviewPdf(int studentId)
-        {
-            var service = new RegistrationService(_context);
-            var document = service.GetPreviewRegistration(studentId);
-
-            using (MemoryStream stream = new MemoryStream())
+            var userIdClaim = User.FindFirst("UserInternalID")?.Value;
+            if (int.TryParse(userIdClaim, out int parentId))
             {
-                document.Save(stream);
-                return File(stream.ToArray(), "application/pdf"); // preview
+                model.ParentId = parentId;
             }
-        }
-
-        public IActionResult Enrol(int studentId)
-        {
-            var student = _context.StudentRegistrations
-                                  .FirstOrDefault(s => s.Id == 2);
-
-            if (student == null)
-                return Content("Student not found");
-
-            return RedirectToAction("RegistrationConfirmation", new { studentId = studentId });
-        }
 
 
-        public IActionResult DownloadPdf(int studentId)
-        {
-           
+            model.ParentName = string.IsNullOrWhiteSpace(model.ParentName) ? "Not Provided" : model.ParentName;
+            model.ParentEmail = string.IsNullOrWhiteSpace(model.ParentEmail) ? "notprovided@example.com" : model.ParentEmail;
+            model.ParentPhone = string.IsNullOrWhiteSpace(model.ParentPhone) ? "000-000-0000" : model.ParentPhone;
+
+            model.Street = string.IsNullOrWhiteSpace(model.Street) ? "N/A" : model.Street;
+            model.Suburb = string.IsNullOrWhiteSpace(model.Suburb) ? "N/A" : model.Suburb;
+            model.City = string.IsNullOrWhiteSpace(model.City) ? "N/A" : model.City;
+            model.PostalCode = string.IsNullOrWhiteSpace(model.PostalCode) ? "0000" : model.PostalCode;
+
+            model.ChildName = string.IsNullOrWhiteSpace(model.ChildName) ? "Unknown Student" : model.ChildName;
+            model.Gender = string.IsNullOrWhiteSpace(model.Gender) ? "Not Specified" : model.Gender;
+            model.AutismLevel = string.IsNullOrWhiteSpace(model.AutismLevel) ? "Pending Assessment" : model.AutismLevel;
+            model.AutismType = string.IsNullOrWhiteSpace(model.AutismType) ? "Pending Assessment" : model.AutismType;
+            model.Comments = string.IsNullOrWhiteSpace(model.Comments) ? "No comments" : model.Comments;
+
+
+            if (model.ChildDob == default)
+            {
+                model.ChildDob = new DateTime(2000, 1, 1);
+            }
+
+
+            
+            if (pdfFiles != null && pdfFiles.Count > 0) //ensures the code doesn't crash if the user clicks "Submit" without selecting any files. It only runs if there is actually work to do.
+            {
+                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");   //It finds the physical path to your wwwroot/uploads folder.
+                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                foreach (var file in pdfFiles)    //Since the user can upload multiple files, the code loops through them one by one. If they upload 3 PDFs, this loop runs 3 times.
+                {
+                    if (file.Length > 0)
+                    {
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;  //If two users upload a file named ID.pdf, the second one would overwrite the first. A GUID (a long string of random letters and numbers like 74a2...) makes the filename unique so no files are ever lost or replaced.
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))   //This takes the data sitting in your computer's "temporary memory" (RAM) and writes it onto the permanent hard drive in the uploads folder.
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+
+                        // Create a new document record for each file
+                        model.Documents.Add(new StudentDocument
+                        {
+                            FilePath = "/uploads/" + uniqueFileName,         //It doesn't save the file in the database. Instead, it saves filePath and fileName
+                            FileName = file.FileName
+                        });
+                    }
+                }
+            }
+
+
+            model.RegistrationDate = DateTime.Now;
+            model.Status = "Pending";
+            model.feesPaid = false;
+
+
             try
             {
-                var registrationService = new RegistrationService(_context);
-                var document = registrationService.GetRegistration(studentId);
 
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    document.Save(stream);
-                    byte[] bytes = stream.ToArray();
+                ModelState.Clear();
 
-                    // This returns the file directly to the browser
-                    return File(bytes, "application/pdf", "Proof of Registration.pdf");
-                }
-            }
-            catch 
-            {
-                // If student not found, return a small PDF saying so
-                var doc = new MigraDoc.DocumentObjectModel.Document();
-                var section = doc.AddSection();
-                var paragraph = section.AddParagraph();
-                paragraph.AddFormattedText("Student not found", MigraDoc.DocumentObjectModel.TextFormat.Bold);
-
-                var pdfRenderer = new MigraDoc.Rendering.PdfDocumentRenderer();
-                pdfRenderer.Document = doc;
-                pdfRenderer.RenderDocument();
-
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    pdfRenderer.PdfDocument.Save(stream);
-                    byte[] bytes = stream.ToArray();
-
-                    return File(bytes, "application/pdf", "StudentNotFound.pdf");
-                }
-            }
-        }
-
-
-        // Add the DB Context to your constructor
-        
-
-
-        // 1. The POST method that receives the form data
-        [HttpPost]
-        public async Task<IActionResult> RegForm(StudentRegistration registration, IFormFile pdfFile)
-        {
-            if (ModelState.IsValid)
-            {
-                // Set the registration date
-                registration.RegistrationDate = DateTime.Now;
-
-                // (Optional) Handle File Upload logic here if you are saving the PDF
-
-                _context.StudentRegistrations.Add(registration);
+                _context.StudentRegistrations.Add(model);
                 await _context.SaveChangesAsync();
 
-                // Redirect to the Confirmation page, passing the new ID
-                return RedirectToAction("Confirmation", "Home", new { id = registration.Id });
+                return View("Confirmation", model);
             }
-
-
-            return View(registration);
-        }
-
-        // 2. The GET method that displays the confirmation
-        public async Task<IActionResult> Confirmation(int id)
-        {
-            try
+            catch (Exception ex)
             {
-                var registration = await _context.StudentRegistrations
-                    .FirstOrDefaultAsync(m => m.Id == id);
 
-                if (registration == null) return NotFound();
-
-                return View(registration);
-            }
-            catch (SqlException ex)
-            {
-                // This will redirect to your error page instead of showing the "Ugly" crash screen
-                return RedirectToAction("Error");
+                _logger.LogError($"Database Save Error: {ex.Message}");
+                return Content($"Error saving to database: {ex.InnerException?.Message ?? ex.Message}");
             }
         }
-
-
-
 
 
 

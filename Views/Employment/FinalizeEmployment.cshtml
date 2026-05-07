@@ -1,0 +1,134 @@
+﻿@model SchoolManagmentSystem.Models.EmploymentApplication
+
+
+
+<head>
+    <style>
+        body {
+            background-color: #f3f3f3;
+            font-family: 'Dubai', sans-serif;
+        }
+
+        .finalize-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .card {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            padding: 20px;
+            border-radius: 15px 15px 0 0 !important;
+        }
+
+        .btn-download {
+            background-color: orangered;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+            .btn-download:hover {
+                background-color: #d33d00;
+                color: white;
+                transform: translateY(-2px);
+            }
+
+        .doc-label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .upload-row {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 15px 0;
+        }
+
+            .upload-row:last-child {
+                border-bottom: none;
+            }
+
+        .badge-status {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+
+<div class="finalize-container">
+    <div class="text-center mb-4">
+        <h2>Finalize Employment</h2>
+        <p class="text-muted">Onboarding for: <strong>@Model.FirstName @Model.LastName</strong> (@Model.selectedRole)</p>
+    </div>
+
+    <!-- STEP 1: DOWNLOAD CONTRACT -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-file-earmark-pdf"></i> Step 1: Generate & Download Contract</h5>
+        </div>
+        <div class="card-body text-center p-5">
+            <p>Click the button below to generate the employment contract based on the application details. Please print, sign, and scan it back.</p>
+            <a href="@Url.Action("DownloadContract", "Employment", new { id = Model.id })" class="btn btn-download">
+                <i class="bi bi-download"></i> Download PDF Contract
+            </a>
+        </div>
+    </div>
+
+    <!-- STEP 2: UPLOAD DOCUMENTS -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-cloud-upload"></i> Step 2: Upload Signed Documents</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="FinalizeEmployment" asp-controller="Employment" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="ApplicationId" value="@Model.id" />
+
+                <div class="upload-row">
+                    <label class="doc-label">1. Signed Employment Contract</label>
+                    <input type="file" name="SignedContract" class="form-control" required />
+                </div>
+
+                <div class="upload-row">
+                    <label class="doc-label">2. Certified ID Copy</label>
+                    <input type="file" name="IdCopy" class="form-control" required />
+                </div>
+
+                <div class="upload-row">
+                    <label class="doc-label">3. SACE Certificate</label>
+                    <input type="file" name="SaceCert" class="form-control" required />
+                </div>
+
+                <div class="upload-row">
+                    <label class="doc-label">4. Police Clearance & Sexual Offences Register</label>
+                    <input type="file" name="PoliceClearance" class="form-control" required />
+                </div>
+
+                <div class="upload-row">
+                    <label class="doc-label">5. Bank Confirmation Letter</label>
+                    <input type="file" name="BankLetter" class="form-control" required />
+                </div>
+
+                <div class="mt-4 text-center">
+                    <button type="submit" class="btn btn-success btn-lg px-5" style="border-radius:10px;">
+                        Complete Onboarding
+                    </button>
+                    <a href="@Url.Action("ApplicationList")" class="btn btn-link text-muted">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

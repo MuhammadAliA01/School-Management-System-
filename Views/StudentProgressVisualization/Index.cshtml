@@ -1,0 +1,171 @@
+﻿@{
+    ViewData["Title"] = "Student Progress";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@@400;600;700&family=Playfair+Display:wght@@700&display=swap');
+
+    body {
+        background: #FFFAF0;
+        font-family: 'Nunito', sans-serif;
+    }
+
+    .sp-banner {
+        background: #E8521A;
+        padding: 2rem 2rem 3.5rem;
+        border-radius: 0 0 40px 40px;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+        .sp-banner h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin: 0 0 4px;
+        }
+
+        .sp-banner p {
+            color: #FFD9B8;
+            font-size: 14px;
+            margin: 0;
+        }
+
+    .sp-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .sp-stat {
+        background: white;
+        border: 1.5px solid #F5D9B8;
+        border-radius: 16px;
+        padding: 1.2rem 1.4rem;
+        text-align: center;
+    }
+
+        .sp-stat .val {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: #E8521A;
+            display: block;
+        }
+
+        .sp-stat .lbl {
+            font-size: 11px;
+            font-weight: 700;
+            color: #B85C2A;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+    .sp-card {
+        background: white;
+        border: 1.5px solid #F5D9B8;
+        border-radius: 16px;
+        padding: 1.4rem;
+        margin-bottom: 1.2rem;
+    }
+
+        .sp-card h5 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            color: #3D1F0A;
+            margin: 0 0 1rem;
+        }
+
+    .sp-term-btn {
+        padding: 5px 14px;
+        border-radius: 20px;
+        border: 1.5px solid #F5D9B8;
+        background: #FFF5EB;
+        color: #B85C2A;
+        font-family: 'Nunito', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.15s;
+        margin-right: 6px;
+        margin-bottom: 8px;
+    }
+
+        .sp-term-btn.active, .sp-term-btn:hover {
+            background: #E8521A;
+            color: white;
+            border-color: #E8521A;
+        }
+
+    .chart-wrap {
+        position: relative;
+        height: 280px;
+    }
+</style>
+
+<div class="sp-banner">
+    <div class="container">
+        <h1>@ViewBag.StudentName</h1>
+        <p>Student Progress Report</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+
+    <!-- Summary Cards -->
+    <div class="sp-summary">
+        <div class="sp-stat">
+            <span class="val" id="overallAvg">--</span>
+            <span class="lbl">Overall Average</span>
+        </div>
+        <div class="sp-stat">
+            <span class="val" style="font-size:16px;" id="bestSubject">--</span>
+            <span class="lbl">Strongest Subject</span>
+        </div>
+        <div class="sp-stat">
+            <span class="val" style="font-size:16px;" id="mostImproved">--</span>
+            <span class="lbl">Most Improved</span>
+        </div>
+    </div>
+
+    <!-- Chart 1: Performance Over Time -->
+    <div class="sp-card">
+        <h5> Performance Over Time</h5>
+        <div style="margin-bottom:10px;">
+            <button class="sp-term-btn active" onclick="updateLineChart(1, this)">Term 1</button>
+            <button class="sp-term-btn" onclick="updateLineChart(2, this)">Term 2</button>
+            <button class="sp-term-btn" onclick="updateLineChart(3, this)">Term 3</button>
+            <button class="sp-term-btn" onclick="updateLineChart(4, this)">Term 4</button>
+        </div>
+        <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
+    </div>
+
+    <!-- Chart 2: Subject Strengths -->
+    <div class="sp-card">
+        <h5> Subject Strengths</h5>
+        <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+    </div>
+
+    <div class="row g-3">
+        <!-- Chart 3: vs Class Average -->
+        <div class="col-md-6">
+            <div class="sp-card">
+                <h5> vs Class Average</h5>
+                <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+            </div>
+        </div>
+        <!-- Chart 4: Term Growth -->
+        <div class="col-md-6">
+            <div class="sp-card">
+                <h5> Term-over-Term Growth</h5>
+                <div class="chart-wrap"><canvas id="termChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+    const studentId = @ViewBag.StudentId;
+</script>
+<script src="~/js/studentProgress.js" asp-append-version="true"></script>

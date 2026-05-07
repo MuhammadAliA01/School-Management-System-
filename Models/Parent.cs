@@ -36,5 +36,7 @@ namespace SchoolManagmentSystem.Models
         public string? Password { get; set; }
 
         public string? Salt { get; set; }
+        public string? ResetToken { get; set; }
+        public DateTime? ResetTokenExpiry { get; set; }
     }
 }

@@ -9,6 +9,8 @@ namespace SchoolManagmentSystem.Models
 
         }
 
+        public DbSet<Event> Events { get; set; }
+        public DbSet<RSVP> RSVPs { get; set; }
         public DbSet<Parent> Parents { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }

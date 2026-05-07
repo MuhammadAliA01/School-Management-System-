@@ -17,8 +17,6 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IApplicationService, ApplicationService>();
-
 builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<AIScoringService>();

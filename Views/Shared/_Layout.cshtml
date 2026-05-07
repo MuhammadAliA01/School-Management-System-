@@ -1,4 +1,4 @@
-﻿﻿
+﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +9,47 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SchoolManagmentSystem.styles.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+    <style>
+
+
+
+            .navbar {
+                position: relative;
+            }
+
+
+            .customNavBar {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                font-family: Dubai;
+                font-size: 20px;
+            }
+
+
+
+
+
+                .customNavBar .navbar-nav {
+                    justify-content: center;
+                    width: 100%;
+                    gap: 20px;
+                }
+
+
+
+
+
+            .username-right {
+                position: absolute;
+                right: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+    </style>
 </head>
 <body>
     <header>
@@ -21,38 +62,61 @@
                 </button>
                 <div class="navbar-collapse collapse customNavBar">
                     <ul class="navbar-nav w-100 d-flex justify-content-center">
+
                         
-                        
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                            <ul class="navbar-nav flex-grow-1">
 
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="HomePage">Home</a>
-                        </li>  
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Gallery">Gallery</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Calendar">Calendar</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="FAQ">FAQ'S</a>
-                        </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="HomePage">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Gallery">Gallery</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Calendar">Calendar</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="FAQ">FAQ'S</a>
+                                </li>
 
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li>
-                                @User.Identity.Name
-                            </li>
+                                @if (User.Identity.IsAuthenticated)
+                                {
+
+                            
+                                    @if (User.IsInRole("Staff"))
+                                    {
+                               
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            @{
+                                                var staffID = User.FindFirst("UserInternalID")?.Value;
+                                            }
+                                            <a href="@Url.Action("StaffDashboard", "Dashboards", new { staffID = staffID })" class="nav-link text-dark">
+                                                Dashboard
+                                            </a>
+                                        </li>
+                                        <li class="nav-item username-right">
+                                            <span class="nav-link">@User.Identity.Name</span>
+                                        </li>
+
+                                
+                                    }
+
+                                    else if (User.IsInRole("Parent"))
+                                    {
+                                        <li>
+                                            @User.Identity.Name
+                                        </li>
 
                                         <li class="nav-item">
                                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
@@ -73,35 +137,35 @@
 
                                     }
 
-                        }
-                        else
-                        {
+                                }
+                                else
+                                {
                            
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                                    </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Employment" asp-action="EmploymentInfo">Hiring Opportunities</a>
-                            </li>
-                        }
-                        
-                    </ul>
-                    
-                </div>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Employment" asp-action="EmploymentInfo">Hiring Opportunities</a>
+                                    </li>
+                                }
+
+                            </ul>
+
+                        </div>
+                    </div>
+                </nav>
+            </header>
+            <div class="container-fluid">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
             </div>
-        </nav>
-    </header>
-    <div class="container-fluid">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
+
+            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
+            @await RenderSectionAsync("Scripts", required: false)
+        </body>
+    </html>

@@ -6,38 +6,19 @@ namespace SchoolManagmentSystem.Controllers
 {
     public class EventController : Controller
     {
-        // 1. Set up your Database Context
-        // Note: Change 'ApplicationDbContext' to whatever your context class is actually called!
         private readonly ApplicationDBContext _context;
+        private readonly string _apiKey = "YOUR_GEMINI_API_KEY"; // Get from Google AI Studio
 
-        public EventController(ApplicationDBContext context)
         {
-            _context = context;
         }
 
-        // 2. The Index Action (Shows the list of events)
-        public IActionResult Index()
         {
-            // Go to the database, grab every event in the EventCalendars table, and turn it into a list
-            var events = _context.EventCalendars.ToList();
-
-            // Pass that list to the View
-            return View(events);
         }
-        // 3. Shows the specific event for purchasing tickets
-        public IActionResult Purchase(int id)
         {
-            // Find the specific event in the database
-            var selectedEvent = _context.EventCalendars.FirstOrDefault(e => e.Id == id);
 
-            if (selectedEvent == null)
             {
-                return NotFound();
             }
 
-            // Set up pricing rules for the view
-            ViewBag.TicketPrice = 150.00m;
-            ViewBag.FreeTicketsAllowed = 2;
 
             return View(selectedEvent);
         }

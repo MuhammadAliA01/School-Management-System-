@@ -69,7 +69,46 @@ namespace SchoolManagmentSystem.ServicesAi
             string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
 
             // 1. Create the prompt
-            string promptText = $"I have a student that was involved in an incident. Analyze the incident description and severity and generate a plan to resolve the incident as if you were a qualified special needs therapist. incident description: {description} incident severity: {severity}";
+            string promptText = $@"
+You are generating a behavioural intervention response for a school management system.
+
+Analyze the incident and generate a clear intervention plan suitable for a special needs school environment.
+
+RULES:
+- Keep the response professional, supportive, and concise.
+- Do NOT mention being an AI, assistant, therapist, specialist, or any role/persona.
+- Do NOT include introductions or disclaimers.
+- Use plain text only.
+- Do NOT use markdown symbols such as **, ##, or bullet symbols.
+- Use clean spacing and line breaks exactly as shown below.
+- Keep the response easy for teachers and administrators to read.
+
+
+OUTPUT FORMAT:
+
+Incident Analysis:
+[Write 2-4 sentences here]
+
+Recommended Actions:
+1. [Action]
+2. [Action]
+3. [Action]
+
+Follow-Up Plan:
+Short-term:
+- [Short-term action]
+- [Short-term action]
+
+Long-term:
+- [Long-term action]
+- [Long-term action]
+
+INCIDENT DESCRIPTION:
+{description}
+
+INCIDENT SEVERITY:
+{severity}
+";
 
             // 2. FIX: Define the 'package' object for the Gemini API
             var package = new

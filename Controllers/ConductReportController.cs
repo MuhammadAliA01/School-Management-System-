@@ -16,6 +16,22 @@ namespace SchoolManagmentSystem.Controllers
             _context = context;
         }
 
+        public async Task<IActionResult> ParentIndex(int studentID)
+        {
+            var studentIncidents = await _context.ConductReports.Where(s => s.StudentId == studentID).Select(s => s).OrderByDescending(s => s.IncidentDate).ToListAsync();
+
+            var student = _context.Students.Where(s => s.StudentId == studentID).Select(s => s).FirstOrDefault();
+
+            ViewBag.Name = student.FullName;
+
+
+            var reports = await _context.ConductReports
+                .Include(c => c.Student)
+                .OrderByDescending(c => c.IncidentDate)
+                .ToListAsync();
+            return View(studentIncidents);
+        }
+
         // 1. DASHBOARD
         public async Task<IActionResult> Index()
         {

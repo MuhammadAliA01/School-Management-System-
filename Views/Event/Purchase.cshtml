@@ -29,6 +29,8 @@
                         <h5 class="mb-2">Ticket Pricing</h5>
                         <p class="mb-1"><strong>Standard Ticket:</strong> R @ViewBag.TicketPrice</p>
                         <p class="mb-0 text-muted"><small><em>Note: Every parent is allocated 2 free tickets per event.</em></small></p>
+
+                        <h5 class="mb-2">Total Tickets Owned: @ViewBag.TicketsOwned</h5>
                     </div>
 
                     <form asp-action="ProcessOrder" method="post">
@@ -62,26 +64,38 @@
         // This prevents JavaScript from crashing if the server renders 150,00 instead of 150.00
         const ticketPrice = parseFloat("@ViewBag.TicketPrice".replace(',', '.'));
         const freeTickets = parseInt("@ViewBag.FreeTicketsAllowed") || 2;
+        const ticketsOwned = parseInt("@ViewBag.TicketsOwned") || 0;
 
-        function calculateTotal() {
+                function calculateTotal() {
             let quantity = document.getElementById('quantity').value;
             quantity = parseInt(quantity) || 0;
 
-            let billableTickets = quantity - freeTickets;
-            if (billableTickets < 0) billableTickets = 0;
+            // Remaining free tickets
+            let remainingFreeTickets = freeTickets - ticketsOwned;
+
+            if (remainingFreeTickets < 0)
+                remainingFreeTickets = 0;
+
+            let billableTickets = quantity - remainingFreeTickets;
+
+            if (billableTickets < 0)
+                billableTickets = 0;
 
             let totalCost = billableTickets * ticketPrice;
 
-            // Update the big total number
-            document.getElementById('displayTotal').innerText = "R " + totalCost.toFixed(2);
+            document.getElementById('displayTotal').innerText =
+                "R " + totalCost.toFixed(2);
 
-            // Update the little helper text underneath
             let noteText = "";
-            if (quantity <= freeTickets) {
-                noteText = `Standard allocation covers ${quantity} ticket(s). No payment required.`;
+
+            if (remainingFreeTickets > 0) {
+                noteText =
+                    `You have ${remainingFreeTickets} free ticket(s) remaining. Charging for ${billableTickets} additional ticket(s).`;
             } else {
-                noteText = `Standard allocation covers ${freeTickets} ticket(s). Charging for ${billableTickets} additional ticket(s).`;
+                noteText =
+                    `Free allocation already used. Charging for all ${quantity} ticket(s).`;
             }
+
             document.getElementById('discountNote').innerText = noteText;
         }
 

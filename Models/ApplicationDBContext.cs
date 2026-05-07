@@ -25,5 +25,8 @@ namespace SchoolManagmentSystem.Models
         public DbSet<ConductReport> ConductReports { get; set; }
         public DbSet<IEP> IEPs { get; set; }
         public DbSet<AssignedClassStudent> AssignedClassStudents { get; set; }
+
+        public DbSet<TicketPurchases> ticketPurchases { get; set; }
+
     }
 }

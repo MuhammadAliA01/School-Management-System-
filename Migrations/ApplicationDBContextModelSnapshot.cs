@@ -728,6 +728,28 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("Teachers");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.TicketPurchases", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("EventID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ticketsOwned")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.ToTable("ticketPurchases");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.AssignedClassStudent", b =>
                 {
                     b.HasOne("SchoolManagmentSystem.Models.Staff", "Teacher")

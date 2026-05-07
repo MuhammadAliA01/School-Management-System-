@@ -49,11 +49,11 @@ namespace SchoolManagmentSystem.Controllers
             // Chart 1 — weekly scores per subject per term
             var weeklyData = assessments
                 .GroupBy(a => new { a.SubjectName, a.TermNumber, a.WeekNumber })
-                .Select(g => new {
-                    subject = g.Key.SubjectName,
-                    term = g.Key.TermNumber,
-                    week = g.Key.WeekNumber,
-                    avg = Math.Round(g.Average(a => a.Score), 1)
+                .Select(x => new {
+                    subject = x.Key.SubjectName,
+                    term = x.Key.TermNumber,
+                    week = x.Key.WeekNumber,
+                    avg = Math.Round(x.Average(a => a.Score), 1)
                 })
                 .OrderBy(x => x.term).ThenBy(x => x.week)
                 .ToList();

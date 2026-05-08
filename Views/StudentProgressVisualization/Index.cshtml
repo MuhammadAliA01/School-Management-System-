@@ -112,20 +112,23 @@
 <div class="container pb-5">
 
     <!-- Summary Cards -->
-    <div class="sp-summary">
-        <div class="sp-stat">
-            <span class="val" id="overallAvg">--</span>
-            <span class="lbl">Overall Average</span>
+    @if (ViewBag.Term4Avg != null)
+    {
+        <div class="sp-summary">
+            <div class="sp-stat">
+                <span class="val">@ViewBag.Term4Avg<small style="font-size:14px">%</small></span>
+                <span class="lbl">Term 4 Average</span>
+            </div>
+            <div class="sp-stat">
+                <span class="val" style="font-size:16px;">@ViewBag.Term4Best</span>
+                <span class="lbl">Best Subject</span>
+            </div>
+            <div class="sp-stat">
+                <span class="val" style="font-size:16px;">@ViewBag.Term4Weakest</span>
+                <span class="lbl">Weakest Subject</span>
+            </div>
         </div>
-        <div class="sp-stat">
-            <span class="val" style="font-size:16px;" id="bestSubject">--</span>
-            <span class="lbl">Strongest Subject</span>
-        </div>
-        <div class="sp-stat">
-            <span class="val" style="font-size:16px;" id="mostImproved">--</span>
-            <span class="lbl">Most Improved</span>
-        </div>
-    </div>
+    }
 
     <!-- Chart 1: Performance Over Time -->
     <div class="sp-card">
@@ -146,10 +149,10 @@
     </div>
 
     <div class="row g-3">
-        <!-- Chart 3: vs Class Average -->
+        <!-- Chart 3: vs Grade Average -->
         <div class="col-md-6">
             <div class="sp-card">
-                <h5> vs Class Average</h5>
+                <h5> vs Grade Average</h5>
                 <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
             </div>
         </div>

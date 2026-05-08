@@ -22,6 +22,44 @@ namespace SchoolManagmentSystem.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.AssignedClassStudent", b =>
+                {
+                    b.Property<int>("ClassId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClassId"));
+
+                    b.Property<string>("ClassName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Room")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TermNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WeekNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("ClassId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("AssignedClassStudents");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Attendance", b =>
                 {
                     b.Property<int>("AttendanceId")
@@ -487,6 +525,9 @@ namespace SchoolManagmentSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comments")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -535,6 +576,8 @@ namespace SchoolManagmentSystem.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("StudentId");
+
+                    b.HasIndex("ClassId");
 
                     b.HasIndex("ParentId");
 
@@ -716,6 +759,71 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("Teachers");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.TicketPurchases", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("EventID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ticketsOwned")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.ToTable("ticketPurchases");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.AssignedClassStudent", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Staff", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.TicketBooking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("TicketBookings");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Attendance", b =>
                 {
                     b.HasOne("SchoolManagmentSystem.Models.Student", "Student")
@@ -770,11 +878,17 @@ namespace SchoolManagmentSystem.Migrations
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>
                 {
+                    b.HasOne("SchoolManagmentSystem.Models.AssignedClassStudent", "AssignedClassStudents")
+                        .WithMany()
+                        .HasForeignKey("ClassId");
+
                     b.HasOne("SchoolManagmentSystem.Models.Parent", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AssignedClassStudents");
 
                     b.Navigation("Parent");
                 });
@@ -820,6 +934,25 @@ namespace SchoolManagmentSystem.Migrations
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.TicketBooking", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.EventCalendar", "EventCalendar")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SchoolManagmentSystem.Models.Parent", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EventCalendar");
 
                     b.Navigation("Parent");
                 });

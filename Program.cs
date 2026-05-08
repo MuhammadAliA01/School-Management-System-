@@ -29,6 +29,9 @@ builder.Services.AddScoped<CVService>();
 builder.Services.AddScoped<AttendanceReportService>();
 builder.Services.AddHostedService<WeeklyReportWorker>();
 
+StripeConfiguration.ApiKey =
+    builder.Configuration["Stripe:SecretKey"];
+
 
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>

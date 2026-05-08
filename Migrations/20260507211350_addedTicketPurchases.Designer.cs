@@ -12,8 +12,8 @@ using SchoolManagmentSystem.Models;
 namespace SchoolManagmentSystem.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20260507122549_AIteachingplanthing")]
-    partial class AIteachingplanthing
+    [Migration("20260507211350_addedTicketPurchases")]
+    partial class addedTicketPurchases
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,44 @@ namespace SchoolManagmentSystem.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.AssignedClassStudent", b =>
+                {
+                    b.Property<int>("ClassId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClassId"));
+
+                    b.Property<string>("ClassName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Room")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TermNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WeekNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("ClassId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("AssignedClassStudents");
+                });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Attendance", b =>
                 {
@@ -686,6 +724,39 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasKey("TeacherId");
 
                     b.ToTable("Teachers");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.TicketPurchases", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("EventID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ticketsOwned")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.ToTable("ticketPurchases");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.AssignedClassStudent", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Staff", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Attendance", b =>

@@ -21,6 +21,21 @@ namespace SchoolManagmentSystem.Controllers
 
             var student = _context.Students.FirstOrDefault(s => s.StudentId == studentId);
             if (student == null) return NotFound();
+            var assessments = _context.StudentAssessments
+                                .Where(a => a.StudentId == studentId)
+                                .ToList();
+
+            var term4 = assessments.Where(a => a.TermNumber == 4).ToList();
+
+            ViewBag.Term4Avg = term4.Any() ? Math.Round(term4.Average(a => a.Score) * 10, 1) : (double?)null;
+
+            ViewBag.Term4Best = term4.Any()
+                ? term4.GroupBy(a => a.SubjectName).OrderByDescending(g => g.Average(a => a.Score)).First().Key
+                : null;
+
+            ViewBag.Term4Weakest = term4.Any()
+                ? term4.GroupBy(a => a.SubjectName).OrderBy(g => g.Average(a => a.Score)).First().Key
+                : null;
 
             ViewBag.StudentName = student.FullName;
             ViewBag.StudentId = studentId;
@@ -84,29 +99,12 @@ namespace SchoolManagmentSystem.Controllers
                 })
                 .ToList();
 
-            
-            var overallAvg = assessments.Any() ? Math.Round(assessments.Average(a => a.Score), 1) : 0.0;
-            var bestSubject = subjectAverages.OrderByDescending(s => s.avg).FirstOrDefault()?.subject ?? "N/A";
-            var mostImproved = assessments
-                .GroupBy(a => a.SubjectName)
-                .Where(g => g.Count() >= 2)
-                .Select(g => new {
-                    subject = g.Key,
-                    improvement = g.OrderByDescending(a => a.TermNumber).ThenByDescending(a => a.WeekNumber).First().Score
-                                - g.OrderBy(a => a.TermNumber).ThenBy(a => a.WeekNumber).First().Score
-                })
-                .OrderByDescending(x => x.improvement)
-                .FirstOrDefault()?.subject ?? "N/A";
-
             return Json(new
             {
                 weeklyData,
                 subjectAverages,
                 classAverages,
                 termData,
-                overallAvg,
-                bestSubject,
-                mostImproved,
                 subjects
             });
         }

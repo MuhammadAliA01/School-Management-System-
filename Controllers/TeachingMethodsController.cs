@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagmentSystem.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -38,6 +39,8 @@ namespace SchoolManagmentSystem.Controllers
 
             ViewBag.StudentAverages = monthlyAverages
     .ToDictionary(x => x.StudentId, x => Math.Round(x.Average, 1));
+
+            ViewBag.Classes = Context.AssignedClassStudents.ToList();
 
             return View(allStudents);
         }

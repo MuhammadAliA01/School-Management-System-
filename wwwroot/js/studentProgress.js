@@ -5,9 +5,7 @@ let chartData = null;
 $.getJSON(`/StudentProgressVisualization/GetChartData?studentId=${studentId}`, function (data) {
     chartData = data;
 
-    document.getElementById('overallAvg').innerText = data.overallAvg + '/10';
-    document.getElementById('bestSubject').innerText = data.bestSubject;
-    document.getElementById('mostImproved').innerText = data.mostImproved;
+    
 
     lineChart = new Chart(document.getElementById('lineChart'), {
         type: 'line',
@@ -53,7 +51,7 @@ $.getJSON(`/StudentProgressVisualization/GetChartData?studentId=${studentId}`, f
                     pointBackgroundColor: '#E8521A'
                 },
                 {
-                    label: 'Class Avg',
+                    label: 'Grade Avg',
                     data: data.classAverages.map(s => s.avg),
                     borderColor: '#2196F3',
                     backgroundColor: '#2196F333',

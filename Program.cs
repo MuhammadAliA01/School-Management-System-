@@ -25,6 +25,7 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<AIScoringService>();
 builder.Services.AddScoped<IncidentAnalysisService>();
 builder.Services.AddScoped<EmploymentService>();
+builder.Services.AddScoped<CVService>();
 builder.Services.AddScoped<AttendanceReportService>();
 builder.Services.AddHostedService<WeeklyReportWorker>();
 

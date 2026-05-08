@@ -1,0 +1,133 @@
+﻿@model IEnumerable<SchoolManagmentSystem.Models.Employee>
+
+<style>
+    body {
+        background-color: #F4F7F9;
+        font-family: 'Dubai', sans-serif;
+    }
+
+    .page-header {
+        background: white;
+        padding: 1rem 0;
+        border-bottom: 1px solid #E0E0E0;
+        margin-bottom: 1.5rem;
+    }
+
+    .custom-search {
+        display: flex;
+        background: white;
+        border: 1px solid #DCDDE1;
+        border-radius: 25px;
+        padding: 5px 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        max-width: 550px;
+        margin: 0 auto 2rem auto;
+    }
+
+    .search-input {
+        border: none;
+        outline: none;
+        flex-grow: 1;
+    }
+
+    .employee-card {
+        background: white;
+        border-radius: 10px;
+        border: 1px solid #E0E0E0;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+
+    .orange-header {
+        background-color: #FFF9F4;
+        color: #E67E22;
+        padding: 12px 20px;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .details-box {
+        padding: 15px 20px;
+        background: #fff;
+        border-top: 1px solid #F0F0F0;
+    }
+</style>
+
+<div class="page-header">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <h5 style="font-weight: 800;">Staff Directory</h5>
+            <small class="text-muted">Hybrid Learning Academy • Employee Records</small>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Create" class="btn btn-sm btn-warning text-white px-3" style="font-weight:700;">New Entry</a>
+
+            <form asp-action="UploadWithAI" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" id="aiInput" style="display:none" onchange="this.form.submit()" />
+                <button type="button" class="btn btn-sm btn-primary px-3"
+                        onclick="document.getElementById('aiInput').click()">
+                    AI Scan Contract
+                </button>
+            </form>
+        </div>
+
+        <script>
+            function showLoadingAndSubmit() {
+                const btn = document.getElementById('aiBtn');
+                const input = document.getElementById('aiInput');
+
+                if (input.files.length > 0) {
+                    btn.disabled = true;
+                    btn.innerHTML = "Scanning...";
+                    document.getElementById('aiForm').submit();
+                }
+            }
+        </script>
+</div>
+
+<div class="container">
+    <form asp-action="Index" method="get" class="custom-search">
+        <input type="text" name="searchString" class="search-input" placeholder="Search staff..." />
+        <button type="submit" class="btn btn-dark btn-sm px-4" style="border-radius:20px;">Search</button>
+    </form>
+
+@foreach (var item in Model)
+{
+        <div class="employee-card" style="margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+
+            <div class="orange-header" data-bs-toggle="collapse" data-bs-target="#details-@item.Id"
+                 style="cursor:pointer; padding: 15px; background-color: #FFF9F4; color: #E67E22; font-weight: bold; display: flex; justify-content: space-between;">
+                <span><i class="fas fa-user-tie mr-2"></i> @item.FullName</span>
+                <i class="fas fa-chevron-down" style="font-size: 0.8rem; opacity: 0.5;"></i>
+            </div>
+
+                <div id="details-@item.Id" class="collapse" style="background-color: white;">
+                    <div style="padding: 15px 20px; border-top: 1px solid #eee;">
+                        <div class="row align-items-center">
+                            <div class="col-md-7">
+                                <p class="mb-1"><strong>Position:</strong> @item.Position</p>
+                                <p class="mb-0"><strong>Joined:</strong> @item.DateJoined.ToString("MMMM dd, yyyy")</p>
+
+                                <p>@ViewBag.EmpInfo</p>
+                            </div>
+
+                            <div class="col-md-5 d-flex justify-content-end align-items-center">
+                                @if (!string.IsNullOrEmpty(item.DocumentPath))
+                                {
+                                    <a href="@item.DocumentPath" target="_blank" class="btn btn-sm btn-outline-info me-2" style="font-weight:700;">
+                                        View Contract
+                                    </a>
+                                }
+
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Are you sure?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+}

@@ -1,0 +1,39 @@
+﻿@model SchoolManagmentSystem.Models.Employee
+<div class="container mt-5">
+    <div class="card shadow-sm" style="max-width: 500px; margin: 2rem auto; border-radius: 12px;">
+        <div class="card-header bg-dark text-white text-center" style="border-radius: 12px 12px 0 0;">
+            <h5 class="mb-0">Manual Entry</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-group mb-3">
+                    <label>Full Name</label>
+                    <input asp-for="FullName" class="form-control" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Position</label>
+                    <select asp-for="Position" class="form-control">
+                        <option value="Therapist">Therapist</option>
+                        <option value="Cleaner">Cleaner</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Staff">Staff</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Date Joined</label>
+                    <input asp-for="DateJoined" type="date" class="form-control" />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label>Upload Contract (Optional)</label>
+                    <input type="file" name="contractFile" class="form-control" />
+                </div>
+
+                <button type="submit" class="btn btn-warning w-100">Save Employee Profile</button>
+            </form>
+        </div>
+    </div>

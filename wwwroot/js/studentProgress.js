@@ -62,7 +62,7 @@ $.getJSON(`/StudentProgressVisualization/GetChartData?studentId=${studentId}`, f
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: { r: { min: 0, max: 10 } }
+            scales: { r: { min: 0, max: 10 } 
         }
     });
 

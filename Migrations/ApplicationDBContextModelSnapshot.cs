@@ -496,6 +496,60 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("Staffs");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.StaffAttendance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AnomalyReason")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<decimal?>("ClockInLatitude")
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal?>("ClockInLongitude")
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<string>("ClockInPhotoUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("ClockInTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("ClockOutLatitude")
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal?>("ClockOutLongitude")
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<string>("ClockOutPhotoUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("ClockOutTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAnomaly")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("TotalHoursWorked")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StaffId");
+
+                    b.ToTable("StaffAttendances");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>
                 {
                     b.Property<int>("StudentId")
@@ -759,6 +813,38 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("Teachers");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.TicketBooking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("TicketBookings");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.TicketPurchases", b =>
                 {
                     b.Property<int>("id")
@@ -790,38 +876,6 @@ namespace SchoolManagmentSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("SchoolManagmentSystem.Models.TicketBooking", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("AmountPaid")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PurchaseDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("TicketBookings");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Attendance", b =>
@@ -874,6 +928,17 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("Student");
 
                     b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.StaffAttendance", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>

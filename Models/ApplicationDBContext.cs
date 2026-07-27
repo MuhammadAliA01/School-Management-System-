@@ -32,5 +32,7 @@ namespace SchoolManagmentSystem.Models
 
         public DbSet<TicketPurchases> ticketPurchases { get; set; }
 
+        public DbSet<StaffAttendance> StaffAttendances { get; set; }// Sem2 Mobile App 
+
     }
 }

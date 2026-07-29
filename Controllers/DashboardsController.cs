@@ -118,22 +118,32 @@ namespace SchoolManagmentSystem.Controllers
             {
                 bool teacher = false;
                 bool admin = false;
+                bool principal = false;
                 var LoggedInUser = _context.Staffs.Where(l => l.id == Convert.ToInt32(parentId)).Select(l => l).FirstOrDefault();
 
                 if (LoggedInUser.Role == "Teacher")
                 {
                     teacher = true;
                     admin = false;
+                    principal = false;
 
                 }
                 else if (LoggedInUser.Role == "Admin")
                 {
                     teacher = false;
                     admin = true;
+                    principal = false;
+                }
+                else if (LoggedInUser.Role == "Principal")
+                {
+                    teacher = false;
+                    admin = false;
+                    principal = true;
                 }
 
                 ViewBag.teacher = teacher;
                 ViewBag.admin = admin;
+                ViewBag.principal = principal;
             }
 
 

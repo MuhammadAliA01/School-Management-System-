@@ -57,12 +57,17 @@ namespace SchoolManagmentSystem.Models
     {
         [Key]
         public int Id { get; set; }
-
         public string FilePath { get; set; } = default!;
         public string FileName { get; set; } = default!;
 
-        public int StudentRegistrationId { get; set; }
+        // Make this nullable (?) so it's optional
+        public int? StudentRegistrationId { get; set; }
         [ForeignKey("StudentRegistrationId")]
-        public virtual StudentRegistration StudentRegistration { get; set; } = default!;
+        public virtual StudentRegistration? StudentRegistration { get; set; }
+
+        // Add this so it can link to the enrolled Student table
+        public int? StudentId { get; set; }
+        [ForeignKey("StudentId")]
+        public virtual Student? Student { get; set; }
     }
 }

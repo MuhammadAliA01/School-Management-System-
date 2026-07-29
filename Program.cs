@@ -44,7 +44,23 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Account/Login";
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Flutter", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
+
+
+app.UseCors("Flutter");
+
+
 
 //set pdf font resolver
 PdfSharp.Fonts.GlobalFontSettings.FontResolver = new MyFontResolver();

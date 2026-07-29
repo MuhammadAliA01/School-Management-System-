@@ -1,0 +1,32 @@
+﻿@model SchoolManagmentSystem.Models.EventCalendar
+
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <h4 class="fw-bold text-warning mb-4">New School Event</h4>
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label class="fw-bold">Event Title</label>
+                <input asp-for="Title" class="form-control" placeholder="e.g. Science Fair" />
+            </div>
+            <div class="mb-3">
+                <label class="fw-bold">Location</label>
+                <input asp-for="Location" class="form-control" placeholder="e.g. Main Hall" />
+            </div>
+            <div class="mb-3">
+                <label class="fw-bold">Description</label>
+                <textarea asp-for="Desc" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="fw-bold">Start Time</label>
+                    <input asp-for="StartTime" type="datetime-local" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="fw-bold">End Time</label>
+                    <input asp-for="EndTime" type="datetime-local" class="form-control" />
+                </div>
+            </div>
+            <button type="submit" class="btn btn-warning text-white fw-bold px-5">Save Event</button>
+        </form>
+    </div>
+</div>

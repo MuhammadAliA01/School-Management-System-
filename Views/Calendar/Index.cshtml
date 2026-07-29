@@ -1,37 +1,52 @@
-﻿<div id="calendar"></div>
+﻿link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+<div id="calendar" style="min-height: 600px;"></div>
+<div id="calendar"></div>
 
 @section Scripts {
-    <!-- 2. Your JavaScript code -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                events: '/api/calendar/events',
-                dateClick: function(info) {
-                    // Trigger "Create Event" Modal
-                    $('#eventModal').modal('show');
-                    $('#startDate').val(info.dateStr);
-                },
-                eventContent: function(arg) {
-                    // Add "Details..." link and RSVP count to the calendar cell
-                    let container = document.createElement('div');
+            initialView: 'dayGridMonth',
 
-                    let detailsLink = document.createElement('a');
-                    detailsLink.innerHTML = "Details...";
-                    detailsLink.className = "btn btn-sm btn-link p-0"; // Optional: makes it look cleaner
-                    detailsLink.href = `/Events/Details/${arg.event.id}`;
+            
+            events: '/events',
+
+            
+            eventDataTransform: function(eventData) {
+                return {
+                    id: eventData.id,
+                    title: eventData.title,
+                    start: eventData.start || eventData.startTime,
+                    end: eventData.end || eventData.endTime,
+                    description: eventData.description || eventData.desc
+                };
+            }
+            });
+
+                eventContent: function(arg) {
+                    // This creates the custom look inside the calendar cell
+                    let container = document.createElement('div');
+                    container.className = "p-1";
+
+                    let title = document.createElement('div');
+                    title.className = "fw-bold small";
+                    title.innerText = arg.event.title;
 
                     let count = document.createElement('div');
-                    count.className = "small text-muted";
+                    count.className = "extra-small text-muted";
+                    
                     count.innerText = `Attendees: ${arg.event.extendedProps.attendeeCount || 0}`;
 
-                    container.appendChild(detailsLink);
+                    container.appendChild(title);
                     container.appendChild(count);
 
                     return { domNodes: [container] };
                 }
             });
+
             calendar.render();
         });
     </script>

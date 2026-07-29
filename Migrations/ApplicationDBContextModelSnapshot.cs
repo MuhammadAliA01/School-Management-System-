@@ -137,6 +137,33 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("ConductReports");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.Employee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateJoined")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocumentPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Employees");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.EmploymentApplication", b =>
                 {
                     b.Property<int>("id")
@@ -252,6 +279,10 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
@@ -463,6 +494,60 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasKey("id");
 
                     b.ToTable("Staffs");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.StaffAttendance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AnomalyReason")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<decimal?>("ClockInLatitude")
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal?>("ClockInLongitude")
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<string>("ClockInPhotoUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("ClockInTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("ClockOutLatitude")
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal?>("ClockOutLongitude")
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<string>("ClockOutPhotoUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("ClockOutTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAnomaly")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("TotalHoursWorked")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StaffId");
+
+                    b.ToTable("StaffAttendances");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>
@@ -843,6 +928,17 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("Student");
 
                     b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.StaffAttendance", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>

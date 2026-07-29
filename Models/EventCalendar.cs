@@ -11,6 +11,8 @@ namespace SchoolManagmentSystem.Models
         public string Title { get; set; }
         [DisplayName(" Event Description")]
         public string Desc { get; set; }
+        [DisplayName("Location")]
+        public string Location { get; set; }
         [DisplayName("Start Time")]
         public DateTime StartTime { get; set; }
         [DisplayName("End Time")]

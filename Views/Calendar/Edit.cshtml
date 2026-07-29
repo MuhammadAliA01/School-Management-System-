@@ -1,0 +1,36 @@
+﻿@model SchoolManagmentSystem.Models.EventCalendar
+
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <h4 class="fw-bold text-dark mb-4">Edit Event: <span class="text-warning">@Model.Title</span></h4>
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label class="fw-bold">Event Title</label>
+                <input asp-for="Title" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="fw-bold">Location</label>
+                <input asp-for="Location" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="fw-bold">Description</label>
+                <textarea asp-for="Desc" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="fw-bold">Start Time</label>
+                    <input asp-for="StartTime" type="datetime-local" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="fw-bold">End Time</label>
+                    <input asp-for="EndTime" type="datetime-local" class="form-control" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-dark fw-bold px-5">Update Event</button>
+            <a asp-action="Manage" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>

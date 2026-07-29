@@ -65,7 +65,7 @@ namespace SchoolManagmentSystem.ServicesAi
     public async Task<string> GetConductPlan(string description, string severity)
         {
             // API setup
-            string apiKey = "AIzaSyBkyYXI2R303zAbWVzrQ8frurKAoM70gv4"; // Keep your key secure!
+            string apiKey = ""; // Keep your key secure!
             string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
 
             // 1. Create the prompt

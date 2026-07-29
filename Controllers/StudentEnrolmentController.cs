@@ -142,7 +142,9 @@ namespace SchoolManagmentSystem.Controllers
                 Documents = student.Documents.Select(d => new StudentDocument
                 {
                     FilePath = d.FilePath,
-                    FileName = d.FileName
+                    FileName = d.FileName,
+                    StudentId = null, // EF will fill this automatically when added to studentMain.Documents
+                    StudentRegistrationId = null // CLEAR the link to the old registration
                 }).ToList(),
                 Comments = student.Comments,
                 RegistrationDate = DateTime.Today,

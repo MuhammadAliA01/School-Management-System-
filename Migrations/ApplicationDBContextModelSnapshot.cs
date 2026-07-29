@@ -619,7 +619,7 @@ namespace SchoolManagmentSystem.Migrations
                     b.Property<int?>("StudentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StudentRegistrationId")
+                    b.Property<int?>("StudentRegistrationId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -726,6 +726,38 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasKey("TeacherId");
 
                     b.ToTable("Teachers");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.TicketBooking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("TicketBookings");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.TicketPurchases", b =>
@@ -851,15 +883,15 @@ namespace SchoolManagmentSystem.Migrations
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.StudentDocument", b =>
                 {
-                    b.HasOne("SchoolManagmentSystem.Models.Student", null)
+                    b.HasOne("SchoolManagmentSystem.Models.Student", "Student")
                         .WithMany("Documents")
                         .HasForeignKey("StudentId");
 
                     b.HasOne("SchoolManagmentSystem.Models.StudentRegistration", "StudentRegistration")
                         .WithMany("Documents")
-                        .HasForeignKey("StudentRegistrationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StudentRegistrationId");
+
+                    b.Navigation("Student");
 
                     b.Navigation("StudentRegistration");
                 });

@@ -85,6 +85,29 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("Attendances");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.Class", b =>
+                {
+                    b.Property<int>("ClassId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClassId"));
+
+                    b.Property<string>("ClassName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("RoomNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("ClassId");
+
+                    b.ToTable("Classes");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.ConductReport", b =>
                 {
                     b.Property<int>("Id")
@@ -550,6 +573,34 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("StaffAttendances");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.StaffSchedule", b =>
+                {
+                    b.Property<int>("ScheduleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScheduleId"));
+
+                    b.Property<int>("ClassId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ScheduleDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ShiftType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ScheduleId");
+
+                    b.HasIndex("ClassId");
+
+                    b.ToTable("StaffSchedules");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>
                 {
                     b.Property<int>("StudentId")
@@ -941,6 +992,17 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("Staff");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.StaffSchedule", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Class", "Class")
+                        .WithMany("StaffSchedules")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Class");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>
                 {
                     b.HasOne("SchoolManagmentSystem.Models.AssignedClassStudent", "AssignedClassStudents")
@@ -1020,6 +1082,11 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("EventCalendar");
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.Class", b =>
+                {
+                    b.Navigation("StaffSchedules");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Student", b =>

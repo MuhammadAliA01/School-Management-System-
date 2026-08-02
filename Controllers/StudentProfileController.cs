@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using SchoolManagmentSystem.Models;
+using Mscc.GenerativeAI;
+using QRCoder;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -47,6 +49,22 @@ namespace SchoolManagmentSystem.Controllers
 
             
             return View(await students.ToListAsync());
+        }
+
+        public async Task<IActionResult> ViewQR(int id)
+        {
+            var student = _context.Students.Where(x => x.StudentId == id).Select(x => x).FirstOrDefault();
+
+            using var qrGenerator = new QRCodeGenerator();
+            using var qrData = qrGenerator.CreateQrCode(student.StudentId.ToString(), QRCodeGenerator.ECCLevel.Q);
+
+            var qrCode = new PngByteQRCode(qrData);
+            byte[] qrBytes = qrCode.GetGraphic(20);
+
+            ViewBag.QRCode = Convert.ToBase64String(qrBytes);
+
+            return View(student);
+
         }
     }
 }    

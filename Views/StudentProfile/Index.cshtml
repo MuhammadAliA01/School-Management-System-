@@ -22,13 +22,20 @@
         <!-- ROW 1: PERSONAL & CONTACT -->
         <div style="display: flex; gap: 20px; margin-bottom: 30px;">
 
-            <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
-                <h3 style="color: #2980b9; border-bottom: 2px solid #ecf0f1; padding-bottom: 8px; margin-top: 0;"> 
-                    QR Code</h3>
+            <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee; display: flex; flex-direction: column; min-height: 200px;">
 
-                    <a asp-action="ViewQR" asp-route-id="@Model.StudentId" class="btn btn-primary">
+                <h3 style="color: #2980b9; border-bottom: 2px solid #ecf0f1; padding-bottom: 8px; margin-top: 0; text-align: center;">
+                    QR Code
+                </h3>
+
+                <div style="flex: 1; display: flex; justify-content: center; align-items: center;">
+                    <a asp-action="ViewQR"
+                       asp-route-id="@Model.StudentId"
+                       class="btn btn-primary">
                         View QR
                     </a>
+                </div>
+
             </div>
 
             <!-- Personal Info -->

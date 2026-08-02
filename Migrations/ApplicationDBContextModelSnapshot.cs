@@ -85,6 +85,36 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("Attendances");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.AttendanceModel", b =>
+                {
+                    b.Property<int>("attendanceID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("attendanceID"));
+
+                    b.Property<DateTime>("DateAttended")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("studentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("teacherID")
+                        .HasColumnType("int");
+
+                    b.HasKey("attendanceID");
+
+                    b.HasIndex("studentID");
+
+                    b.HasIndex("teacherID");
+
+                    b.ToTable("AttendanceModels");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Class", b =>
                 {
                     b.Property<int>("ClassId")
@@ -936,6 +966,25 @@ namespace SchoolManagmentSystem.Migrations
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.AttendanceModel", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("studentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SchoolManagmentSystem.Models.Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("teacherID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Staff");
 
                     b.Navigation("Student");
                 });

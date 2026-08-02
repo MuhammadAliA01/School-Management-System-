@@ -36,5 +36,17 @@ namespace SchoolManagmentSystem.Models
         
         public DbSet<Class> Classes { get; set; }
         public DbSet<StaffSchedule> StaffSchedules { get; set; }
+        public DbSet<TicketBooking> TicketBookings { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+
+
+
+        public DbSet<TicketPurchases> ticketPurchases { get; set; }
+
+        public DbSet<StaffAttendance> StaffAttendances { get; set; }// Sem2 Mobile App 
+
+        
+        public DbSet<Class> Classes { get; set; }
+        public DbSet<StaffSchedule> StaffSchedules { get; set; }
     }
 }

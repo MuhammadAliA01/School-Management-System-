@@ -74,7 +74,9 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
                     return Ok(new
                     {
                         token = tokenString,
-                        role = "teacher"
+                        role = "teacher",
+                        staffId = staffUser.id,
+                        firstName = staffUser.FirstName
                     });
 
 

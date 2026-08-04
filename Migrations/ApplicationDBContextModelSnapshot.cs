@@ -441,6 +441,23 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("Incidents");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.Medication", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("medName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Medications");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Parent", b =>
                 {
                     b.Property<int>("Id")
@@ -954,6 +971,37 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("ticketPurchases");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.medsAdministered", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("dateAdministered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("medID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("studentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("teacherID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("medID");
+
+                    b.HasIndex("studentID");
+
+                    b.HasIndex("teacherID");
+
+                    b.ToTable("medsAdministered");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.AssignedClassStudent", b =>
                 {
                     b.HasOne("SchoolManagmentSystem.Models.Staff", "Teacher")
@@ -1137,6 +1185,33 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("EventCalendar");
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.medsAdministered", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Medication", "medication")
+                        .WithMany()
+                        .HasForeignKey("medID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SchoolManagmentSystem.Models.Student", "student")
+                        .WithMany()
+                        .HasForeignKey("studentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SchoolManagmentSystem.Models.Staff", "staff")
+                        .WithMany()
+                        .HasForeignKey("teacherID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("medication");
+
+                    b.Navigation("staff");
+
+                    b.Navigation("student");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Class", b =>

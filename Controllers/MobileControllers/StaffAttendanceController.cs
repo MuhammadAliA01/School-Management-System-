@@ -10,7 +10,7 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
         public int StaffId { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
-        public string? PhotoBase64 { get; set; }
+        public IFormFile? Photo { get; set; }
     }
 
 
@@ -20,10 +20,35 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
     public class StaffAttendanceController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
-
-        public StaffAttendanceController(ApplicationDBContext context)
+        private readonly IWebHostEnvironment _env;
+        public StaffAttendanceController(ApplicationDBContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
+        }
+
+        private async Task<string?> SaveFileAsync(IFormFile? file, int staffId, string type)
+        {
+            if (file == null || file.Length == 0) return null;
+
+            // Define path: wwwroot/uploads/images/
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "images");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            // Create unique filename: staff1ClockIn_20260804212800.jpg
+            var fileName = $"staff{staffId}{type}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(file.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // Return relative path for the database
+            return $"/uploads/images/{fileName}";
         }
 
         [HttpPost("ClockIn")]
@@ -60,12 +85,10 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
                 }
             }
 
-            byte[]? photoBytes = null;
-            if (!string.IsNullOrEmpty(request.PhotoBase64))
-                photoBytes = Convert.FromBase64String(request.PhotoBase64);
+            string? photoUrl = await SaveFileAsync(request.Photo, request.StaffId, "ClockIn");
 
-            DateTime clockInTimeUtc = DateTime.UtcNow; //dont forget to convert times first before intro anomaly
-            DateTime clockInTimeLocal = clockInTimeUtc.AddHours(2);
+            DateTime clockInTimeUtc = DateTime.UtcNow;
+            DateTime clockInTimeLocal = clockInTimeUtc.AddHours(2); // Account for SAT
             TimeSpan expectedStartTime = new TimeSpan(8, 0, 0);
             TimeSpan graceWindow = TimeSpan.FromMinutes(10);
             bool isLate = clockInTimeLocal.TimeOfDay > (expectedStartTime + graceWindow);
@@ -76,7 +99,7 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
                 ClockInTime = clockInTimeUtc,
                 ClockInLatitude = request.Latitude,
                 ClockInLongitude = request.Longitude,
-                ClockInPhoto = photoBytes,
+                ClockInPhotoUrl = photoUrl, // Saving the file path here
                 IsAnomaly = isLate,
                 AnomalyReason = isLate ? $"Late clock-in — arrived at {clockInTimeLocal:HH:mm}, expected by {expectedStartTime.Add(graceWindow):hh\\:mm}" : null
             };
@@ -87,7 +110,7 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
         }
 
         [HttpPost("ClockOut")]
-        public async Task<IActionResult> ClockOut([FromBody] ClockInRequest request)
+        public async Task<IActionResult> ClockOut([FromForm] ClockInRequest request) // Use FromForm!
         {
             var staff = await _context.Staffs.FindAsync(request.StaffId);
             if (staff == null)
@@ -101,14 +124,13 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             if (attendance == null)
                 return BadRequest("No clock-in record found for this staff.");
 
-            byte[]? photoBytes = null;
-            if (!string.IsNullOrEmpty(request.PhotoBase64))
-                photoBytes = Convert.FromBase64String(request.PhotoBase64);
+            
+            string? photoUrl = await SaveFileAsync(request.Photo, request.StaffId, "ClockOut");
 
             attendance.ClockOutTime = DateTime.UtcNow;
             attendance.ClockOutLatitude = request.Latitude;
             attendance.ClockOutLongitude = request.Longitude;
-            attendance.ClockOutPhoto = photoBytes;
+            attendance.ClockOutPhotoUrl = photoUrl; // Saving the file path here
 
             if (attendance.ClockInTime.HasValue && attendance.ClockOutTime.HasValue)
             {

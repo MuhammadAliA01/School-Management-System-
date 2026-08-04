@@ -40,7 +40,6 @@ namespace SchoolManagmentSystem.Models
 
         [Column(TypeName = "decimal(5,2)")]
         public decimal? TotalHoursWorked { get; set; }
-        public byte[]? ClockInPhoto { get; set; }
-        public byte[]? ClockOutPhoto { get; set; }
+       
     }
 }

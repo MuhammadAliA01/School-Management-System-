@@ -584,9 +584,6 @@ namespace SchoolManagmentSystem.Migrations
                     b.Property<decimal?>("ClockInLongitude")
                         .HasColumnType("decimal(9,6)");
 
-                    b.Property<byte[]>("ClockInPhoto")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<string>("ClockInPhotoUrl")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -599,9 +596,6 @@ namespace SchoolManagmentSystem.Migrations
 
                     b.Property<decimal?>("ClockOutLongitude")
                         .HasColumnType("decimal(9,6)");
-
-                    b.Property<byte[]>("ClockOutPhoto")
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("ClockOutPhotoUrl")
                         .HasMaxLength(255)

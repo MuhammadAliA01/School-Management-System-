@@ -8,8 +8,8 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
     public class ClockInRequest
     {
         public int StaffId { get; set; }
-        public decimal Latitude { get; set; }
-        public decimal Longitude { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
         public IFormFile? Photo { get; set; }
     }
 
@@ -52,11 +52,24 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
         }
 
         [HttpPost("ClockIn")]
-        public async Task<IActionResult> ClockIn([FromBody] ClockInRequest request)
+        public async Task<IActionResult> ClockIn([FromForm] ClockInRequest request) 
         {
             var staff = await _context.Staffs.FindAsync(request.StaffId);
             if (staff == null)
                 return NotFound("Staff not found.");
+
+            DateTime todayLocal = DateTime.UtcNow.AddHours(2).Date; // SAT
+
+            var alreadyClockedInToday = await _context.StaffAttendances
+                .Where(a => a.StaffId == request.StaffId
+                         && a.ClockInTime.HasValue
+                         && a.ClockInTime.Value.AddHours(2).Date == todayLocal)
+                .AnyAsync();
+
+            if (alreadyClockedInToday)
+            {
+                return BadRequest(new { message = "You have already clocked in today. Only one clock-in per day is allowed." });
+            }
 
             // Auto-close any forgotten open session from a previous day
             var oldOpenSession = await _context.StaffAttendances
@@ -69,7 +82,7 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
                 DateTime oldClockInLocal = oldOpenSession.ClockInTime.Value.AddHours(2);
                 DateTime nowLocalCheck = DateTime.UtcNow.AddHours(2);
 
-                // Only auto-close if it's from a previous calendar day (not today's still-open session)
+                
                 if (oldClockInLocal.Date < nowLocalCheck.Date)
                 {
                     DateTime shiftEndLocal = oldClockInLocal.Date.AddHours(16); // 4:00 PM — actual paid shift end
@@ -97,8 +110,8 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             {
                 StaffId = request.StaffId,
                 ClockInTime = clockInTimeUtc,
-                ClockInLatitude = request.Latitude,
-                ClockInLongitude = request.Longitude,
+                ClockInLatitude = (decimal)request.Latitude,   
+                ClockInLongitude = (decimal)request.Longitude, 
                 ClockInPhotoUrl = photoUrl, // Saving the file path here
                 IsAnomaly = isLate,
                 AnomalyReason = isLate ? $"Late clock-in — arrived at {clockInTimeLocal:HH:mm}, expected by {expectedStartTime.Add(graceWindow):hh\\:mm}" : null
@@ -128,8 +141,8 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             string? photoUrl = await SaveFileAsync(request.Photo, request.StaffId, "ClockOut");
 
             attendance.ClockOutTime = DateTime.UtcNow;
-            attendance.ClockOutLatitude = request.Latitude;
-            attendance.ClockOutLongitude = request.Longitude;
+            attendance.ClockOutLatitude = (decimal)request.Latitude; 
+            attendance.ClockOutLongitude = (decimal)request.Longitude; 
             attendance.ClockOutPhotoUrl = photoUrl; // Saving the file path here
 
             if (attendance.ClockInTime.HasValue && attendance.ClockOutTime.HasValue)

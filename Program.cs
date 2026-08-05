@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Services;
 using SchoolManagmentSystem.ServicesAi.EmploymentAI;
 using SchoolManagmentSystem.ServicesAi.IncidentAI;
 using Stripe;
-using SchoolManagmentSystem.Services;
-using Microsoft.AspNetCore.Localization;
+using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
 

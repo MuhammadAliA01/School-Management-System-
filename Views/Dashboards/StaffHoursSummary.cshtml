@@ -1,0 +1,33 @@
+﻿@model List<SchoolManagmentSystem.Models.StaffHoursViewModel>
+
+@{
+    ViewData["Title"] = "Staff Hours Summary";
+}
+<h2>Staff Hours Summary (@ViewBag.CurrentMonthName)</h2>
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Total Hours</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            @foreach (var staff in Model)
+            {
+                <tr>
+                    <td>@staff.FirstName @staff.Surname</td>
+                    <td>@staff.TotalHours.ToString("0.00") hrs</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2" class="text-center">No hours logged yet for this month.</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -159,29 +159,28 @@ namespace SchoolManagmentSystem.Controllers
             var currentYear = DateTime.Now.Year;
 
             var summary = await _context.StaffAttendances
-               
                 .Where(a => a.TotalHoursWorked != null
-                         && a.date.Month == currentMonth
-                         && a.Date.Year == currentYear)
+                         && a.ClockInTime.HasValue
+                         && a.ClockInTime.Value.Month == currentMonth
+                         && a.ClockInTime.Value.Year == currentYear)
                 .GroupBy(a => a.StaffId)
                 .Select(g => new StaffHoursViewModel
                 {
-                    StaffId = (int)g.Key,
-                    TotalHours = (decimal)g.Sum(a => a.TotalHoursWorked ?? 0)
+                    StaffId = g.Key,
+                    TotalHours = g.Sum(a => a.TotalHoursWorked ?? 0)
                 })
                 .ToListAsync();
 
-            foreach (var s in summary)
+            for (int i = 0; i < summary.Count; i++)
             {
-                var staff = await _context.Staffs.FindAsync(s.StaffId);
+                var staff = await _context.Staffs.FindAsync(summary[i].StaffId);
                 if (staff != null)
                 {
-                    s.FirstName = staff.FirstName;
-                    s.Surname = staff.Surname;
+                    summary[i].FirstName = staff.FirstName;
+                    summary[i].Surname = staff.Surname;
                 }
             }
 
-            
             ViewBag.CurrentMonthName = DateTime.Now.ToString("MMMM yyyy");
 
             return View(summary);

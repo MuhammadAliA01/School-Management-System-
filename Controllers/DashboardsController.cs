@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagmentSystem.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -149,6 +153,38 @@ namespace SchoolManagmentSystem.Controllers
 
             return View();
         }
+        public async Task<IActionResult> StaffHoursSummary()
+        {
+            var currentMonth = DateTime.Now.Month;
+            var currentYear = DateTime.Now.Year;
 
+            var summary = await _context.StaffAttendances
+               
+                .Where(a => a.TotalHoursWorked != null
+                         && a.Date.Month == currentMonth
+                         && a.Date.Year == currentYear)
+                .GroupBy(a => a.StaffId)
+                .Select(g => new StaffHoursViewModel
+                {
+                    StaffId = (int)g.Key,
+                    TotalHours = (decimal)g.Sum(a => a.TotalHoursWorked ?? 0)
+                })
+                .ToListAsync();
+
+            foreach (var s in summary)
+            {
+                var staff = await _context.Staffs.FindAsync(s.StaffId);
+                if (staff != null)
+                {
+                    s.FirstName = staff.FirstName;
+                    s.Surname = staff.Surname;
+                }
+            }
+
+            
+            ViewBag.CurrentMonthName = DateTime.Now.ToString("MMMM yyyy");
+
+            return View(summary);
+        }
     }
 }

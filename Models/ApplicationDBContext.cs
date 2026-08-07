@@ -39,5 +39,8 @@ namespace SchoolManagmentSystem.Models
         public DbSet<TicketBooking> TicketBookings { get; set; }
 
         public DbSet<AttendanceModel> AttendanceModels { get; set; }
+
+        public DbSet<medsAdministered> medsAdministered { get; set; }
+        public DbSet<Medication> Medications { get; set; }
     }
 }

@@ -40,5 +40,6 @@ namespace SchoolManagmentSystem.Models
 
         [Column(TypeName = "decimal(5,2)")]
         public decimal? TotalHoursWorked { get; set; }
+       
     }
 }

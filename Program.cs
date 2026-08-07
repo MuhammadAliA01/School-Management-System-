@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Services;
 using SchoolManagmentSystem.ServicesAi.EmploymentAI;
 using SchoolManagmentSystem.ServicesAi.IncidentAI;
 using Stripe;
-using SchoolManagmentSystem.Services;
+using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,7 +64,13 @@ builder.WebHost.UseUrls(
 );
 
 var app = builder.Build();
-
+var supportedCultures = new[] { new System.Globalization.CultureInfo("en-US") };
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en-US"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 
 app.UseCors("Flutter");
 

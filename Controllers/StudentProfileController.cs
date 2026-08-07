@@ -55,11 +55,13 @@ namespace SchoolManagmentSystem.Controllers
         {
             var student = _context.Students.Where(x => x.StudentId == id).Select(x => x).FirstOrDefault();
 
+            string payload = $"{student.StudentId}|{student.FullName}";
+
             using var qrGenerator = new QRCodeGenerator();
-            using var qrData = qrGenerator.CreateQrCode(student.StudentId.ToString(), QRCodeGenerator.ECCLevel.Q);
+            using var qrData = qrGenerator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
 
             var qrCode = new PngByteQRCode(qrData);
-            byte[] qrBytes = qrCode.GetGraphic(20);
+            byte[] qrBytes = qrCode.GetGraphic(10);
 
             ViewBag.QRCode = Convert.ToBase64String(qrBytes);
 

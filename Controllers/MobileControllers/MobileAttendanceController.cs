@@ -16,10 +16,56 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             _context = context;
         }
 
+
+        [HttpGet("classlist")]
+        public async Task<IActionResult> ClassList()
+        {
+            var listStudents = _context.Students.ToList();
+
+            List<StudentAttTemp> students = new List<StudentAttTemp>();
+
+            foreach(Student st in listStudents)
+            {
+                var studentInAttStatus = _context.AttendanceModels.Where(x => x.studentID == st.StudentId).Select(x => x.status).FirstOrDefault();
+
+                if (studentInAttStatus == null)
+                {
+                    StudentAttTemp student = new StudentAttTemp
+                    {
+                        studentID = st.StudentId,
+                        name = st.FullName,
+                        status = "Absent"
+                    };
+                    students.Add(student);
+
+                }
+                else
+                {
+                    StudentAttTemp student = new StudentAttTemp
+                    {
+                        studentID = st.StudentId,
+                        name = st.FullName,
+                        status = studentInAttStatus
+                    };
+
+                    students.Add(student);
+
+                }
+
+
+            }
+
+            return Ok(students);
+
+
+        }
+
         [HttpPost("logattendance")]
         public async Task<IActionResult> TakeAttendance([FromBody]AttendanceRequest request)
         {
             var student = _context.Students.Where(x => x.StudentId == request.studentID).Select(x => x).FirstOrDefault();
+
+
 
             var teacher = _context.Staffs.Where(x => x.id == request.teacherID).Select(x => x).FirstOrDefault();
 
@@ -46,5 +92,8 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             
 
         }
+
+
+        
     }
 }

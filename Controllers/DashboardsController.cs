@@ -161,7 +161,7 @@ namespace SchoolManagmentSystem.Controllers
             var summary = await _context.StaffAttendances
                
                 .Where(a => a.TotalHoursWorked != null
-                         && a.Date.Month == currentMonth
+                         && a.date.Month == currentMonth
                          && a.Date.Year == currentYear)
                 .GroupBy(a => a.StaffId)
                 .Select(g => new StaffHoursViewModel

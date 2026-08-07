@@ -123,6 +123,7 @@ namespace SchoolManagmentSystem.Controllers
 
             var parent = _context.Parents.Where(p => p.Id == parentId).Select(p => p).FirstOrDefault();
 
+
             var studentMain = new Student
             {
                 ParentId = student.ParentId,
@@ -147,8 +148,7 @@ namespace SchoolManagmentSystem.Controllers
                     StudentRegistrationId = null // CLEAR the link to the old registration
                 }).ToList(),
                 Comments = student.Comments,
-                RegistrationDate = DateTime.Today,
-                
+                RegistrationDate = DateTime.Today,                
 
             };
 

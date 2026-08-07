@@ -58,6 +58,11 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.WebHost.UseUrls(
+    "http://0.0.0.0:7205",
+    "https://0.0.0.0:7206"
+);
+
 var app = builder.Build();
 var supportedCultures = new[] { new System.Globalization.CultureInfo("en-US") };
 app.UseRequestLocalization(new RequestLocalizationOptions
@@ -87,7 +92,7 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

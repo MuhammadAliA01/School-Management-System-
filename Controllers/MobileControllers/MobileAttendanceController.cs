@@ -39,7 +39,7 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             };
 
             _context.AttendanceModels.Add(attendance);
-            _context.SaveChangesAsync();
+           await _context.SaveChangesAsync();
 
             return Ok();
 

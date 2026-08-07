@@ -76,7 +76,7 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
                         token = tokenString,
                         role = "teacher",
                         staffId = staffUser.id,
-                        firstName = staffUser.FirstName
+                        staffName = staffUser.FirstName
                     });
 
 
@@ -141,7 +141,9 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
                     return Ok(new
                     {
                         token = tokenString,
-                        role = "parent"
+                        role = "parent",
+                        staffID = user.Id,
+                        staffName = user.FirstName
                     });
 
                 }

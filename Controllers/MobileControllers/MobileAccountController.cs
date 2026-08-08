@@ -142,7 +142,7 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
                     {
                         token = tokenString,
                         role = "parent",
-                        staffID = user.Id,
+                        staffId = user.Id,
                         staffName = user.FirstName
                     });
 

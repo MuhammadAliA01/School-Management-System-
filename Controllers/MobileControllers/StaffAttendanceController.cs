@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SchoolManagmentSystem.Models;
 using Microsoft.EntityFrameworkCore;
+using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Services;
 
 namespace SchoolManagmentSystem.Controllers.MobileControllers
 {
@@ -21,10 +22,14 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
     {
         private readonly ApplicationDBContext _context;
         private readonly IWebHostEnvironment _env;
-        public StaffAttendanceController(ApplicationDBContext context, IWebHostEnvironment env)
+        private readonly FirebaseNotificationService _firebaseNotificationService;
+
+        public StaffAttendanceController(ApplicationDBContext context, IWebHostEnvironment env, FirebaseNotificationService firebaseNotificationService)
         {
             _context = context;
             _env = env;
+            _firebaseNotificationService = firebaseNotificationService;
+
         }
 
         private async Task<string?> SaveFileAsync(IFormFile? file, int staffId, string type)
@@ -119,6 +124,17 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
 
             _context.StaffAttendances.Add(attendance);
             await _context.SaveChangesAsync();
+
+            
+
+            if (staff != null && !string.IsNullOrEmpty(staff.FCMToken))
+            {
+                await _firebaseNotificationService.SendNotification(
+                    staff.FCMToken,
+                    "Clocked In",
+                    "You have Clocked In"
+                );
+            }
             return Ok(new { message = "Clock-in successful.", attendanceId = attendance.Id, isAnomaly = isLate });
         }
 

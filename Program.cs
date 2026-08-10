@@ -10,9 +10,17 @@ using SchoolManagmentSystem.ServicesAi.EmploymentAI;
 using SchoolManagmentSystem.ServicesAi.IncidentAI;
 using Stripe;
 using System.Security.Cryptography;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile("hla-notifs-firebase-adminsdk-fbsvc-82fbd7094d.json")
+});
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<FirebaseNotificationService>();
 
 
 // Add services to the container.
@@ -57,6 +65,8 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+
+
 
 builder.WebHost.UseUrls(
     "http://0.0.0.0:7205",

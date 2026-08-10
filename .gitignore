@@ -13,6 +13,8 @@
 *.userosscache
 *.sln.docstates
 
+hla-notifs-firebase-adminsdk-fbsvc-82fbd7094d.json
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -55,7 +57,7 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
                 {
                     new Claim(ClaimTypes.Name, staffUser.Username),
                     new Claim("UserInternalID", staffUser.id.ToString()),
-                    new Claim(ClaimTypes.Role, "Staff")
+                    new Claim("role", "Staff")
                 };
 
                     var token = new JwtSecurityToken(
@@ -122,7 +124,7 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
                 {
                     new Claim(ClaimTypes.Name, user.Username),
                     new Claim("UserInternalID", user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, "Staff")
+                    new Claim("role", "Parent")
                 };
 
                     var token = new JwtSecurityToken(
@@ -251,6 +253,74 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             return Unauthorized("An error occurred");
         }
 
+
+        [AllowAnonymous]
+        [HttpPost("save-fcm-token")]
+        public async Task<IActionResult> SaveFCMToken(
+    [FromBody] FCMTokenRequest request)
+        {
+            if (request.Role == "Parent")
+            {
+                var parent = await _context.Parents.FindAsync(request.UserId);
+
+                if (parent == null)
+                {
+                    return NotFound("Parent not found");
+                }
+
+                parent.FCMToken = request.Token;
+            }
+            else if (request.Role == "Staff")
+            {
+                var staff = await _context.Staffs.FindAsync(request.UserId);
+
+                if (staff == null)
+                {
+                    return NotFound("Staff member not found");
+                }
+
+                staff.FCMToken = request.Token;
+            }
+            else
+            {
+                return BadRequest("Invalid role");
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "FCM Token Saved"
+            });
+        }
+
+        [HttpPost("test-notification")]
+        public async Task<IActionResult> TestNotification([FromBody] int parentId, [FromServices] FirebaseNotificationService notificationService)
+        {
+            var parent = await _context.Parents.FindAsync(parentId);
+
+            if (parent == null)
+            {
+                return NotFound("Parent not found");
+            }
+
+            if (string.IsNullOrEmpty(parent.FCMToken))
+            {
+                return BadRequest("Parent does not have an FCM token");
+            }
+
+            var result = await notificationService.SendNotification(
+                parent.FCMToken,
+                "Test Notification",
+                "This notification came from your ASP.NET API!"
+            );
+
+            return Ok(new
+            {
+                message = "Notification sent",
+                firebaseResponse = result
+            });
+        }
 
 
     }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Services;
 
 namespace SchoolManagmentSystem.Controllers.MobileControllers
 {
@@ -10,10 +12,15 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
     {
 
         private readonly ApplicationDBContext _context;
+        private readonly FirebaseNotificationService _firebaseNotificationService;
 
-        public MobileAttendanceController(ApplicationDBContext context)
+
+        public MobileAttendanceController(ApplicationDBContext context, FirebaseNotificationService firebaseNotificationService)
         {
             _context = context;
+            _firebaseNotificationService = firebaseNotificationService;
+
+
         }
 
 
@@ -26,7 +33,7 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
 
             foreach(Student st in listStudents)
             {
-                var studentInAttStatus = _context.AttendanceModels.Where(x => x.studentID == st.StudentId).Select(x => x.status).FirstOrDefault();
+                var studentInAttStatus = _context.AttendanceModels.Where(x => x.studentID == st.StudentId && x.DateAttended == DateTime.Today).Select(x => x.status).FirstOrDefault();
 
                 if (studentInAttStatus == null)
                 {
@@ -69,31 +76,96 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
 
             var teacher = _context.Staffs.Where(x => x.id == request.teacherID).Select(x => x).FirstOrDefault();
 
+            var studentExists = _context.AttendanceModels.Where(x => x.studentID == request.studentID && x.DateAttended == DateTime.Today).Select(x => x).FirstOrDefault();
+
+
+
 
             if (student == null)
             {
                 return NotFound();
             }
 
-            var attendance = new AttendanceModel
+            if (studentExists == null)
             {
-                studentID = student.StudentId,
-                teacherID = teacher.id,
-                DateAttended = DateTime.Now.Date,
-                status = "Present"
+                var attendance = new AttendanceModel
+                {
+                    studentID = student.StudentId,
+                    teacherID = teacher.id,
+                    DateAttended = DateTime.Now.Date,
+                    status = "Present"
 
-            };
+                };
 
-            _context.AttendanceModels.Add(attendance);
-           await _context.SaveChangesAsync();
+                _context.AttendanceModels.Add(attendance);
+                await _context.SaveChangesAsync();
 
-            return Ok();
+                var parent = await _context.Parents
+                    .FirstOrDefaultAsync(p => p.Id == student.ParentId);
+
+                if (parent != null && !string.IsNullOrEmpty(parent.FCMToken))
+                {
+                    await _firebaseNotificationService.SendNotification(
+                        parent.FCMToken,
+                        "Attendance Taken",
+                        $"{student.FullName} Attendance has been taken."
+                    );
+                }
+
+                return Ok();
+            }
+            else if (studentExists != null)
+            {
+                return Ok("Attendance Already taken");
+
+                
+            }
+            
+
+
+
+
+              return NotFound("error");
 
             
 
         }
 
 
-        
+        [HttpPost("checkattendance")]
+        public async Task<IActionResult> CheckAttendance([FromBody] CheckAttRequest request)
+        {
+
+
+            var studentExists = _context.AttendanceModels.Where(x => x.studentID == request.studentID && x.DateAttended == DateTime.Today).Select(x => x).FirstOrDefault();
+
+
+          
+
+            if (studentExists == null)
+            {
+                
+
+                return Ok("Correct");
+            }
+            else if (studentExists != null)
+            {
+                return Ok("Attendance Already taken");
+
+
+            }
+
+
+
+
+
+            return NotFound("error");
+
+
+
+        }
+
+
+
     }
 }

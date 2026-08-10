@@ -48,5 +48,7 @@ namespace SchoolManagmentSystem.Models
         public string? PoliceClearanceLocation { get; set; }
         public string? BankLetterLocation { get; set; }
 
+        public string? FCMToken { get; set; }
+
     }
 }

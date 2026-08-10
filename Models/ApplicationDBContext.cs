@@ -24,7 +24,7 @@ namespace SchoolManagmentSystem.Models
         public DbSet<EventCalendar> EventCalendars { get; set; }
         public DbSet<Employee> Employees { get; set; }
 
-
+        public DbSet<ActivityModel> ActivityModels { get; set; }
         public DbSet<ConductReport> ConductReports { get; set; }
         public DbSet<IEP> IEPs { get; set; }
         public DbSet<AssignedClassStudent> AssignedClassStudents { get; set; }

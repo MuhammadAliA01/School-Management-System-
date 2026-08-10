@@ -13,20 +13,17 @@ public class StudentsController : ControllerBase
         _context = context;
     }
 
-    [HttpGet("GetClassStudents")]
-    public async Task<IActionResult> GetClassStudents(int teacherId, int classId)
+    [HttpGet("GetTeacherStudents")]
+    public async Task<IActionResult> GetTeacherStudents(int teacherId)
     {
-        // 1. Query database filtering by both TeacherId and ClassId
         var students = await _context.Students
-            .Where(s => s.TeacherId == teacherId && s.ClassId == classId)
-            .Select(s => new
-            {
-                s.StudentId,
-                s.FullName
+            .Where(s => s.TeacherId == teacherId)
+            .Select(s => new {
+                studentId = s.StudentId,
+                fullName = s.FullName
             })
             .ToListAsync();
 
-        // 2. Return JSON list
         return Ok(students);
     }
 }

@@ -13,6 +13,21 @@ using System.Security.Cryptography;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 
+/*var firebaseCredentials =
+    Environment.GetEnvironmentVariable("FIREBASE_CREDENTIALS");
+
+if (string.IsNullOrWhiteSpace(firebaseCredentials))
+{
+    throw new Exception("FIREBASE_CREDENTIALS environment variable is missing.");
+}*/
+
+
+
+/*FirebaseApp.Create(new AppOptions
+{
+    Credential = GoogleCredential.FromJson(firebaseCredentials)
+});*/
+
 FirebaseApp.Create(new AppOptions()
 {
     Credential = GoogleCredential.FromFile("hla-notifs-firebase-adminsdk-fbsvc-82fbd7094d.json")

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Services;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -9,16 +10,21 @@ namespace SchoolManagmentSystem.Controllers
     public class MedsAdministeredController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
+        private readonly FirebaseNotificationService _firebaseNotificationService;
 
-        public MedsAdministeredController(ApplicationDBContext context)
+
+        public MedsAdministeredController(ApplicationDBContext context, FirebaseNotificationService firebaseNotificationService)
         {
             _context = context;
+            _firebaseNotificationService = firebaseNotificationService;
+
         }
 
         [HttpGet("test")]
         public IActionResult Test()
         {
             return Ok("MedsAdministeredController is working!");
+
         }
 
 
@@ -122,6 +128,16 @@ namespace SchoolManagmentSystem.Controllers
                     message = "Medication administered successfully, but no parent was found."
                 });
             }
+
+            if (student.Parent != null && !string.IsNullOrEmpty(student.Parent.FCMToken))
+            {
+                await _firebaseNotificationService.SendNotification(
+                    student.Parent.FCMToken,
+                    "Clocked Out",
+                    "You have Clocked Out"
+                );
+            }
+
 
             // Return the medication confirmation and parent info
             return Ok(new

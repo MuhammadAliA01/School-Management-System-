@@ -4,26 +4,33 @@ namespace SchoolManagmentSystem.Services
 {
     public class FirebaseNotificationService
     {
-        public async Task<string> SendNotification(
-            string fcmToken,
-            string title,
-            string body)
+        public async Task<bool> SendNotification(
+     string fcmToken,
+     string title,
+     string body)
         {
-            var message = new Message()
+            try
             {
-                Token = fcmToken,
-
-                Notification = new Notification()
+                var message = new Message
                 {
-                    Title = title,
-                    Body = body
-                }
-            };
+                    Token = fcmToken,
+                    Notification = new Notification
+                    {
+                        Title = title,
+                        Body = body
+                    }
+                };
 
-            string response = await FirebaseMessaging.DefaultInstance
-                .SendAsync(message);
+                await FirebaseMessaging.DefaultInstance.SendAsync(message);
 
-            return response;
+                return true;
+            }
+            catch (FirebaseMessagingException ex)
+            {
+                Console.WriteLine($"FCM Error: {ex.Message}");
+
+                return false;
+            }
         }
     }
 }

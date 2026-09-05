@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Services;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -9,17 +10,16 @@ namespace SchoolManagmentSystem.Controllers
     public class MedsAdministeredController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
+        private readonly FirebaseNotificationService _firebaseNotificationService;
 
-        public MedsAdministeredController(ApplicationDBContext context)
+
+        public MedsAdministeredController(ApplicationDBContext context, FirebaseNotificationService firebaseNotificationService)
         {
             _context = context;
+            _firebaseNotificationService = firebaseNotificationService;
+
         }
 
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            return Ok("MedsAdministeredController is working!");
-        }
 
 
         // GET /api/MedsAdministered/students
@@ -28,10 +28,20 @@ namespace SchoolManagmentSystem.Controllers
         public async Task<IActionResult> GetStudents()
         {
             var students = await _context.Students
+                .Include(s => s.Parent)
+                .Include(s => s.AssignedClassStudents)
                 .Select(s => new
                 {
                     id = s.StudentId,
-                    name = s.FullName}).ToListAsync();
+                    name = s.FullName,
+                    parentName = s.Parent != null
+                        ? s.Parent.FirstName + " " + s.Parent.Surname
+                        : "No parent",
+                    className = s.AssignedClassStudents != null
+                        ? s.AssignedClassStudents.ClassName
+                        : "No class"
+                })
+                .ToListAsync();
 
             return Ok(students);
         }
@@ -70,7 +80,7 @@ namespace SchoolManagmentSystem.Controllers
         // Saves the meds administration record & also returns students parents info
         [HttpPost]
         public async Task<IActionResult> AdministerMedication(
-    [FromBody] MedsAdministeredRequest request)
+         [FromBody] MedsAdministeredRequest request)
         {
             // Check if the student exists and get their parent
             var student = await _context.Students
@@ -123,6 +133,16 @@ namespace SchoolManagmentSystem.Controllers
                 });
             }
 
+            if (student.Parent != null && !string.IsNullOrEmpty(student.Parent.FCMToken))
+            {
+                await _firebaseNotificationService.SendNotification(
+                    student.Parent.FCMToken,
+                    "Clocked Out",
+                    "You have Clocked Out"
+                );
+            }
+
+
             // Return the medication confirmation and parent info
             return Ok(new
             {
@@ -136,6 +156,45 @@ namespace SchoolManagmentSystem.Controllers
                     email = student.Parent.Email
                 }
             });
+        }
+
+        // GET /api/MedsAdministered/student/{studentId}/history
+        // Gets all medication records for a specific student
+        [HttpGet("student/{studentId}/history")]
+        public async Task<IActionResult> GetMedicationHistory(int studentId)
+        {
+            var history = await _context.medsAdministered
+                .Where(m => m.studentID == studentId)
+                .OrderByDescending(m => m.dateAdministered)
+                .Select(m => new
+                {
+                    studentId = m.studentID,
+                    medicationName = m.medication.medName,
+                    dateAdministered = m.dateAdministered
+                })
+                .ToListAsync();
+
+            return Ok(history);
+
+        }
+        [HttpGet("parent/{parentId}/student")]
+        public async Task<IActionResult> GetStudentForParent(int parentId)
+        {
+            var student = await _context.Students
+                .Where(s => s.ParentId == parentId)
+                .Select(s => new
+                {
+                    studentId = s.StudentId,
+                    studentName = s.FullName
+                })
+                .FirstOrDefaultAsync();
+
+            if (student == null)
+            {
+                return NotFound("No student found for this parent.");
+            }
+
+            return Ok(student);
         }
     }
 }

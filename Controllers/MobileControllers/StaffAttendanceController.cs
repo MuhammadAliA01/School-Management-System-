@@ -168,6 +168,15 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             }
 
             await _context.SaveChangesAsync();
+
+            if (staff != null && !string.IsNullOrEmpty(staff.FCMToken))
+            {
+                await _firebaseNotificationService.SendNotification(
+                    staff.FCMToken,
+                    "Clocked Out",
+                    "You have Clocked Out"
+                );
+            }
             return Ok(new { message = "Clock-out successful.", totalHoursWorked = attendance.TotalHoursWorked });
         }
     }

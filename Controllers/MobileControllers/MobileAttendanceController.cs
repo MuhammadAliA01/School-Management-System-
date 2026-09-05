@@ -105,11 +105,17 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
 
                 if (parent != null && !string.IsNullOrEmpty(parent.FCMToken))
                 {
-                    await _firebaseNotificationService.SendNotification(
-                        parent.FCMToken,
-                        "Attendance Taken",
-                        $"{student.FullName} Attendance has been taken."
-                    );
+                    bool success = await _firebaseNotificationService.SendNotification(
+                     parent.FCMToken,
+                    "Attendance Taken",
+                 $"{student.FullName} attendance has been taken."
+                                        );
+
+                    if (!success)
+                    {
+                        parent.FCMToken = null;
+                        await _context.SaveChangesAsync();
+                    }
                 }
 
                 return Ok();

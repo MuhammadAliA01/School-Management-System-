@@ -13,10 +13,17 @@ using System.Security.Cryptography;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 
-FirebaseApp.Create(new AppOptions()
+try
 {
-    Credential = GoogleCredential.FromFile("hla-notifs-firebase-adminsdk-fbsvc-82fbd7094d.json")
-});
+    FirebaseApp.Create(new AppOptions()
+    {
+        Credential = GoogleCredential.FromFile("hla-notifs-firebase-adminsdk-fbsvc-82fbd7094d.json")
+    });
+}
+catch (FileNotFoundException)
+{
+    Console.WriteLine("⚠️ Firebase credentials file not found — skipping Firebase setup. Notifications won't work until you add the file.");
+}
 
 var builder = WebApplication.CreateBuilder(args);
 

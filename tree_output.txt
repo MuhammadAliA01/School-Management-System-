@@ -1,0 +1,1090 @@
+Folder PATH listing for volume OS
+Volume serial number is 9A6B-79AE
+C:.
+|   .gitattributes
+|   .gitignore
+|   appsettings.Development.json
+|   appsettings.json
+|   LICENSE.txt
+|   Program.cs
+|   README.md
+|   SchoolManagmentSystem.csproj
+|   SchoolManagmentSystem.csproj.user
+|   SchoolManagmentSystem.sln
+|   tree_output.txt
+|   
++---.github
+|   |   copilot-instructions.md
+|   |   
+|   \---workflows
++---Areas
+|   \---Identity
+|       \---Pages
+|               _ViewStart.cshtml
+|               
++---bin
+|   \---Debug
+|       \---net8.0
+|           |   appsettings.Development.json
+|           |   appsettings.json
+|           |   Azure.AI.DocumentIntelligence.dll
+|           |   Azure.Core.dll
+|           |   Azure.Identity.dll
+|           |   dotnet-aspnet-codegenerator-design.dll
+|           |   FirebaseAdmin.dll
+|           |   Google.Api.Gax.dll
+|           |   Google.Api.Gax.Rest.dll
+|           |   Google.Apis.Auth.dll
+|           |   Google.Apis.Core.dll
+|           |   Google.Apis.dll
+|           |   Humanizer.dll
+|           |   Json.More.dll
+|           |   JsonPointer.Net.dll
+|           |   JsonSchema.Net.dll
+|           |   JsonSchema.Net.Generation.dll
+|           |   Microsoft.AspNetCore.Cryptography.Internal.dll
+|           |   Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+|           |   Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll
+|           |   Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+|           |   Microsoft.AspNetCore.Identity.UI.dll
+|           |   Microsoft.AspNetCore.Razor.Language.dll
+|           |   Microsoft.Bcl.AsyncInterfaces.dll
+|           |   Microsoft.Bcl.Cryptography.dll
+|           |   Microsoft.Build.dll
+|           |   Microsoft.Build.Framework.dll
+|           |   Microsoft.CodeAnalysis.AnalyzerUtilities.dll
+|           |   Microsoft.CodeAnalysis.CSharp.dll
+|           |   Microsoft.CodeAnalysis.CSharp.Features.dll
+|           |   Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+|           |   Microsoft.CodeAnalysis.dll
+|           |   Microsoft.CodeAnalysis.Elfie.dll
+|           |   Microsoft.CodeAnalysis.Features.dll
+|           |   Microsoft.CodeAnalysis.Razor.dll
+|           |   Microsoft.CodeAnalysis.Scripting.dll
+|           |   Microsoft.CodeAnalysis.Workspaces.dll
+|           |   Microsoft.Data.SqlClient.dll
+|           |   Microsoft.Data.SqlClient.Extensions.Abstractions.dll
+|           |   Microsoft.Data.SqlClient.Extensions.Azure.dll
+|           |   Microsoft.Data.SqlClient.Internal.Logging.dll
+|           |   Microsoft.DiaSymReader.dll
+|           |   Microsoft.DotNet.Scaffolding.Shared.dll
+|           |   Microsoft.EntityFrameworkCore.Abstractions.dll
+|           |   Microsoft.EntityFrameworkCore.Design.dll
+|           |   Microsoft.EntityFrameworkCore.dll
+|           |   Microsoft.EntityFrameworkCore.Relational.dll
+|           |   Microsoft.EntityFrameworkCore.SqlServer.dll
+|           |   Microsoft.Extensions.AI.Abstractions.dll
+|           |   Microsoft.Extensions.AI.OpenAI.dll
+|           |   Microsoft.Extensions.Caching.Memory.dll
+|           |   Microsoft.Extensions.Configuration.Abstractions.dll
+|           |   Microsoft.Extensions.Configuration.Binder.dll
+|           |   Microsoft.Extensions.Configuration.dll
+|           |   Microsoft.Extensions.DependencyInjection.Abstractions.dll
+|           |   Microsoft.Extensions.DependencyInjection.dll
+|           |   Microsoft.Extensions.DependencyModel.dll
+|           |   Microsoft.Extensions.Diagnostics.Abstractions.dll
+|           |   Microsoft.Extensions.Diagnostics.dll
+|           |   Microsoft.Extensions.FileProviders.Abstractions.dll
+|           |   Microsoft.Extensions.FileProviders.Embedded.dll
+|           |   Microsoft.Extensions.Hosting.Abstractions.dll
+|           |   Microsoft.Extensions.Http.dll
+|           |   Microsoft.Extensions.Identity.Core.dll
+|           |   Microsoft.Extensions.Identity.Stores.dll
+|           |   Microsoft.Extensions.Logging.Abstractions.dll
+|           |   Microsoft.Extensions.Logging.dll
+|           |   Microsoft.Extensions.Options.ConfigurationExtensions.dll
+|           |   Microsoft.Extensions.Options.dll
+|           |   Microsoft.Extensions.Primitives.dll
+|           |   Microsoft.Identity.Client.dll
+|           |   Microsoft.Identity.Client.Extensions.Msal.dll
+|           |   Microsoft.IdentityModel.Abstractions.dll
+|           |   Microsoft.IdentityModel.JsonWebTokens.dll
+|           |   Microsoft.IdentityModel.Logging.dll
+|           |   Microsoft.IdentityModel.Protocols.dll
+|           |   Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+|           |   Microsoft.IdentityModel.Tokens.dll
+|           |   Microsoft.NET.StringTools.dll
+|           |   Microsoft.SqlServer.Server.dll
+|           |   Microsoft.VisualStudio.Web.CodeGeneration.Core.dll
+|           |   Microsoft.VisualStudio.Web.CodeGeneration.dll
+|           |   Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore.dll
+|           |   Microsoft.VisualStudio.Web.CodeGeneration.Templating.dll
+|           |   Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll
+|           |   Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll
+|           |   Microsoft.Win32.SystemEvents.dll
+|           |   MigraDoc.DocumentObjectModel.dll
+|           |   MigraDoc.Rendering-gdi.dll
+|           |   MigraDoc.RtfRendering-gdi.dll
+|           |   Mono.TextTemplating.dll
+|           |   Mscc.GenerativeAI.dll
+|           |   Newtonsoft.Json.dll
+|           |   NuGet.Common.dll
+|           |   NuGet.Configuration.dll
+|           |   NuGet.DependencyResolver.Core.dll
+|           |   NuGet.Frameworks.dll
+|           |   NuGet.LibraryModel.dll
+|           |   NuGet.Packaging.dll
+|           |   NuGet.ProjectModel.dll
+|           |   NuGet.Protocol.dll
+|           |   NuGet.Versioning.dll
+|           |   OpenAI.dll
+|           |   PdfSharp-gdi.dll
+|           |   PdfSharp.BarCodes-gdi.dll
+|           |   PdfSharp.Charting-gdi.dll
+|           |   PdfSharp.Cryptography.dll
+|           |   PdfSharp.Quality-gdi.dll
+|           |   PdfSharp.Shared.dll
+|           |   PdfSharp.Snippets-gdi.dll
+|           |   PdfSharp.System.dll
+|           |   PdfSharp.WPFonts.dll
+|           |   QRCoder.dll
+|           |   SchoolManagmentSystem.deps.json
+|           |   SchoolManagmentSystem.dll
+|           |   SchoolManagmentSystem.exe
+|           |   SchoolManagmentSystem.pdb
+|           |   SchoolManagmentSystem.runtimeconfig.json
+|           |   SchoolManagmentSystem.staticwebassets.endpoints.json
+|           |   SchoolManagmentSystem.staticwebassets.runtime.json
+|           |   Stripe.net.dll
+|           |   System.ClientModel.dll
+|           |   System.CodeDom.dll
+|           |   System.Composition.AttributedModel.dll
+|           |   System.Composition.Convention.dll
+|           |   System.Composition.Hosting.dll
+|           |   System.Composition.Runtime.dll
+|           |   System.Composition.TypedParts.dll
+|           |   System.Configuration.ConfigurationManager.dll
+|           |   System.Diagnostics.DiagnosticSource.dll
+|           |   System.Diagnostics.EventLog.dll
+|           |   System.Drawing.Common.dll
+|           |   System.Formats.Asn1.dll
+|           |   System.IdentityModel.Tokens.Jwt.dll
+|           |   System.IO.Pipelines.dll
+|           |   System.Management.dll
+|           |   System.Memory.Data.dll
+|           |   System.Net.ServerSentEvents.dll
+|           |   System.Private.Windows.Core.dll
+|           |   System.Private.Windows.GdiPlus.dll
+|           |   System.Reflection.MetadataLoadContext.dll
+|           |   System.Security.Cryptography.Pkcs.dll
+|           |   System.Security.Cryptography.ProtectedData.dll
+|           |   System.Text.Encodings.Web.dll
+|           |   System.Text.Json.dll
+|           |   UglyToad.PdfPig.Core.dll
+|           |   UglyToad.PdfPig.dll
+|           |   UglyToad.PdfPig.DocumentLayoutAnalysis.dll
+|           |   UglyToad.PdfPig.Fonts.dll
+|           |   UglyToad.PdfPig.Package.dll
+|           |   UglyToad.PdfPig.Tokenization.dll
+|           |   UglyToad.PdfPig.Tokens.dll
+|           |   
+|           +---af
+|           |       Humanizer.resources.dll
+|           |       
+|           +---ar
+|           |       Humanizer.resources.dll
+|           |       
+|           +---az
+|           |       Humanizer.resources.dll
+|           |       
+|           +---bg
+|           |       Humanizer.resources.dll
+|           |       
+|           +---bn-BD
+|           |       Humanizer.resources.dll
+|           |       
+|           +---cs
+|           |       Humanizer.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           +---da
+|           |       Humanizer.resources.dll
+|           |       
+|           +---de
+|           |       Humanizer.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           +---el
+|           |       Humanizer.resources.dll
+|           |       
+|           +---es
+|           |       Humanizer.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           +---fa
+|           |       Humanizer.resources.dll
+|           |       
+|           +---fi-FI
+|           |       Humanizer.resources.dll
+|           |       
+|           +---fr
+|           |       Humanizer.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           +---fr-BE
+|           |       Humanizer.resources.dll
+|           |       
+|           +---he
+|           |       Humanizer.resources.dll
+|           |       
+|           +---hr
+|           |       Humanizer.resources.dll
+|           |       
+|           +---hu
+|           |       Humanizer.resources.dll
+|           |       
+|           +---hy
+|           |       Humanizer.resources.dll
+|           |       
+|           +---id
+|           |       Humanizer.resources.dll
+|           |       
+|           +---is
+|           |       Humanizer.resources.dll
+|           |       
+|           +---it
+|           |       Humanizer.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           +---ja
+|           |       Humanizer.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           +---ko
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           +---ko-KR
+|           |       Humanizer.resources.dll
+|           |       
+|           +---ku
+|           |       Humanizer.resources.dll
+|           |       
+|           +---lv
+|           |       Humanizer.resources.dll
+|           |       
+|           +---ms-MY
+|           |       Humanizer.resources.dll
+|           |       
+|           +---mt
+|           |       Humanizer.resources.dll
+|           |       
+|           +---nb
+|           |       Humanizer.resources.dll
+|           |       
+|           +---nb-NO
+|           |       Humanizer.resources.dll
+|           |       
+|           +---nl
+|           |       Humanizer.resources.dll
+|           |       
+|           +---pl
+|           |       Humanizer.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           +---pt
+|           |       Humanizer.resources.dll
+|           |       
+|           +---pt-BR
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           +---ro
+|           |       Humanizer.resources.dll
+|           |       
+|           +---ru
+|           |       Humanizer.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           +---runtimes
+|           |   +---browser
+|           |   |   \---lib
+|           |   |       \---net8.0
+|           |   |               System.Text.Encodings.Web.dll
+|           |   |               
+|           |   +---unix
+|           |   |   \---lib
+|           |   |       +---net6.0
+|           |   |       \---net8.0
+|           |   |               Microsoft.Data.SqlClient.dll
+|           |   |               
+|           |   +---win
+|           |   |   \---lib
+|           |   |       +---net6.0
+|           |   |       +---net7.0
+|           |   |       |       System.Management.dll
+|           |   |       |       
+|           |   |       \---net8.0
+|           |   |               Microsoft.Data.SqlClient.dll
+|           |   |               Microsoft.Win32.SystemEvents.dll
+|           |   |               System.Diagnostics.EventLog.dll
+|           |   |               System.Security.Cryptography.Pkcs.dll
+|           |   |               
+|           |   +---win-arm
+|           |   |   \---native
+|           |   +---win-arm64
+|           |   |   \---native
+|           |   |           Microsoft.Data.SqlClient.SNI.dll
+|           |   |           
+|           |   +---win-x64
+|           |   |   \---native
+|           |   |           Microsoft.Data.SqlClient.SNI.dll
+|           |   |           
+|           |   \---win-x86
+|           |       \---native
+|           |               Microsoft.Data.SqlClient.SNI.dll
+|           |               
+|           +---sk
+|           |       Humanizer.resources.dll
+|           |       
+|           +---sl
+|           |       Humanizer.resources.dll
+|           |       
+|           +---sr
+|           |       Humanizer.resources.dll
+|           |       
+|           +---sr-Latn
+|           |       Humanizer.resources.dll
+|           |       
+|           +---sv
+|           |       Humanizer.resources.dll
+|           |       
+|           +---th-TH
+|           |       Humanizer.resources.dll
+|           |       
+|           +---tr
+|           |       Humanizer.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           +---uk
+|           |       Humanizer.resources.dll
+|           |       
+|           +---uz-Cyrl-UZ
+|           |       Humanizer.resources.dll
+|           |       
+|           +---uz-Latn-UZ
+|           |       Humanizer.resources.dll
+|           |       
+|           +---vi
+|           |       Humanizer.resources.dll
+|           |       
+|           +---zh-CN
+|           |       Humanizer.resources.dll
+|           |       
+|           +---zh-Hans
+|           |       Humanizer.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.resources.dll
+|           |       Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|           |       Microsoft.CodeAnalysis.Features.resources.dll
+|           |       Microsoft.CodeAnalysis.resources.dll
+|           |       Microsoft.CodeAnalysis.Scripting.resources.dll
+|           |       Microsoft.CodeAnalysis.Workspaces.resources.dll
+|           |       Microsoft.Data.SqlClient.resources.dll
+|           |       
+|           \---zh-Hant
+|                   Humanizer.resources.dll
+|                   Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+|                   Microsoft.CodeAnalysis.CSharp.resources.dll
+|                   Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+|                   Microsoft.CodeAnalysis.Features.resources.dll
+|                   Microsoft.CodeAnalysis.resources.dll
+|                   Microsoft.CodeAnalysis.Scripting.resources.dll
+|                   Microsoft.CodeAnalysis.Workspaces.resources.dll
+|                   Microsoft.Data.SqlClient.resources.dll
+|                   
++---Controllers
+|   |   AccountController.cs
+|   |   ApplicationController.cs
+|   |   AssessmentsController.cs
+|   |   AttendanceController.cs
+|   |   AttendanceInsightsController.cs
+|   |   CalendarController.cs
+|   |   ConductReportController.cs
+|   |   DashboardsController.cs
+|   |   EmployeeController.cs
+|   |   EmploymentController.cs
+|   |   EventController.cs
+|   |   HomeController.cs
+|   |   IEPController.cs
+|   |   IncidentController1.cs
+|   |   PaymentsController.cs
+|   |   PurchaseTicketController.cs
+|   |   StaffPerformanceController.cs
+|   |   StaffScheduleController.cs
+|   |   StudentApplicationsController.cs
+|   |   StudentEnrolmentController.cs
+|   |   StudentProfileController.cs
+|   |   StudentProgressVisualizationController.cs
+|   |   TeachingMethodsController.cs
+|   |   TrainingController.cs
+|   |   
+|   \---MobileControllers
+|           ActivityController.cs
+|           MedsAdministeredController.cs
+|           MobileAccountController.cs
+|           MobileAttendanceController.cs
+|           StaffAttendanceController.cs
+|           StudentsController.cs
+|           
++---Migrations
+|       20260402122535_CreateDB.cs
+|       20260402122535_CreateDB.Designer.cs
+|       20260402124847_AddStaffTable.cs
+|       20260402124847_AddStaffTable.Designer.cs
+|       20260402143106_UpdateStaffTable.cs
+|       20260402143106_UpdateStaffTable.Designer.cs
+|       20260402145254_AddRegistrationTable.cs
+|       20260402145254_AddRegistrationTable.Designer.cs
+|       20260402195943_AddEmplApplicationTable.cs
+|       20260402195943_AddEmplApplicationTable.Designer.cs
+|       20260402204909_ChangedEmplApplicationABit.cs
+|       20260402204909_ChangedEmplApplicationABit.Designer.cs
+|       20260402205828_AddedRefNumber.cs
+|       20260402205828_AddedRefNumber.Designer.cs
+|       20260402210245_FixedRefNumber.cs
+|       20260402210245_FixedRefNumber.Designer.cs
+|       20260402211655_AddedStatus.cs
+|       20260402211655_AddedStatus.Designer.cs
+|       20260402225419_FixedStudentReg.cs
+|       20260402225419_FixedStudentReg.Designer.cs
+|       20260403120932_addedStudentAndInicidentTable.cs
+|       20260403120932_addedStudentAndInicidentTable.Designer.cs
+|       20260403131238_UpdateIncidentFields.cs
+|       20260403131238_UpdateIncidentFields.Designer.cs
+|       20260403200809_updatedstaffandparentclasses.cs
+|       20260403200809_updatedstaffandparentclasses.Designer.cs
+|       20260404134542_addedNewFieldsToEmploymentApplication.cs
+|       20260404134542_addedNewFieldsToEmploymentApplication.Designer.cs
+|       20260404205215_addedStatusandFeesPaidtoStudentReg.cs
+|       20260404205215_addedStatusandFeesPaidtoStudentReg.Designer.cs
+|       20260404220843_FixedStudentClass.cs
+|       20260404220843_FixedStudentClass.Designer.cs
+|       20260406013941_SyncAiColumn.cs
+|       20260406013941_SyncAiColumn.Designer.cs
+|       20260406015941_AddPasswordResetToParent.cs
+|       20260406015941_AddPasswordResetToParent.Designer.cs
+|       20260406094458_AddStripeSessionTracking.cs
+|       20260406094458_AddStripeSessionTracking.Designer.cs
+|       20260406101855_addedAiTeachingPlanColumn.cs
+|       20260406101855_addedAiTeachingPlanColumn.Designer.cs
+|       20260406202457_AddStudentFinancialVars.cs
+|       20260406202457_AddStudentFinancialVars.Designer.cs
+|       20260406234401_updatedincident.cs
+|       20260406234401_updatedincident.Designer.cs
+|       20260407010116_AddStudentAssessments.cs
+|       20260407010116_AddStudentAssessments.Designer.cs
+|       20260422174215_AddStudentDocumentTable.cs
+|       20260422174215_AddStudentDocumentTable.Designer.cs
+|       20260501010604_AddedTermAndWeekToAssessments.cs
+|       20260501010604_AddedTermAndWeekToAssessments.Designer.cs
+|       20260502123257_AddedAttendanceTable.cs
+|       20260502123257_AddedAttendanceTable.Designer.cs
+|       20260503135459_fixedStuff.cs
+|       20260503135459_fixedStuff.Designer.cs
+|       20260503145801_addedQuizQuestionsToClass.cs
+|       20260503145801_addedQuizQuestionsToClass.Designer.cs
+|       20260506120745_addedDateSent.cs
+|       20260506120745_addedDateSent.Designer.cs
+|       20260506131144_addedInterviewDate.cs
+|       20260506131144_addedInterviewDate.Designer.cs
+|       20260506134756_AddIEPTable.cs
+|       20260506134756_AddIEPTable.Designer.cs
+|       20260506135411_AddedNotes.cs
+|       20260506135411_AddedNotes.Designer.cs
+|       20260506144332_AddTargetDateToIEP.cs
+|       20260506144332_AddTargetDateToIEP.Designer.cs
+|       20260506145232_AddedIEPTable.cs
+|       20260506145232_AddedIEPTable.Designer.cs
+|       20260506160410_addedSomeFields.cs
+|       20260506160410_addedSomeFields.Designer.cs
+|       20260506183633_AddedDocsToEmploymentClass.cs
+|       20260506183633_AddedDocsToEmploymentClass.Designer.cs
+|       20260506193337_addedFieldsToStaffTable.cs
+|       20260506193337_addedFieldsToStaffTable.Designer.cs
+|       20260506210128_AddConductReportTable.cs
+|       20260506210128_AddConductReportTable.Designer.cs
+|       20260506213624_AddConductTable.cs
+|       20260506213624_AddConductTable.Designer.cs
+|       20260507000528_UpdateParentFeedback.cs
+|       20260507000528_UpdateParentFeedback.Designer.cs
+|       20260507150058_AddEmployee.cs
+|       20260507150058_AddEmployee.Designer.cs
+|       20260507190949_AddAssignedClassTable.cs
+|       20260507190949_AddAssignedClassTable.Designer.cs
+|       20260507202807_AddClassIdToStudent.cs
+|       20260507202807_AddClassIdToStudent.Designer.cs
+|       20260507205133_AddTicketBookingTable.cs
+|       20260507205133_AddTicketBookingTable.Designer.cs
+|       20260507211350_addedTicketPurchases.cs
+|       20260507211350_addedTicketPurchases.Designer.cs
+|       20260508004051_fixedError.cs
+|       20260508004051_fixedError.Designer.cs
+|       20260508024331_AddLocationToEvents.cs
+|       20260508024331_AddLocationToEvents.Designer.cs
+|       20260727123244_AddStaffAttendanceTable.cs
+|       20260727123244_AddStaffAttendanceTable.Designer.cs
+|       20260730204300_AddClassAndScheduleTables.cs
+|       20260730204300_AddClassAndScheduleTables.Designer.cs
+|       20260802184727_attendancestuffs.cs
+|       20260802184727_attendancestuffs.Designer.cs
+|       20260803001614_AddPhotoBytesToStaffAttendance.cs
+|       20260803001614_AddPhotoBytesToStaffAttendance.Designer.cs
+|       20260803140612_medsTrackingstuff.cs
+|       20260803140612_medsTrackingstuff.Designer.cs
+|       20260803144153_medsTracking2.cs
+|       20260803144153_medsTracking2.Designer.cs
+|       20260804195144_DropPhotoByteArrays.cs
+|       20260804195144_DropPhotoByteArrays.Designer.cs
+|       20260810135617_addActivityModel.cs
+|       20260810135617_addActivityModel.Designer.cs
+|       20260810172932_addedFCMToken.cs
+|       20260810172932_addedFCMToken.Designer.cs
+|       ApplicationDBContextModelSnapshot.cs
+|       
++---Models
+|       ActivityModel.cs
+|       ApplicationDBContext.cs
+|       AssignedClassStudent.cs
+|       AssignScheduleViewModel.cs
+|       Attendance.cs
+|       AttendanceModel.cs
+|       AttendanceRequest.cs
+|       CheckAttRequest.cs
+|       Class.cs
+|       ConductReport.cs
+|       CreateActivityRequest.cs
+|       DocViewModel.cs
+|       Employee.cs
+|       EmploymentApplication.cs
+|       EmploymentService.cs
+|       ErrorViewModel.cs
+|       EventCalendar.cs
+|       FAQ_Model.cs
+|       FCMTokenRequest.cs
+|       IEP.cs
+|       Incident.cs
+|       IncidentAnalysisResult.cs
+|       InsightsOnStudentAttendance.cs
+|       LoginRequest.cs
+|       Medication.cs
+|       medsAdministered.cs
+|       MedsAdministeredRequest.cs
+|       MorningAttendanceData.cs
+|       Parent.cs
+|       RegisterRequest.cs
+|       Staff.cs
+|       StaffAttendance.cs
+|       StaffHoursViewModel.cs
+|       StaffPerformanceViewModel.cs
+|       StaffSchedule.cs
+|       Student.cs
+|       StudentAssessment.cs
+|       StudentAttTemp.cs
+|       StudentRegistration.cs
+|       Teacher.cs
+|       TicketBooking.cs
+|       TicketPurchases.cs
+|       
++---obj
+|   |   project.assets.json
+|   |   project.nuget.cache
+|   |   SchoolManagmentSystem.csproj.nuget.dgspec.json
+|   |   SchoolManagmentSystem.csproj.nuget.g.props
+|   |   SchoolManagmentSystem.csproj.nuget.g.targets
+|   |   
+|   \---Debug
+|       \---net8.0
+|           |   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+|           |   ApiEndpoints.json
+|           |   apphost.exe
+|           |   AppSettingsSchema.json
+|           |   CombinedComponentSchema.json
+|           |   rjimswa.dswa.cache.json
+|           |   rjsmcshtml.dswa.cache.json
+|           |   rjsmrazor.dswa.cache.json
+|           |   rpswa.dswa.cache.json
+|           |   SchoolMa.D640E77C.Up2Date
+|           |   SchoolManagmentSystem.AssemblyInfo.cs
+|           |   SchoolManagmentSystem.AssemblyInfoInputs.cache
+|           |   SchoolManagmentSystem.assets.cache
+|           |   SchoolManagmentSystem.csproj.AssemblyReference.cache
+|           |   SchoolManagmentSystem.csproj.BuildWithSkipAnalyzers
+|           |   SchoolManagmentSystem.csproj.CoreCompileInputs.cache
+|           |   SchoolManagmentSystem.csproj.FileListAbsolute.txt
+|           |   SchoolManagmentSystem.dll
+|           |   SchoolManagmentSystem.GeneratedMSBuildEditorConfig.editorconfig
+|           |   SchoolManagmentSystem.genruntimeconfig.cache
+|           |   SchoolManagmentSystem.GlobalUsings.g.cs
+|           |   SchoolManagmentSystem.MvcApplicationPartsAssemblyInfo.cache
+|           |   SchoolManagmentSystem.MvcApplicationPartsAssemblyInfo.cs
+|           |   SchoolManagmentSystem.pdb
+|           |   SchoolManagmentSystem.RazorAssemblyInfo.cache
+|           |   SchoolManagmentSystem.RazorAssemblyInfo.cs
+|           |   SchoolManagmentSystem.sourcelink.json
+|           |   staticwebassets.build.endpoints.json
+|           |   staticwebassets.build.json
+|           |   staticwebassets.build.json.cache
+|           |   staticwebassets.development.json
+|           |   staticwebassets.references.upToDateCheck.txt
+|           |   staticwebassets.removed.txt
+|           |   staticwebassets.upToDateCheck.txt
+|           |   
+|           +---ref
+|           |       SchoolManagmentSystem.dll
+|           |       
+|           +---refint
+|           |       SchoolManagmentSystem.dll
+|           |       
+|           +---scopedcss
+|           |   +---bundle
+|           |   |       SchoolManagmentSystem.styles.css
+|           |   |       
+|           |   +---projectbundle
+|           |   |       SchoolManagmentSystem.bundle.scp.css
+|           |   |       
+|           |   \---Views
+|           |       \---Shared
+|           |               _Layout.cshtml.rz.scp.css
+|           |               
+|           \---staticwebassets
++---Properties
+|   |   launchSettings.json
+|   |   serviceDependencies.json
+|   |   serviceDependencies.local.json
+|   |   serviceDependencies.local.json.user
+|   |   
+|   \---ServiceDependencies
+|       \---HybridLearningAcademy - Web Deploy
+|               profile.arm.json
+|               
++---Services
+|       ApplicationSevice.cs
+|       AttendanceReportService.cs
+|       FirebaseNotificationServices.cs
+|       IApplicationService.cs
+|       RegistrationService.cs
+|       WeeklyReportWorker.cs
+|       
++---ServicesAi
+|   |   aiRulebook.cs
+|   |   DecisionMaker.cs
+|   |   GeminiService.cs
+|   |   GroqService.cs
+|   |   
+|   +---EmploymentAI
+|   |       AIScoringService.cs
+|   |       CVService.cs
+|   |       
+|   \---IncidentAI
+|           AnalyzeIncidents.cs
+|           
++---Views
+|   |   _ViewImports.cshtml
+|   |   _ViewStart.cshtml
+|   |   
+|   +---Account
+|   |       CreateAccount.cshtml
+|   |       CreateStaffAccount.cshtml
+|   |       ForgotPassword.cshtml
+|   |       Login.cshtml
+|   |       ResetPassword.cshtml
+|   |       
+|   +---Assessments
+|   |       LogGrade.cshtml
+|   |       
+|   +---Attendance
+|   |       Index.cshtml
+|   |       
+|   +---AttendanceInsights
+|   |       Index.cshtml
+|   |       
+|   +---Calendar
+|   |       Create.cshtml
+|   |       Edit.cshtml
+|   |       Index.cshtml
+|   |       Manage.cshtml
+|   |       
+|   +---ConductReport
+|   |       Details.cshtml
+|   |       Index.cshtml
+|   |       LogConduct.cshtml
+|   |       ParentIndex.cshtml
+|   |       ParentView.cshtml
+|   |       
+|   +---Dashboards
+|   |       ParentDashboard.cshtml
+|   |       StaffDashboard.cshtml
+|   |       StaffHoursSummary.cshtml
+|   |       
+|   +---Employee
+|   |       Create.cshtml
+|   |       Index.cshtml
+|   |       
+|   +---Employment
+|   |       ApplicationConfirmed.cshtml
+|   |       ApplicationList.cshtml
+|   |       CleanerQuiz.cshtml
+|   |       EmploymentInfo.cshtml
+|   |       FinalizeEmployment.cshtml
+|   |       LinkExpired.cshtml
+|   |       SearchStatus.cshtml
+|   |       SubmitApplication.cshtml
+|   |       TeacherQuiz.cshtml
+|   |       
+|   +---Event
+|   |       Index.cshtml
+|   |       Purchase.cshtml
+|   |       
+|   +---Home
+|   |       AboutUs.cshtml
+|   |       Calendar.cshtml
+|   |       Confirmation.cshtml
+|   |       ContactUs.cshtml
+|   |       FAQ.cshtml
+|   |       Gallery.cshtml
+|   |       HomePage.cshtml
+|   |       Privacy.cshtml
+|   |       RegForm.cshtml
+|   |       
+|   +---IEP
+|   |       Create.cshtml
+|   |       Details.cshtml
+|   |       Index.cshtml
+|   |       
+|   +---Incident
+|   |       ReportIncident.cshtml
+|   |       ReportView.cshtml
+|   |       
+|   +---PurchaseTicket
+|   |       Checkout.cshtml
+|   |       
+|   +---Shared
+|   |       Error.cshtml
+|   |       _Layout.cshtml
+|   |       _Layout.cshtml.css
+|   |       _LoginPartial.cshtml
+|   |       _ValidationScriptsPartial.cshtml
+|   |       
+|   +---StaffPerformance
+|   |       Index.cshtml
+|   |       
+|   +---StaffSchedule
+|   |       Assign.cshtml
+|   |       
+|   +---StudentApplications
+|   |       StudentList.cshtml
+|   |       
+|   +---StudentEnrolment
+|   |       Index.cshtml
+|   |       RegistrationConfirmation.cshtml
+|   |       
+|   +---StudentProfile
+|   |       Index.cshtml
+|   |       StudentList.cshtml
+|   |       ViewQR.cshtml
+|   |       
+|   +---StudentProgressVisualization
+|   |       Index.cshtml
+|   |       
+|   +---TeachingMethods
+|   |       Dashboard.cshtml
+|   |       GenerateTeachingMethods.cshtml
+|   |       
+|   \---Training
+|           TrainingDashboard.cshtml
+|           TrainingGenerateMethod.cshtml
+|           TrainingIncidentReport.cshtml
+|           TrainingLogGrade.cshtml
+|           TrainingViewTeachingMethod.cshtml
+|           
+\---wwwroot
+    |   favicon.ico
+    |   
+    +---css
+    |       site.css
+    |       
+    +---Images
+    |   +---AboutUsimg
+    |   |       aboutus_HandsonLearning.webp
+    |   |       about_WrittingSkills.jpg
+    |   |       
+    |   +---ApplicationSubmittedImages
+    |   |       SubmittedBG1.jpeg
+    |   |       
+    |   +---CalenderImage
+    |   |       background.png
+    |   |       
+    |   +---ConfirmationImages
+    |   |       ConfirmationBG9.jpeg
+    |   |       
+    |   +---ContactImages
+    |   |       BackgroundImage5.jpg
+    |   |       
+    |   +---CreateAccountImages
+    |   |       BGImage1.png
+    |   |       DisplayImage.png
+    |   |       
+    |   +---EmploymentInfoImages
+    |   |       DemoImage.png
+    |   |       
+    |   +---GalleryImages
+    |   |       GalleryBG1.jpg
+    |   |       GalleryPic.png
+    |   |       GalleryPic2.png
+    |   |       GalleryPic3.png
+    |   |       GalleryPic4.png
+    |   |       GalleryPic5.png
+    |   |       GalleryPic6.png
+    |   |       
+    |   +---HomeImages
+    |   |       galPic1.png
+    |   |       galPic2.png
+    |   |       galPic3.png
+    |   |       gaPic1.png
+    |   |       gPic2.png
+    |   |       gPic3.png
+    |   |       HomeBG.jpg
+    |   |       paperBG5.jpg
+    |   |       paperBG6.jpg
+    |   |       topBarImg.png
+    |   |       
+    |   +---LoginImages
+    |   |       BGImage1.png
+    |   |       DisplayImage.png
+    |   |       
+    |   +---ParentDashboardImages
+    |   |       Enrolment.png
+    |   |       Register.png
+    |   |       RegistrationFees.png
+    |   |       
+    |   +---PDFImages
+    |   |       HbaLogo.jpeg
+    |   |       Signature.jpeg
+    |   |       
+    |   +---RegImages
+    |   |       RegBGImage4.jpeg
+    |   |       
+    |   +---SearchStatusImages
+    |   |       BGImage.jpg
+    |   |       Searchicon.png
+    |   |       
+    |   \---StaffDashboardImages
+    |           EmploymentList.png
+    |           EnrolmentList.png
+    |           IncidentList.png
+    |           TeachingMethods.png
+    |           
+    +---js
+    |       site.js
+    |       studentProgress.js
+    |       
+    +---lib
+    |   +---bootstrap
+    |   |   |   LICENSE
+    |   |   |   
+    |   |   \---dist
+    |   |       +---css
+    |   |       |       bootstrap-grid.css
+    |   |       |       bootstrap-grid.css.map
+    |   |       |       bootstrap-grid.min.css
+    |   |       |       bootstrap-grid.min.css.map
+    |   |       |       bootstrap-grid.rtl.css
+    |   |       |       bootstrap-grid.rtl.css.map
+    |   |       |       bootstrap-grid.rtl.min.css
+    |   |       |       bootstrap-grid.rtl.min.css.map
+    |   |       |       bootstrap-reboot.css
+    |   |       |       bootstrap-reboot.css.map
+    |   |       |       bootstrap-reboot.min.css
+    |   |       |       bootstrap-reboot.min.css.map
+    |   |       |       bootstrap-reboot.rtl.css
+    |   |       |       bootstrap-reboot.rtl.css.map
+    |   |       |       bootstrap-reboot.rtl.min.css
+    |   |       |       bootstrap-reboot.rtl.min.css.map
+    |   |       |       bootstrap-utilities.css
+    |   |       |       bootstrap-utilities.css.map
+    |   |       |       bootstrap-utilities.min.css
+    |   |       |       bootstrap-utilities.min.css.map
+    |   |       |       bootstrap-utilities.rtl.css
+    |   |       |       bootstrap-utilities.rtl.css.map
+    |   |       |       bootstrap-utilities.rtl.min.css
+    |   |       |       bootstrap-utilities.rtl.min.css.map
+    |   |       |       bootstrap.css
+    |   |       |       bootstrap.css.map
+    |   |       |       bootstrap.min.css
+    |   |       |       bootstrap.min.css.map
+    |   |       |       bootstrap.rtl.css
+    |   |       |       bootstrap.rtl.css.map
+    |   |       |       bootstrap.rtl.min.css
+    |   |       |       bootstrap.rtl.min.css.map
+    |   |       |       
+    |   |       \---js
+    |   |               bootstrap.bundle.js
+    |   |               bootstrap.bundle.js.map
+    |   |               bootstrap.bundle.min.js
+    |   |               bootstrap.bundle.min.js.map
+    |   |               bootstrap.esm.js
+    |   |               bootstrap.esm.js.map
+    |   |               bootstrap.esm.min.js
+    |   |               bootstrap.esm.min.js.map
+    |   |               bootstrap.js
+    |   |               bootstrap.js.map
+    |   |               bootstrap.min.js
+    |   |               bootstrap.min.js.map
+    |   |               
+    |   +---jquery
+    |   |   |   LICENSE.txt
+    |   |   |   
+    |   |   \---dist
+    |   |           jquery.js
+    |   |           jquery.min.js
+    |   |           jquery.min.map
+    |   |           
+    |   +---jquery-validation
+    |   |   |   LICENSE.md
+    |   |   |   
+    |   |   \---dist
+    |   |           additional-methods.js
+    |   |           additional-methods.min.js
+    |   |           jquery.validate.js
+    |   |           jquery.validate.min.js
+    |   |           
+    |   \---jquery-validation-unobtrusive
+    |           jquery.validate.unobtrusive.js
+    |           jquery.validate.unobtrusive.min.js
+    |           LICENSE.txt
+    |           
+    +---pdfUploads
+    |       ProofOfRegistration_5.pdf
+    |       
+    +---uploads
+    |   |   096e7b7f-6d7c-4c9b-8011-0d282ccb46f0.docx
+    |   |   117c78a5-3374-4004-a563-39bb593971da.docx
+    |   |   119a5819-0149-43ab-8221-e0c5b0c6f1ee.docx
+    |   |   163a8a62-cdca-42e7-a2d8-72c797b09adb.png
+    |   |   17820842-692d-4d89-8c29-fc47b0c25f4f.pdf
+    |   |   2112f15b-9bfb-4dfb-83c0-3168a400f2ea.docx
+    |   |   27709355-bcbb-4f18-b5ad-20841e7e0fa2.pdf
+    |   |   32780c66-725d-4a66-ad21-3ab752da1c23.pdf
+    |   |   3387853c-846f-4012-afa1-8758f7ff69e0.pdf
+    |   |   37d7cbd5-746a-478f-a786-465f9070cbf8.docx
+    |   |   3954d7b2-2995-4b62-bbc9-deb4dda7ecc9.pdf
+    |   |   41954dd0-743a-4cdc-ae6f-0cc2faaf2b61.pdf
+    |   |   434d2664-f6f6-4637-8acc-fe0e051878c7.pdf
+    |   |   4c57a82e-1942-42ac-9c17-39fe93cbde03.docx
+    |   |   544a014a-95cb-48e3-a173-8db656095710.pdf
+    |   |   670a2c97-3ebe-406a-a0d8-08da239381fd.jpeg
+    |   |   7d052e90-3643-4ade-bb5d-d3ec20464382.docx
+    |   |   7eebf0df-c10b-4ffc-a3a5-bd8f78bc503b.pdf
+    |   |   8216938c-ebff-4cb9-8e35-4f967bce915d.docx
+    |   |   83c03a20-7b3c-42f9-b726-301b664c4ea5.pdf
+    |   |   9bd96f9e-ee9d-43fb-8963-2f22c9c3c420.jpeg
+    |   |   9ff39004-fab4-4e94-a8e5-adf52836921f.jpg
+    |   |   a21a053e-4d9b-49a2-bc05-76ff25ef7e90.jpg
+    |   |   bcf313f5-0c19-480c-8609-9e2575318218.jpg
+    |   |   bfd3759b-ca36-4ac5-9409-568c7e902306.pdf
+    |   |   c245f20c-fc16-450e-95a6-221ec2f153d6.pdf
+    |   |   c8291eb1-46c6-456c-87e0-e9589c89b744.pdf
+    |   |   c9e68bbb-245b-4943-9f6a-b1b1feb32d04.docx
+    |   |   d01ed417-126a-4c39-b8d9-6defed22609f.jpg
+    |   |   d1a4af0e-4a1f-4b83-b2ba-99b4b8ae4f9b.pdf
+    |   |   d8deecc4-25c7-4d22-9f05-c706b7cb3035.docx
+    |   |   e0d5dee9-3faa-442f-aba6-640a4c4b888d.pdf
+    |   |   ea4734c6-3f7c-4322-b1b2-d737ddd90807.jpg
+    |   |   eba07e9e-6783-465c-8a37-0444c6707645.pdf
+    |   |   employment_contract_template1.jpg
+    |   |   f27afa80-750f-4dbf-9fe1-7055cc9865e7.pdf
+    |   |   Sample_Employment_Contract.pdf
+    |   |   
+    |   \---images
+    |           staff2ClockIn_20260805112227.jpg
+    |           staff2ClockIn_20260811001153.jpg
+    |           staff2ClockOut_20260805112300.jpg
+    |           staff2ClockOut_20260811001204.jpg
+    |           staff9ClockIn_20260805202531.jpg
+    |           staff9ClockIn_20260808213154.jpg
+    |           staff9ClockIn_20260811001031.jpg
+    |           staff9ClockOut_20260805202559.jpg
+    |           staff9ClockOut_20260808213240.jpg
+    |           staff9ClockOut_20260811001113.jpg
+    |           
+    \---Videos
+            AIPlanTraining.mp4
+            IncidentTraining.mp4
+            LogGradeTraining.mp4
+            

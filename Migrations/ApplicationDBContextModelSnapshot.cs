@@ -530,6 +530,75 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("Parents");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.Payslip", b =>
+                {
+                    b.Property<int>("PayslipId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PayslipId"));
+
+                    b.Property<int>("CurrentVersion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FailureReason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("GeneratedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("PayPeriodEnd")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("PayPeriodStart")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("PdfContent")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("PayslipId");
+
+                    b.ToTable("Payslips");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.PayslipVersionControl", b =>
+                {
+                    b.Property<int>("PayslipVersionControlId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PayslipVersionControlId"));
+
+                    b.Property<DateTime>("ArchivedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("ArchivedPdfContent")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<int>("ArchivedVersionNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PayslipId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RegenerationReason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PayslipVersionControlId");
+
+                    b.ToTable("PayslipVersionControls");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Staff", b =>
                 {
                     b.Property<int>("id")

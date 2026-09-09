@@ -23,15 +23,11 @@ if (string.IsNullOrWhiteSpace(firebaseCredentials))
 
 
 
-/*FirebaseApp.Create(new AppOptions
-{
-    Credential = GoogleCredential.FromJson(firebaseCredentials)
-});*/
-
-FirebaseApp.Create(new AppOptions()
+FirebaseApp.Create(new AppOptions
 {
     Credential = GoogleCredential.FromFile("hla-notifs-firebase-adminsdk-fbsvc-82fbd7094d.json")
 });
+
 
 var builder = WebApplication.CreateBuilder(args);
 

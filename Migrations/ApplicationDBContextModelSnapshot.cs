@@ -30,6 +30,12 @@ namespace SchoolManagmentSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActivityID"));
 
+                    b.Property<int?>("Grade")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("GradedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("HomeworkDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -238,6 +244,33 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.EmployeeEarnings", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("EmployeeID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("payCycle")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("salaryAmt")
+                        .HasColumnType("float");
+
+                    b.Property<double>("taxRate")
+                        .HasColumnType("float");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("EmployeeID");
+
+                    b.ToTable("EmployeeEarnings");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.EmploymentApplication", b =>
@@ -843,6 +876,37 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("StudentDocuments");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.StudentPickup", b =>
+                {
+                    b.Property<int>("StudentPickupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentPickupId"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DelegatePIN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PickupStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PickupTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StudentPickupId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("StudentPickups");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.StudentRegistration", b =>
                 {
                     b.Property<int>("Id")
@@ -1077,6 +1141,17 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.EmployeeEarnings", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Staff", "staff")
+                        .WithMany()
+                        .HasForeignKey("EmployeeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("staff");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.IEP", b =>
                 {
                     b.HasOne("SchoolManagmentSystem.Models.Student", "Student")
@@ -1178,6 +1253,17 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("Student");
 
                     b.Navigation("StudentRegistration");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.StudentPickup", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.StudentRegistration", b =>

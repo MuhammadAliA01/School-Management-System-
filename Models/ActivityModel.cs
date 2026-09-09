@@ -15,5 +15,9 @@ namespace SchoolManagmentSystem.Models
         public int TeacherID { get; set; }
 
         public string HomeworkDescription { get; set; }
+
+        public int? Grade { get; set; }
+
+        public DateTime? GradedAt { get; set; }
     }
 }

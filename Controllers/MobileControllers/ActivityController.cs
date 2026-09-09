@@ -82,17 +82,26 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
         public async Task<IActionResult> GetParentActivities(int parentID)
         {
             var activities = await _context.ActivityModels
-                .Where(a => _context.Students
-                    .Any(s =>
-                        s.StudentId == a.StudentID &&
-                        s.ParentId == parentID
-                    ))
-                .Select(a => new
+                .Join(
+                    _context.Students,
+                    activity => activity.StudentID,
+                    student => student.StudentId,
+                    (activity, student) => new
+                    {
+                        activity,
+                        student
+                    }
+                )
+                .Where(x => x.student.ParentId == parentID)
+                .Select(x => new
                 {
-                    a.ActivityID,
-                    a.StudentID,
-                    a.TeacherID,
-                    a.HomeworkDescription
+                    x.activity.ActivityID,
+                    x.activity.StudentID,
+                    StudentName = x.student.FullName,
+                    x.activity.TeacherID,
+                    x.activity.HomeworkDescription,
+                    x.activity.Grade,
+                    x.activity.GradedAt
                 })
                 .ToListAsync();
 
@@ -114,12 +123,46 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
                         activity.StudentID,
                         StudentName = student.FullName,
                         activity.TeacherID,
-                        activity.HomeworkDescription
+                        activity.HomeworkDescription,
+                        activity.Grade,
+                        activity.GradedAt
                     }
                 )
                 .ToListAsync();
 
             return Ok(activities);
+        }
+
+        [HttpPut("grade/{activityID}")]
+        public async Task<IActionResult> GradeActivity(
+    int activityID,
+    [FromBody] GradeActivityRequest request)
+        {
+            if (request.Grade < 1 || request.Grade > 5)
+            {
+                return BadRequest("Grade must be between 1 and 5.");
+            }
+
+            var activity = await _context.ActivityModels
+                .FirstOrDefaultAsync(a => a.ActivityID == activityID);
+
+            if (activity == null)
+            {
+                return NotFound("Activity not found.");
+            }
+
+            activity.Grade = request.Grade;
+            activity.GradedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Activity graded successfully.",
+                activityID = activity.ActivityID,
+                grade = activity.Grade,
+                gradedAt = activity.GradedAt
+            });
         }
     }
 }

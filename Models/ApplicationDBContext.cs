@@ -26,6 +26,9 @@ namespace SchoolManagmentSystem.Models
 
         public DbSet<ActivityModel> ActivityModels { get; set; }
         public DbSet<ConductReport> ConductReports { get; set; }
+
+        public DbSet<StudentPickup> StudentPickups { get; set; }
+
         public DbSet<IEP> IEPs { get; set; }
         public DbSet<AssignedClassStudent> AssignedClassStudents { get; set; }
 
@@ -42,5 +45,8 @@ namespace SchoolManagmentSystem.Models
 
         public DbSet<medsAdministered> medsAdministered { get; set; }
         public DbSet<Medication> Medications { get; set; }
+
+        public DbSet<EmployeeEarnings> EmployeeEarnings { get; set; }
+
     }
 }

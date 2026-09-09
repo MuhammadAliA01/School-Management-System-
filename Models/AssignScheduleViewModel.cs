@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SchoolManagmentSystem.Models
 {
     public class AssignScheduleViewModel
     {
-        // Lists to display on the dashboard
-        public List<Employee> AvailableStaff { get; set; } = new List<Employee>();
+        public List<Staff> AvailableStaff { get; set; } = new List<Staff>();
+
         public List<Class> UnassignedClasses { get; set; } = new List<Class>();
 
-        // The date the system will automatically assign (e.g., Tomorrow)
+        public List<StaffSchedule> Schedules { get; set; } = new List<StaffSchedule>();
+
         public DateTime TargetScheduleDate { get; set; }
     }
 }

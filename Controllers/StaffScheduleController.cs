@@ -1,110 +1,375 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Services;
 
 namespace SchoolManagmentSystem.Controllers
 {
     public class StaffScheduleController : Controller
     {
-        // FIXED: Capitalized 'DB' to match your ApplicationDBContext.cs file
         private readonly ApplicationDBContext _context;
+        private readonly FirebaseNotificationService _firebaseNotificationService;
 
-        public StaffScheduleController(ApplicationDBContext context)
+        public StaffScheduleController(
+            ApplicationDBContext context,
+            FirebaseNotificationService firebaseNotificationService)
         {
             _context = context;
+            _firebaseNotificationService = firebaseNotificationService;
         }
+
+
+        // ==========================================
+        // ASSIGNMENT DASHBOARD
+        // ==========================================
 
         [HttpGet]
         public IActionResult Assign()
         {
-            // 1. Set the automated date (e.g., scheduling for tomorrow)
+            // Schedule for tomorrow
             DateTime targetDate = DateTime.Today.AddDays(1);
 
-            // 2. Find all classes that ALREADY have a schedule for tomorrow
-            var assignedClassIds = _context.StaffSchedules
+
+            // ==========================================
+            // GET EXISTING SCHEDULES
+            // ==========================================
+
+            var schedules = _context.StaffSchedules
+                .Include(s => s.Class)
                 .Where(s => s.ScheduleDate.Date == targetDate.Date)
+                .ToList();
+
+
+            // ==========================================
+            // GET CLASSES THAT ARE ALREADY ASSIGNED
+            // ==========================================
+
+            var assignedClassIds = schedules
                 .Select(s => s.ClassId)
                 .ToList();
 
-            // 3. Get all classes that are currently UNASSIGNED for tomorrow
-            var unassignedClasses = _context.Classes
-                .Where(c => !assignedClassIds.Contains(c.ClassId)) // Assuming the Primary Key is ClassId
-                .ToList();
 
-            // 4. Get all active staff members
-            var allStaff = _context.Employees.ToList();
-
-            // 5. Build the dashboard view model
-            var viewModel = new AssignScheduleViewModel
-            {
-                AvailableStaff = allStaff,
-                UnassignedClasses = unassignedClasses,
-                TargetScheduleDate = targetDate
-            };
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult RunAutoAssign()
-        {
-            DateTime targetDate = DateTime.Today.AddDays(1);
-            var staff = _context.Employees.ToList();
-
-            // Find unassigned classes again to ensure data is fresh
-            var assignedClassIds = _context.StaffSchedules
-                .Where(s => s.ScheduleDate.Date == targetDate.Date)
-                .Select(s => s.ClassId)
-                .ToList();
+            // ==========================================
+            // GET UNASSIGNED CLASSES
+            // ==========================================
 
             var unassignedClasses = _context.Classes
                 .Where(c => !assignedClassIds.Contains(c.ClassId))
                 .ToList();
 
-            // Safety checks
+
+            // ==========================================
+            // GET AVAILABLE STAFF
+            // ==========================================
+
+            var allStaff = _context.Staffs
+                .ToList();
+
+
+            // ==========================================
+            // BUILD VIEW MODEL
+            // ==========================================
+
+            var viewModel = new AssignScheduleViewModel
+            {
+                AvailableStaff = allStaff,
+
+                UnassignedClasses = unassignedClasses,
+
+                Schedules = schedules,
+
+                TargetScheduleDate = targetDate
+            };
+
+
+            return View(viewModel);
+        }
+
+
+        // ==========================================
+        // AUTOMATIC ASSIGNMENT
+        // ==========================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RunAutoAssign()
+        {
+            // Schedule for tomorrow
+            DateTime targetDate = DateTime.Today.AddDays(1);
+
+
+            // ==========================================
+            // GET ALL STAFF
+            // ==========================================
+
+            var staff = await _context.Staffs
+                .ToListAsync();
+
+
+            // ==========================================
+            // GET EXISTING SCHEDULES FOR TOMORROW
+            // ==========================================
+
+            var existingSchedules = await _context.StaffSchedules
+                .Where(s => s.ScheduleDate.Date == targetDate.Date)
+                .ToListAsync();
+
+
+            // ==========================================
+            // FIND CLASSES ALREADY ASSIGNED
+            // ==========================================
+
+            var assignedClassIds = existingSchedules
+                .Select(s => s.ClassId)
+                .ToList();
+
+
+            // ==========================================
+            // FIND UNASSIGNED CLASSES
+            // ==========================================
+
+            var unassignedClasses = await _context.Classes
+                .Where(c => !assignedClassIds.Contains(c.ClassId))
+                .ToListAsync();
+
+
+            // ==========================================
+            // SAFETY CHECK - NO CLASSES
+            // ==========================================
+
             if (!unassignedClasses.Any())
             {
-                TempData["SuccessMessage"] = "All classes are already assigned for this shift! No action needed.";
-                return RedirectToAction(nameof(Assign));
-            }
-            if (!staff.Any())
-            {
-                ModelState.AddModelError("", "No staff members found in the database.");
+                TempData["SuccessMessage"] =
+                    "All classes are already assigned for this date!";
+
                 return RedirectToAction(nameof(Assign));
             }
 
-            // THE ROUND-ROBIN ALGORITHM
-            int staffIndex = 0;
-            int staffCount = staff.Count;
+
+            // ==========================================
+            // SAFETY CHECK - NO STAFF
+            // ==========================================
+
+            if (!staff.Any())
+            {
+                TempData["SuccessMessage"] =
+                    "No staff members were found in the database.";
+
+                return RedirectToAction(nameof(Assign));
+            }
+
+
+            // ==========================================
+            // FIND TEACHERS ALREADY ASSIGNED TOMORROW
+            // ==========================================
+
+            var alreadyAssignedTeacherIds = existingSchedules
+                .Select(s => s.TeacherId)
+                .ToHashSet();
+
+
+            // ==========================================
+            // GET ONLY AVAILABLE TEACHERS
+            //
+            // A teacher who already has a class tomorrow
+            // cannot be assigned another class.
+            // ==========================================
+
+            var availableStaff = staff
+                .Where(s => !alreadyAssignedTeacherIds.Contains(s.id))
+                .ToList();
+
+
+            // ==========================================
+            // AUTOMATIC ASSIGNMENT
+            //
+            // Each teacher can only be assigned
+            // ONE class for the day.
+            // ==========================================
+
             int assignedCount = 0;
+
+
+            // Keep track of staff that were assigned
+            // so that we can notify them after saving.
+            var assignedStaff = new List<(dynamic Staff, string ClassName)>();
+
 
             foreach (var emptyClass in unassignedClasses)
             {
-                // Select the staff member based on the current index
-                var selectedStaff = staff[staffIndex % staffCount];
+                // If there are no teachers left,
+                // leave the remaining classes unassigned.
+                if (!availableStaff.Any())
+                {
+                    break;
+                }
 
-                // Create the new schedule automatically
+
+                // ==========================================
+                // PICK NEXT AVAILABLE TEACHER
+                // ==========================================
+
+                var selectedStaff = availableStaff[0];
+
+
+                // ==========================================
+                // CREATE NEW SCHEDULE
+                // ==========================================
+
                 var newSchedule = new StaffSchedule
                 {
-                    TeacherId = selectedStaff.Id, // Replaced EmployeeId with TeacherId
-                    ClassId = emptyClass.ClassId, // (Assuming ClassId is correct for the Class model!)         
-                    ScheduleDate = targetDate
+                    TeacherId = selectedStaff.id,
+
+                    ClassId = emptyClass.ClassId,
+
+                    ScheduleDate = targetDate,
+
+                    ShiftType = "Full Day"
                 };
+
 
                 _context.StaffSchedules.Add(newSchedule);
 
-                // Move to the next staff member for the next iteration
-                staffIndex++;
+
+                // ==========================================
+                // KEEP TRACK OF ASSIGNMENT
+                // FOR NOTIFICATION
+                // ==========================================
+
+                assignedStaff.Add(
+                    (selectedStaff, emptyClass.ClassName)
+                );
+
+
+                // ==========================================
+                // REMOVE TEACHER FROM AVAILABLE LIST
+                //
+                // This prevents the same teacher from
+                // being assigned another class.
+                // ==========================================
+
+                availableStaff.RemoveAt(0);
+
+
                 assignedCount++;
             }
 
-            // Save all the new assignments to the database at once
-            _context.SaveChanges();
 
-            TempData["SuccessMessage"] = $"Automated Scheduling Complete: Successfully assigned {assignedCount} shifts!";
+            // ==========================================
+            // SAVE TO DATABASE
+            // ==========================================
+
+            await _context.SaveChangesAsync();
+
+
+            // ==========================================
+            // SEND NOTIFICATIONS TO ASSIGNED STAFF
+            // ==========================================
+
+            foreach (var assignment in assignedStaff)
+            {
+                var selectedStaff = assignment.Staff;
+                var className = assignment.ClassName;
+
+
+                // Staff must have an FCM token
+                if (!string.IsNullOrEmpty(selectedStaff.FCMToken))
+                {
+                    bool success =
+                        await _firebaseNotificationService.SendNotification(
+                            selectedStaff.FCMToken,
+
+                            "New Class Assignment",
+
+                            $"You have been assigned to {className} " +
+                            $"on {targetDate:dd/MM/yyyy}."
+                        );
+
+
+                    // ==========================================
+                    // INVALID / EXPIRED FCM TOKEN
+                    // ==========================================
+
+                    if (!success)
+                    {
+                        selectedStaff.FCMToken = null;
+                    }
+                }
+            }
+
+
+            // Save any cleared FCM tokens
+            await _context.SaveChangesAsync();
+
+
+            // ==========================================
+            // CALCULATE REMAINING CLASSES
+            // ==========================================
+
+            int remainingClasses =
+                unassignedClasses.Count - assignedCount;
+
+
+            // ==========================================
+            // SUCCESS MESSAGE
+            // ==========================================
+
+            if (remainingClasses > 0)
+            {
+                TempData["SuccessMessage"] =
+                    $"Automated Scheduling Complete! " +
+                    $"{assignedCount} classes were assigned. " +
+                    $"{remainingClasses} classes remain unassigned " +
+                    $"because there were not enough available teachers.";
+            }
+            else
+            {
+                TempData["SuccessMessage"] =
+                    $"Automated Scheduling Complete! " +
+                    $"All {assignedCount} classes were successfully assigned.";
+            }
+
+
+            // ==========================================
+            // RETURN TO DASHBOARD
+            // ==========================================
+
             return RedirectToAction(nameof(Assign));
         }
+
+
+        // ==========================================
+        // FLUTTER - GET STAFF SCHEDULE
+        // ==========================================
+
+        [HttpGet]
+        [Route("api/StaffSchedule/staff/{staffId}")]
+        public async Task<IActionResult> GetStaffSchedule(int staffId)
+        {
+            var schedules = await _context.StaffSchedules
+                .Where(s => s.TeacherId == staffId)
+                .OrderBy(s => s.ScheduleDate)
+                .Select(s => new
+                {
+                    scheduleId = s.ScheduleId,
+
+                    teacherId = s.TeacherId,
+
+                    classId = s.ClassId,
+
+                    className = _context.Classes
+                        .Where(c => c.ClassId == s.ClassId)
+                        .Select(c => c.ClassName)
+                        .FirstOrDefault(),
+
+                    scheduleDate = s.ScheduleDate,
+
+                    shiftType = s.ShiftType
+                })
+                .ToListAsync();
+
+
+            return Ok(schedules);
+        }
     }
-    }
+}

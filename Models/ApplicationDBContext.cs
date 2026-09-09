@@ -46,6 +46,10 @@ namespace SchoolManagmentSystem.Models
         public DbSet<medsAdministered> medsAdministered { get; set; }
         public DbSet<Medication> Medications { get; set; }
 
+        // Payslip and PayslipVersionControl DbSets
+        public DbSet<Payslip> Payslips { get; set; }
+        public DbSet<PayslipVersionControl> PayslipVersionControls { get; set; }
+
         public DbSet<EmployeeEarnings> EmployeeEarnings { get; set; }
 
     }

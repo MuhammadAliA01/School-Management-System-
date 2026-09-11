@@ -575,7 +575,6 @@ namespace SchoolManagmentSystem.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("FailureReason")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("GeneratedAt")

@@ -26,9 +26,22 @@ namespace SchoolManagmentSystem.Controllers
             {
                 try
                 {
-                    var data = new PayslipDTO
+                    var data = new PayslipDTO   //temporary data for demonstration of test; in a real scenario, this would be calculated based on actual payroll data
                     {
-                       //test done here temp
+                        StaffId = staff.id,
+                        StaffName = $"{staff.FirstName} {staff.Surname}",
+                        Role = staff.Role,
+                        PayPeriodStart = periodStart,
+                        PayPeriodEnd = periodEnd,
+                        BasePay = 15000,
+                        HoursWorked = 160,
+                        OvertimePay = 0,
+                        GrossPay = 15000,
+                        PAYE = 2000,
+                        UIF = 150,
+                        Pension = 750,
+                        MedicalAid = 500,
+                        NetPay = 11600
                     };
 
                     var payslip = _payslipGenerationService.StagePayslip(data);
@@ -41,6 +54,38 @@ namespace SchoolManagmentSystem.Controllers
             }
 
             return Json(results);
+        }
+
+        [HttpPost]
+        public IActionResult Stage(int staffId, DateTime periodStart, DateTime periodEnd, string? regenerationReason = null)
+        {
+            var data = new PayslipDTO
+            {
+                StaffId = staffId,
+                StaffName = "Placeholder Staff",
+                Role = "Teacher",
+                PayPeriodStart = periodStart,
+                PayPeriodEnd = periodEnd,
+                BasePay = 15000,
+                HoursWorked = 160,
+                OvertimePay = 0,
+                GrossPay = 15000,
+                PAYE = 2000,
+                UIF = 150,
+                Pension = 750,
+                MedicalAid = 500,
+                NetPay = 11600
+            };
+
+            try
+            {
+                var payslip = _payslipGenerationService.StagePayslip(data, regenerationReason);
+                return Json(new { payslip.PayslipId, payslip.Status });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // Download PDF

@@ -1,4 +1,5 @@
 ﻿using SchoolManagmentSystem.Models;
+
 namespace SchoolManagmentSystem.Services
 {
     public class PayslipGenerationService
@@ -12,11 +13,43 @@ namespace SchoolManagmentSystem.Services
             _pdfService = pdfService;
         }
 
-        // Admin triggers this — stages the payslip
-        public Payslip StagePayslip(PayslipDTO data)
+        // regenerationReason if existing payslip is found
+        public Payslip StagePayslip(PayslipDTO data, string? regenerationReason = null)
         {
             var pdfBytes = _pdfService.BuildPdf(data);
 
+            var existing = _context.Payslips.FirstOrDefault(p =>
+                p.StaffId == data.StaffId &&
+                p.PayPeriodStart == data.PayPeriodStart &&
+                p.PayPeriodEnd == data.PayPeriodEnd);
+
+            if (existing != null)
+            {
+                if (string.IsNullOrWhiteSpace(regenerationReason))
+                    throw new InvalidOperationException("A reason is required to regenerate an existing payslip.");
+
+                // archive the old version
+                var archived = new PayslipVersionControl
+                {
+                    PayslipId = existing.PayslipId,
+                    ArchivedPdfContent = existing.PdfContent,
+                    ArchivedVersionNumber = existing.CurrentVersion,
+                    RegenerationReason = regenerationReason,
+                    ArchivedAt = DateTime.Now
+                };
+                _context.PayslipVersionControls.Add(archived);
+
+                // update existing payslip with new content
+                existing.PdfContent = pdfBytes;
+                existing.CurrentVersion += 1;
+                existing.Status = PayslipStatus.PendingConfirmation;
+                existing.FailureReason = null;
+
+                _context.SaveChanges();
+                return existing;
+            }
+
+            // no existing payslip 
             var payslip = new Payslip
             {
                 StaffId = data.StaffId,
@@ -32,7 +65,6 @@ namespace SchoolManagmentSystem.Services
 
             return payslip;
         }
-
         // Confirm Distribution step completes
         public void FinalizePayslip(int payslipId)
         {

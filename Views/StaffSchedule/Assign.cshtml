@@ -5,80 +5,427 @@
 }
 
 <div class="container mt-4">
+
+    <!-- ========================================== -->
+    <!-- HEADER -->
+    <!-- ========================================== -->
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-cpu"></i> Automated Scheduling Dashboard</h2>
-        <span class="badge bg-info text-dark fs-6">Target Date: @Model.TargetScheduleDate.ToShortDateString()</span>
+
+        <h2>
+            <i class="bi bi-cpu"></i>
+            Automated Scheduling Dashboard
+        </h2>
+
+        <span class="badge bg-info text-dark fs-6">
+            Target Date:
+            @Model.TargetScheduleDate.ToShortDateString()
+        </span>
+
     </div>
 
+
+    <!-- ========================================== -->
+    <!-- SUCCESS MESSAGE -->
+    <!-- ========================================== -->
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-            <strong><i class="bi bi-check-circle-fill"></i> System Update:</strong> @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="alert alert-success alert-dismissible fade show shadow-sm"
+             role="alert">
+
+            <strong>
+                <i class="bi bi-check-circle-fill"></i>
+                System Update:
+            </strong>
+
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
         </div>
     }
 
+
+    <!-- ========================================== -->
+    <!-- TOP PANELS -->
+    <!-- ========================================== -->
+
     <div class="row">
-        <!-- Panel 1: Unassigned Classes -->
+
+
+        <!-- ====================================== -->
+        <!-- UNASSIGNED CLASSES -->
+        <!-- ====================================== -->
+
         <div class="col-md-6 mb-4">
+
             <div class="card shadow-sm h-100 border-0">
+
                 <div class="card-header bg-warning text-dark fw-bold">
-                    Pending Shifts / Classes (@Model.UnassignedClasses.Count)
+
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+
+                    Pending Classes
+                    (@Model.UnassignedClasses.Count)
+
                 </div>
+
+
                 <div class="card-body">
+
                     @if (!Model.UnassignedClasses.Any())
                     {
-                        <p class="text-success fw-bold">All shifts for @Model.TargetScheduleDate.ToShortDateString() are currently covered.</p>
+                        <div class="text-center py-4">
+
+                            <i class="bi bi-check-circle-fill text-success fs-1"></i>
+
+                            <p class="text-success fw-bold mt-3 mb-0">
+                                All classes are assigned!
+                            </p>
+
+                        </div>
                     }
                     else
                     {
                         <ul class="list-group list-group-flush">
+
                             @foreach (var cls in Model.UnassignedClasses)
                             {
-                                // Adjust "ClassName" to whatever property you use for the class title
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Class ID: @cls.ClassId
-                                    <span class="badge bg-danger rounded-pill">Unassigned</span>
+
+                                    <span>
+
+                                        <i class="bi bi-book text-primary me-2"></i>
+
+                                        <strong>
+                                            @cls.ClassName
+                                        </strong>
+
+                                    </span>
+
+
+                                    <span class="badge bg-danger rounded-pill">
+                                        Unassigned
+                                    </span>
+
                                 </li>
                             }
+
                         </ul>
                     }
+
                 </div>
+
             </div>
+
         </div>
 
-        <!-- Panel 2: Available Staff -->
+
+
+        <!-- ====================================== -->
+        <!-- AVAILABLE STAFF -->
+        <!-- ====================================== -->
+
         <div class="col-md-6 mb-4">
+
             <div class="card shadow-sm h-100 border-0">
+
                 <div class="card-header bg-primary text-white fw-bold">
-                    Available Roster (@Model.AvailableStaff.Count Staff Members)
+
+                    <i class="bi bi-people me-2"></i>
+
+                    Available Staff
+                    (@Model.AvailableStaff.Count)
+
                 </div>
+
+
                 <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        @foreach (var staff in Model.AvailableStaff)
-                        {
-                            // Adjust "FirstName" / "LastName" to match your Employee properties
-                            <li class="list-group-item">
-                                <i class="bi bi-person-circle text-secondary me-2"></i> @staff.Id (ID)
-                            </li>
-                        }
-                    </ul>
+
+                    @if (!Model.AvailableStaff.Any())
+                    {
+                        <div class="text-center py-4">
+
+                            <i class="bi bi-person-x text-danger fs-1"></i>
+
+                            <p class="text-danger fw-bold mt-3">
+                                No staff members found.
+                            </p>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <ul class="list-group list-group-flush">
+
+                            @foreach (var staff in Model.AvailableStaff)
+                            {
+                                <li class="list-group-item">
+
+                                    <i class="bi bi-person-circle text-secondary me-2"></i>
+
+                                    <strong>
+                                        @staff.FirstName @staff.Surname
+                                    </strong>
+
+                                </li>
+                            }
+
+                        </ul>
+                    }
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
 
-    <!-- The Automation Trigger -->
+
+
+    <!-- ========================================== -->
+    <!-- AUTOMATED ASSIGNMENT -->
+    <!-- ========================================== -->
+
     <div class="card border-0 shadow-sm mt-2">
-        <div class="card-body text-center p-5 bg-light">
-            <h4 class="mb-3">Run Automated Assignment</h4>
-            <p class="text-muted mb-4">This will distribute all pending shifts evenly among available staff using a round-robin algorithm for @Model.TargetScheduleDate.ToShortDateString().</p>
 
-            <form asp-action="RunAutoAssign" method="post">
-                <button type="submit" class="btn btn-success btn-lg px-5 shadow" @(Model.UnassignedClasses.Any() ? "" : "disabled")>
-                    <i class="bi bi-lightning-fill"></i> Execute Auto-Assign
+        <div class="card-body text-center p-5 bg-light">
+
+            <h4 class="mb-3">
+
+                <i class="bi bi-lightning-charge"></i>
+
+                Run Automated Assignment
+
+            </h4>
+
+
+            <p class="text-muted mb-4">
+
+                This will distribute all pending classes evenly
+                among available staff members using a
+                round-robin algorithm.
+
+            </p>
+
+
+            <form asp-action="RunAutoAssign"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit"
+                        class="btn btn-success btn-lg px-5 shadow"
+                        @(Model.UnassignedClasses.Any() &&
+                                                Model.AvailableStaff.Any()
+                                                ? ""
+                                                : "disabled")>
+
+                    <i class="bi bi-lightning-fill"></i>
+
+                    Execute Auto-Assign
+
                 </button>
+
             </form>
+
         </div>
+
     </div>
+
+
+
+    <!-- ========================================== -->
+    <!-- GENERATED SCHEDULES -->
+    <!-- ========================================== -->
+
+    <div class="card border-0 shadow-sm mt-4 mb-5">
+
+
+        <!-- HEADER -->
+
+        <div class="card-header bg-success text-white fw-bold">
+
+            <i class="bi bi-calendar-check me-2"></i>
+
+            Staff Schedule
+
+            @if (Model.Schedules.Any())
+            {
+                <span class="badge bg-light text-success float-end">
+
+                    @Model.Schedules.Count
+                    Assignments
+
+                </span>
+            }
+
+        </div>
+
+
+
+        <!-- BODY -->
+
+        <div class="card-body p-0">
+
+            @if (!Model.Schedules.Any())
+            {
+                <div class="text-center py-5">
+
+                    <i class="bi bi-calendar-x text-muted fs-1"></i>
+
+                    <h5 class="text-muted mt-3">
+                        No schedules yet
+                    </h5>
+
+                    <p class="text-muted mb-0">
+
+                        Click
+                        <strong>Execute Auto-Assign</strong>
+                        to generate the staff schedule.
+
+                    </p>
+
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover table-striped mb-0">
+
+
+                        <!-- TABLE HEADER -->
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>
+                                    #
+                                </th>
+
+                                <th>
+                                    Class
+                                </th>
+
+                                <th>
+                                    Staff Member
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Shift
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <!-- TABLE BODY -->
+
+                        <tbody>
+
+                            @{
+                                int counter = 1;
+                            }
+
+
+                            @foreach (var schedule in Model.Schedules)
+                            {
+                                var teacher = Model.AvailableStaff
+                                .FirstOrDefault(s => s.id == schedule.TeacherId);
+
+
+                                <tr>
+
+
+                                    <!-- NUMBER -->
+
+                                    <td>
+                                        @counter
+                                    </td>
+
+
+                                    <!-- CLASS -->
+
+                                    <td>
+
+                                        <i class="bi bi-book text-primary me-2"></i>
+
+                                        <strong>
+                                            @schedule.Class.ClassName
+                                        </strong>
+
+                                    </td>
+
+
+                                    <!-- STAFF -->
+
+                                    <td>
+
+                                        <i class="bi bi-person-circle text-secondary me-2"></i>
+
+                                        @if (teacher != null)
+                                        {
+                                            @teacher.FirstName
+                                            @teacher.Surname
+                                        }
+                                        else
+                                        {
+                                            <span class="text-danger">
+                                                Staff not found
+                                            </span>
+                                        }
+
+                                    </td>
+
+
+                                    <!-- DATE -->
+
+                                    <td>
+
+                                        @(schedule.ScheduleDate
+                                        .ToShortDateString())
+
+                                    </td>
+
+
+                                    <!-- SHIFT -->
+
+                                    <td>
+
+                                        <span class="badge bg-primary">
+
+                                            @schedule.ShiftType
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+
+                                counter++;
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
 </div>

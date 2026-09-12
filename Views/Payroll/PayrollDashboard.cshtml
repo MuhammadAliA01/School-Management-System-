@@ -1,0 +1,52 @@
+﻿@model IEnumerable<SchoolManagmentSystem.Models.EmployeeEarnings>
+
+@{
+    ViewData["Title"] = "PayrollDashboard";
+}
+
+<h1>PayrollDashboard</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Staff Name
+            </th>
+            <th>
+                Nett Salary
+            </th>
+            <th>
+                Tax Rate
+            </th>
+            <th>
+                Next Pay Date
+            </th>
+            <th>
+                Role
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.staff.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.salaryAmt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.taxRate)
+            </td>
+            <td>
+                    @item.payCycle.Date.ToString("MMMM")
+
+            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.staff.Role)
+                </td>
+        </tr>
+}
+    </tbody>
+</table>

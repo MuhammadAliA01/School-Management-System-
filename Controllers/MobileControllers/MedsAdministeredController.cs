@@ -105,6 +105,9 @@ namespace SchoolManagmentSystem.Controllers
             var medicationExists = await _context.Medications
                 .AnyAsync(m => m.ID == request.medID);
 
+            var medicationName = _context.Medications
+                .Where(m => m.ID == request.medID).Select(m => m.medName).FirstOrDefault();
+
             if (!medicationExists)
             {
                 return NotFound("Medication not found.");
@@ -137,8 +140,8 @@ namespace SchoolManagmentSystem.Controllers
             {
                 await _firebaseNotificationService.SendNotification(
                     student.Parent.FCMToken,
-                    "Clocked Out",
-                    "You have Clocked Out"
+                    "Medication Administered",
+                    $"{student.FullName} has been given {medicationName}"
                 );
             }
 

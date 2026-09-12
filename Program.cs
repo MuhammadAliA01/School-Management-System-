@@ -35,7 +35,14 @@ FirebaseApp.Create(new AppOptions()
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 builder.Services.AddScoped<FirebaseNotificationService>();
+
+
+builder.Services.AddScoped<IEmailService, DistributePayslipEmailService>();
+
+builder.Services.AddHostedService<PayslipDistributionBackgroundService>();
 
 
 // Add services to the container.

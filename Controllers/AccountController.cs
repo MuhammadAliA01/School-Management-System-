@@ -127,8 +127,10 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
+        
         [HttpPost]
-        public async Task<IActionResult> Login([Bind("Username,Password")] Parent parent, Staff staff)
+       
+        public async Task<IActionResult> Login([Bind("Username,Password")] Parent parent, Staff staff, string? returnUrl)
         {
             var selectedRole = Request.Form["role"].ToString();
 
@@ -153,10 +155,15 @@ namespace SchoolManagmentSystem.Controllers
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity));
 
-                        return RedirectToAction("StaffDashboard", "Dashboards");
-
-
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
                     }
+
+                    return RedirectToAction("StaffDashboard", "Dashboards");
+
+
+                }
                     else
                     {
                         ModelState.AddModelError("", "Invalid username or password");

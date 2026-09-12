@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Payslip Distribution";
+}
+
+<div class="container mt-4">
+
+    <h2>Payslip Distribution</h2>
+
+    <p class="text-muted">
+        Distribute generated payslips to employees or schedule them to be sent later.
+    </p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+
+            <h5 class="card-title">Distribute Payslips</h5>
+
+            <p class="card-text">
+                Send generated payslips to all employees immediately.
+            </p>
+
+            <form asp-controller="PayslipDistribution"
+                  asp-action="DistributePayslips"
+                  method="post">
+
+                <button type="submit" class="btn btn-secondary">
+                    Distribute Immediately
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+
+            <h5 class="card-title">Schedule Distribution</h5>
+
+            <p class="card-text">
+                Choose a date and time to automatically distribute payslips.
+            </p>
+
+            <form asp-controller="PayslipDistribution"
+                  asp-action="Schedule"
+                  method="post">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label for="scheduledDate" class="form-label">
+                            Distribution Date
+                        </label>
+
+                        <input type="date"
+                               id="scheduledDate"
+                               name="scheduledDate"
+                               class="form-control"
+                               required />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="scheduledTime" class="form-label">
+                            Distribution Time
+                        </label>
+
+                        <input type="time"
+                               id="scheduledTime"
+                               name="scheduledTime"
+                               class="form-control"
+                               required />
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-secondary">
+                    Schedule Distribution
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+

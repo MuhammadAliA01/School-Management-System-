@@ -49,6 +49,7 @@ namespace SchoolManagmentSystem.Models
         // Payslip and PayslipVersionControl DbSets
         public DbSet<Payslip> Payslips { get; set; }
         public DbSet<PayslipVersionControl> PayslipVersionControls { get; set; }
+        public DbSet<PayslipDistribution> PayslipDistributions { get; set; }
 
         public DbSet<EmployeeEarnings> EmployeeEarnings { get; set; }
 

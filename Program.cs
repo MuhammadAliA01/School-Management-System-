@@ -32,7 +32,14 @@ if (string.IsNullOrWhiteSpace(firebaseCredentials))
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 builder.Services.AddScoped<FirebaseNotificationService>();
+
+
+builder.Services.AddScoped<IEmailService, DistributePayslipEmailService>();
+
+builder.Services.AddHostedService<PayslipDistributionBackgroundService>();
 
 
 // Add services to the container.

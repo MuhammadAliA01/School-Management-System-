@@ -26,7 +26,7 @@ namespace SchoolManagmentSystem.Controllers
             {
                 try
                 {
-                    var data = BuildDummyPayslipData(staff, periodStart, periodEnd);
+                    var data = BuildPayslipDataFromEarnings(staff, periodStart, periodEnd);
                     var payslip = _payslipGenerationService.StagePayslip(data);
                     results.Add(new { staff.id, Status = "Success", payslip.PayslipId });
                 }
@@ -46,7 +46,7 @@ namespace SchoolManagmentSystem.Controllers
             if (staff == null)
                 return NotFound("Staff member not found.");
 
-            var data = BuildDummyPayslipData(staff, periodStart, periodEnd);
+            var data = BuildPayslipDataFromEarnings(staff, periodStart, periodEnd);
 
             try
             {
@@ -78,8 +78,25 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         //temporary data for demonstration of test; in a real scenario, this would be calculated based on actual payroll data
-        private PayslipDTO BuildDummyPayslipData(Staff staff, DateTime periodStart, DateTime periodEnd)
+        private PayslipDTO BuildPayslipDataFromEarnings(Staff staff, DateTime periodStart, DateTime periodEnd)
         {
+            var earnings = _context.EmployeeEarnings
+                .Where(e => e.EmployeeID == staff.id &&
+                            e.payCycle.Month == periodStart.Month &&
+                            e.payCycle.Year == periodStart.Year)
+                .FirstOrDefault();
+
+            var basePay = earnings != null ? (decimal)earnings.salaryAmt : 15000m; //if no earnings record, default to 15000 for demonstration
+            var attendanceRecords = _context.StaffAttendances
+            .Where(a => a.StaffId == staff.id &&
+                        a.ClockInTime.HasValue &&
+                        a.ClockOutTime.HasValue &&           // only completed sessions
+                        a.ClockInTime.Value.Date >= periodStart.Date &&
+                        a.ClockInTime.Value.Date <= periodEnd.Date &&
+                        a.TotalHoursWorked.HasValue).ToList();
+
+            decimal hoursWorked = attendanceRecords.Sum(a => a.TotalHoursWorked ?? 0);
+
             return new PayslipDTO
             {
                 StaffId = staff.id,
@@ -88,15 +105,16 @@ namespace SchoolManagmentSystem.Controllers
                 IDNumber = staff.IDNumber,
                 PayPeriodStart = periodStart,
                 PayPeriodEnd = periodEnd,
-                BasePay = 15000,
-                HoursWorked = 160,
-                OvertimePay = 0,
-                GrossPay = 15000,
+                BasePay = basePay,
+                HoursWorked = hoursWorked, 
+                OvertimePay = 0, // need pull overtime data
+                GrossPay = basePay, //gorss + overtime, but for now just base pay
+                // replace with real PAYE/UIF/Pension/MedicalAid once Rayhan's tax deduction breakdown is ready
                 PAYE = 2000,
                 UIF = 150,
                 Pension = 750,
                 MedicalAid = 500,
-                NetPay = 11600
+                NetPay = basePay - 2000 - 150 - 750 - 500 // for now
             };
         }
     }

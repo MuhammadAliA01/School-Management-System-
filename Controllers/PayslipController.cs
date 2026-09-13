@@ -26,24 +26,7 @@ namespace SchoolManagmentSystem.Controllers
             {
                 try
                 {
-                    var data = new PayslipDTO   //temporary data for demonstration of test; in a real scenario, this would be calculated based on actual payroll data
-                    {
-                        StaffId = staff.id,
-                        StaffName = $"{staff.FirstName} {staff.Surname}",
-                        Role = staff.Role,
-                        PayPeriodStart = periodStart,
-                        PayPeriodEnd = periodEnd,
-                        BasePay = 15000,
-                        HoursWorked = 160,
-                        OvertimePay = 0,
-                        GrossPay = 15000,
-                        PAYE = 2000,
-                        UIF = 150,
-                        Pension = 750,
-                        MedicalAid = 500,
-                        NetPay = 11600
-                    };
-
+                    var data = BuildDummyPayslipData(staff, periodStart, periodEnd);
                     var payslip = _payslipGenerationService.StagePayslip(data);
                     results.Add(new { staff.id, Status = "Success", payslip.PayslipId });
                 }
@@ -59,23 +42,11 @@ namespace SchoolManagmentSystem.Controllers
         [HttpPost]
         public IActionResult Stage(int staffId, DateTime periodStart, DateTime periodEnd, string? regenerationReason = null)
         {
-            var data = new PayslipDTO
-            {
-                StaffId = staffId,
-                StaffName = "Placeholder Staff",
-                Role = "Teacher",
-                PayPeriodStart = periodStart,
-                PayPeriodEnd = periodEnd,
-                BasePay = 15000,
-                HoursWorked = 160,
-                OvertimePay = 0,
-                GrossPay = 15000,
-                PAYE = 2000,
-                UIF = 150,
-                Pension = 750,
-                MedicalAid = 500,
-                NetPay = 11600
-            };
+            var staff = _context.Staffs.Find(staffId);
+            if (staff == null)
+                return NotFound("Staff member not found.");
+
+            var data = BuildDummyPayslipData(staff, periodStart, periodEnd);
 
             try
             {
@@ -104,6 +75,29 @@ namespace SchoolManagmentSystem.Controllers
         {
             _payslipGenerationService.FinalizePayslip(payslipId);
             return Json(new { Success = true, payslipId });
+        }
+
+        //temporary data for demonstration of test; in a real scenario, this would be calculated based on actual payroll data
+        private PayslipDTO BuildDummyPayslipData(Staff staff, DateTime periodStart, DateTime periodEnd)
+        {
+            return new PayslipDTO
+            {
+                StaffId = staff.id,
+                StaffName = $"{staff.FirstName} {staff.Surname}",
+                Role = staff.Role,
+                IDNumber = staff.IDNumber,
+                PayPeriodStart = periodStart,
+                PayPeriodEnd = periodEnd,
+                BasePay = 15000,
+                HoursWorked = 160,
+                OvertimePay = 0,
+                GrossPay = 15000,
+                PAYE = 2000,
+                UIF = 150,
+                Pension = 750,
+                MedicalAid = 500,
+                NetPay = 11600
+            };
         }
     }
 }

@@ -2,6 +2,8 @@
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using SchoolManagmentSystem.Models;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
 
 namespace SchoolManagmentSystem.Services
 {
@@ -13,7 +15,20 @@ namespace SchoolManagmentSystem.Services
         {
             _env = env;
         }
+        // Method to protect the PDF with a password
+        public byte[] ProtectPdf(byte[] pdfBytes, string password)
+        {
+            using var inputStream = new MemoryStream(pdfBytes);
+            var document = PdfReader.Open(inputStream, PdfDocumentOpenMode.Modify);
 
+            document.SecuritySettings.UserPassword = password;
+            document.SecuritySettings.PermitPrint = true;
+            document.SecuritySettings.PermitFullQualityPrint = false;
+
+            using var outputStream = new MemoryStream();
+            document.Save(outputStream);
+            return outputStream.ToArray();
+        }
         public byte[] BuildPdf(PayslipDTO data)
         {
             var logoPath = Path.Combine(_env.WebRootPath, "images", "hla-logo.jfif");

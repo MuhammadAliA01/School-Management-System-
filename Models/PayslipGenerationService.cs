@@ -6,7 +6,9 @@ namespace SchoolManagmentSystem.Services
     {
         private readonly ApplicationDBContext _context;
         private readonly PayslipPdfService _pdfService;
-
+        // test pass for dev. NB change to false in production
+        private const bool UseTestPassword = true;
+        private const string TestPassword = "1234";
         public PayslipGenerationService(ApplicationDBContext context, PayslipPdfService pdfService)
         {
             _context = context;
@@ -16,7 +18,9 @@ namespace SchoolManagmentSystem.Services
         // regenerationReason if existing payslip is found
         public Payslip StagePayslip(PayslipDTO data, string? regenerationReason = null)
         {
-            var pdfBytes = _pdfService.BuildPdf(data);
+            var rawPdfBytes = _pdfService.BuildPdf(data);
+            var password = UseTestPassword ? TestPassword : data.IDNumber;
+            var pdfBytes = _pdfService.ProtectPdf(rawPdfBytes, password); //
 
             var existing = _context.Payslips.FirstOrDefault(p =>
                 p.StaffId == data.StaffId &&

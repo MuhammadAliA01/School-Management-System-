@@ -21,5 +21,8 @@ namespace SchoolManagmentSystem.Models
         public decimal MedicalAid { get; set; }
 
         public decimal NetPay { get; set; }
+
+        //playing around with smt here
+        public string IDNumber { get; set; }
     }
 }

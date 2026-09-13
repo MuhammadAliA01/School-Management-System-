@@ -117,5 +117,43 @@ namespace SchoolManagmentSystem.Controllers
                 NetPay = basePay - 2000 - 150 - 750 - 500 // for now
             };
         }
+
+        [HttpGet]
+        public IActionResult History(int staffId)
+        {
+            var history = _context.Payslips
+                .Where(p => p.StaffId == staffId)
+                .OrderByDescending(p => p.PayPeriodStart)
+                .Select(p => new
+                {
+                    p.PayslipId,
+                    p.PayPeriodStart,
+                    p.PayPeriodEnd,
+                    p.Status,
+                    p.CurrentVersion
+                })
+                .ToList();
+
+            return Json(history);
+        }
+        [HttpPost]
+        public IActionResult Regenerate(int payslipId, string regenerationReason)
+        {
+            if (string.IsNullOrWhiteSpace(regenerationReason))
+                return BadRequest("A reason is required to regenerate a payslip.");
+
+            var existing = _context.Payslips.Find(payslipId);
+            if (existing == null)
+                return NotFound("Payslip not found.");
+
+            var staff = _context.Staffs.Find(existing.StaffId);
+            if (staff == null)
+                return NotFound("Staff member not found.");
+
+            var data = BuildPayslipDataFromEarnings(staff, existing.PayPeriodStart, existing.PayPeriodEnd);
+
+            var payslip = _payslipGenerationService.StagePayslip(data, regenerationReason);
+            return Json(new { payslip.PayslipId, payslip.Status, payslip.CurrentVersion });
+        }
     }
 }

@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Select Staff for Payslips";
+}
+
+<h3>Select Staff for Payslips</h3>
+
+<form method="post" action="/PayslipDistribution/Index">
+    <label>Pay Period Start: <input type="date" name="periodStart" /></label>
+    <label>Pay Period End: <input type="date" name="periodEnd" /></label>
+
+    <div>
+        <label><input type="checkbox" id="selectAll" checked /> Select All Staff</label>
+    </div>
+
+    @foreach (var staff in Model)
+    {
+        <div>
+            <input type="checkbox" name="staffIds" value="@staff.id" checked />
+            @staff.FirstName @staff.Surname
+        </div>
+    }
+
+    <button type="submit">Next</button>
+</form>
+
+<script>
+    document.getElementById('selectAll').addEventListener('change', function() {
+        document.querySelectorAll('input[name=staffIds]').forEach(cb => cb.checked = this.checked);
+    });
+</script>

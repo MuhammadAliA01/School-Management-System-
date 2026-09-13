@@ -80,5 +80,44 @@ namespace SchoolManagmentSystem.Services
 
             _context.SaveChanges();
         }
+        public PayslipDTO BuildPayslipDataFromEarnings(Staff staff, DateTime periodStart, DateTime periodEnd)
+        {
+            var earnings = _context.EmployeeEarnings
+                .Where(e => e.EmployeeID == staff.id &&
+                            e.payCycle.Month == periodStart.Month &&
+                            e.payCycle.Year == periodStart.Year)
+                .FirstOrDefault();
+
+            var basePay = earnings != null ? (decimal)earnings.salaryAmt : 15000m;
+
+            var attendanceRecords = _context.StaffAttendances
+                .Where(a => a.StaffId == staff.id &&
+                            a.ClockInTime.HasValue &&
+                            a.ClockOutTime.HasValue &&
+                            a.ClockInTime.Value.Date >= periodStart.Date &&
+                            a.ClockInTime.Value.Date <= periodEnd.Date &&
+                            a.TotalHoursWorked.HasValue).ToList();
+
+            decimal hoursWorked = attendanceRecords.Sum(a => a.TotalHoursWorked ?? 0);
+
+            return new PayslipDTO
+            {
+                StaffId = staff.id,
+                StaffName = $"{staff.FirstName} {staff.Surname}",
+                Role = staff.Role,
+                IDNumber = staff.IDNumber,
+                PayPeriodStart = periodStart,
+                PayPeriodEnd = periodEnd,
+                BasePay = basePay,
+                HoursWorked = hoursWorked,
+                OvertimePay = 0,
+                GrossPay = basePay,
+                PAYE = 2000,
+                UIF = 150,
+                Pension = 750,
+                MedicalAid = 500,
+                NetPay = basePay - 2000 - 150 - 750 - 500
+            };
+        }
     }
 }

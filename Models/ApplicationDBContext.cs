@@ -52,5 +52,10 @@ namespace SchoolManagmentSystem.Models
 
         public DbSet<EmployeeEarnings> EmployeeEarnings { get; set; }
 
+        public DbSet<BankAccount> BankAccounts { get; set; }
+        public DbSet<Transactions> Transactions { get; set; }
+
+
+
     }
 }

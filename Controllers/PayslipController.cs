@@ -66,7 +66,8 @@ namespace SchoolManagmentSystem.Controllers
             if (payslip == null || payslip.PdfContent == null)
                 return NotFound();
 
-            return File(payslip.PdfContent, "application/pdf", $"payslip_{payslip.StaffId}_{payslip.PayPeriodStart:yyyyMM}.pdf");
+            return File(payslip.PdfContent, "application/pdf", $"payslip_{payslip.StaffId}_{payslip.PayPeriodStart:yyyyMM}_v{payslip.CurrentVersion}.pdf");
+            // logic for incrementing version found in gen service cs. ref to stage payslip method for more details
         }
 
         // once Distribution confirms this will be called to finalize the payslip

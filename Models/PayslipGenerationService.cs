@@ -30,8 +30,9 @@ namespace SchoolManagmentSystem.Services
             if (existing != null)
             {
                 if (string.IsNullOrWhiteSpace(regenerationReason))
+                {
                     throw new InvalidOperationException("A reason is required to regenerate an existing payslip.");
-
+                }
                 // archive the old version
                 var archived = new PayslipVersionControl
                 {
@@ -79,6 +80,51 @@ namespace SchoolManagmentSystem.Services
             payslip.GeneratedAt = DateTime.Now;
 
             _context.SaveChanges();
+        }
+        public PayslipDTO BuildPayslipDataFromEarnings(Staff staff, DateTime periodStart, DateTime periodEnd)
+        {
+            var earnings = _context.EmployeeEarnings
+                .Where(e => e.EmployeeID == staff.id &&
+                            e.payCycle.Month == periodStart.Month &&
+                            e.payCycle.Year == periodStart.Year)
+                .FirstOrDefault();
+
+            if (earnings == null)
+            {
+                throw new InvalidOperationException($"No calculated earnings found for staff {staff.id} in this period. Run salary calculation first.");
+            }
+            var basePay = (decimal)earnings.salaryAmt;
+
+            var attendanceRecords = _context.StaffAttendances
+                .Where(a => a.StaffId == staff.id &&
+                            a.ClockInTime.HasValue &&
+                            a.ClockOutTime.HasValue &&
+                            a.ClockInTime.Value.Date >= periodStart.Date && a.ClockInTime.Value.Date <= periodEnd.Date && a.TotalHoursWorked.HasValue).ToList();
+
+            decimal hoursWorked = attendanceRecords.Sum(a => a.TotalHoursWorked ?? 0);
+
+            decimal paye = (decimal)earnings.payeDeduction;
+            decimal uif = (decimal)earnings.uifDeduction;
+            decimal pension = (decimal)earnings.pensionDeduction;
+            decimal netPay = (decimal)earnings.netSalary;
+
+            return new PayslipDTO
+            {
+                StaffId = staff.id,
+                StaffName = $"{staff.FirstName} {staff.Surname}",
+                Role = staff.Role,
+                IDNumber = staff.IDNumber,
+                PayPeriodStart = periodStart,
+                PayPeriodEnd = periodEnd,
+                BasePay = basePay,
+                HoursWorked = hoursWorked,
+                OvertimePay = 0,
+                GrossPay = basePay,
+                PAYE = paye,
+                UIF = uif,
+                Pension = pension,
+                NetPay = netPay
+            };
         }
     }
 }

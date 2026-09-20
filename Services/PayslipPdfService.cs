@@ -112,7 +112,6 @@ namespace SchoolManagmentSystem.Services
                             AddRow(table, "PAYE", data.PAYE);
                             AddRow(table, "UIF", data.UIF);
                             AddRow(table, "Pension fund", data.Pension);
-                            AddRow(table, "Medical aid", data.MedicalAid);
                         }));
 
                         // Net pay 

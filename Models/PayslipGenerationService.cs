@@ -30,8 +30,9 @@ namespace SchoolManagmentSystem.Services
             if (existing != null)
             {
                 if (string.IsNullOrWhiteSpace(regenerationReason))
+                {
                     throw new InvalidOperationException("A reason is required to regenerate an existing payslip.");
-
+                }
                 // archive the old version
                 var archived = new PayslipVersionControl
                 {
@@ -88,17 +89,24 @@ namespace SchoolManagmentSystem.Services
                             e.payCycle.Year == periodStart.Year)
                 .FirstOrDefault();
 
-            var basePay = earnings != null ? (decimal)earnings.salaryAmt : 15000m;
+            if (earnings == null)
+            {
+                throw new InvalidOperationException($"No calculated earnings found for staff {staff.id} in this period. Run salary calculation first.");
+            }
+            var basePay = (decimal)earnings.salaryAmt;
 
             var attendanceRecords = _context.StaffAttendances
                 .Where(a => a.StaffId == staff.id &&
                             a.ClockInTime.HasValue &&
                             a.ClockOutTime.HasValue &&
-                            a.ClockInTime.Value.Date >= periodStart.Date &&
-                            a.ClockInTime.Value.Date <= periodEnd.Date &&
-                            a.TotalHoursWorked.HasValue).ToList();
+                            a.ClockInTime.Value.Date >= periodStart.Date && a.ClockInTime.Value.Date <= periodEnd.Date && a.TotalHoursWorked.HasValue).ToList();
 
             decimal hoursWorked = attendanceRecords.Sum(a => a.TotalHoursWorked ?? 0);
+
+            decimal paye = (decimal)earnings.payeDeduction;
+            decimal uif = (decimal)earnings.uifDeduction;
+            decimal pension = (decimal)earnings.pensionDeduction;
+            decimal netPay = (decimal)earnings.netSalary;
 
             return new PayslipDTO
             {
@@ -112,11 +120,10 @@ namespace SchoolManagmentSystem.Services
                 HoursWorked = hoursWorked,
                 OvertimePay = 0,
                 GrossPay = basePay,
-                PAYE = 2000,
-                UIF = 150,
-                Pension = 750,
-                MedicalAid = 500,
-                NetPay = basePay - 2000 - 150 - 750 - 500
+                PAYE = paye,
+                UIF = uif,
+                Pension = pension,
+                NetPay = netPay
             };
         }
     }

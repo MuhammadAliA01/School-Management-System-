@@ -257,13 +257,31 @@ namespace SchoolManagmentSystem.Migrations
                     b.Property<int>("EmployeeID")
                         .HasColumnType("int");
 
+                    b.Property<double>("netSalary")
+                        .HasColumnType("float");
+
                     b.Property<DateTime>("payCycle")
                         .HasColumnType("datetime2");
+
+                    b.Property<double>("payeDeduction")
+                        .HasColumnType("float");
+
+                    b.Property<double>("pensionDeduction")
+                        .HasColumnType("float");
 
                     b.Property<double>("salaryAmt")
                         .HasColumnType("float");
 
                     b.Property<double>("taxRate")
+                        .HasColumnType("float");
+
+                    b.Property<double>("taxableIncome")
+                        .HasColumnType("float");
+
+                    b.Property<double>("totalDeductions")
+                        .HasColumnType("float");
+
+                    b.Property<double>("uifDeduction")
                         .HasColumnType("float");
 
                     b.HasKey("id");
@@ -1088,6 +1106,148 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasIndex("ParentId");
 
                     b.ToTable("StudentRegistrations");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.TaxBracket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("BaseTaxAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MaxIncome")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinIncome")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TaxRate")
+                        .HasColumnType("float");
+
+                    b.Property<string>("TaxYear")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TaxBrackets");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BaseTaxAmount = 0.0,
+                            MaxIncome = 237100.0,
+                            MinIncome = 1.0,
+                            TaxRate = 0.17999999999999999,
+                            TaxYear = "2026/2027"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BaseTaxAmount = 42678.0,
+                            MaxIncome = 370500.0,
+                            MinIncome = 237101.0,
+                            TaxRate = 0.26000000000000001,
+                            TaxYear = "2026/2027"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BaseTaxAmount = 77362.0,
+                            MaxIncome = 512800.0,
+                            MinIncome = 370501.0,
+                            TaxRate = 0.31,
+                            TaxYear = "2026/2027"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BaseTaxAmount = 121475.0,
+                            MaxIncome = 673000.0,
+                            MinIncome = 512801.0,
+                            TaxRate = 0.35999999999999999,
+                            TaxYear = "2026/2027"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BaseTaxAmount = 179147.0,
+                            MaxIncome = 857900.0,
+                            MinIncome = 673001.0,
+                            TaxRate = 0.39000000000000001,
+                            TaxYear = "2026/2027"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BaseTaxAmount = 251258.0,
+                            MaxIncome = 1817000.0,
+                            MinIncome = 857901.0,
+                            TaxRate = 0.40999999999999998,
+                            TaxYear = "2026/2027"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BaseTaxAmount = 644489.0,
+                            MaxIncome = 99999999.0,
+                            MinIncome = 1817001.0,
+                            TaxRate = 0.45000000000000001,
+                            TaxYear = "2026/2027"
+                        });
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.TaxConfiguration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("PensionContributionRate")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PrimaryRebate")
+                        .HasColumnType("float");
+
+                    b.Property<double>("SecondaryRebate")
+                        .HasColumnType("float");
+
+                    b.Property<string>("TaxYear")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("TertiaryRebate")
+                        .HasColumnType("float");
+
+                    b.Property<double>("UifMonthlyCap")
+                        .HasColumnType("float");
+
+                    b.Property<double>("UifRate")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TaxConfigurations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            PensionContributionRate = 0.074999999999999997,
+                            PrimaryRebate = 17235.0,
+                            SecondaryRebate = 9444.0,
+                            TaxYear = "2026/2027",
+                            TertiaryRebate = 3145.0,
+                            UifMonthlyCap = 177.12,
+                            UifRate = 0.01
+                        });
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Teacher", b =>

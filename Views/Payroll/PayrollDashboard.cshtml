@@ -6,47 +6,210 @@
 
 <h1>PayrollDashboard</h1>
 
-
-<table class="table">
+<!-- The original table structure, updated to be clickable -->
+<table class="table table-hover">
     <thead>
         <tr>
-            <th>
-                Staff Name
-            </th>
-            <th>
-                Nett Salary
-            </th>
-            <th>
-                Tax Rate
-            </th>
-            <th>
-                Next Pay Date
-            </th>
-            <th>
-                Role
-            </th>
+            <th>Staff Name</th>
+            <th>Nett Salary</th>
+            <th>Tax Rate</th>
+            <th>Next Pay Date</th>
+            <th>Role</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.staff.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.salaryAmt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.taxRate)
-            </td>
-            <td>
-                    @item.payCycle.Date.ToString("MMMM")
-
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr style="cursor: pointer;" onclick="loadDeductions(@item.EmployeeID)">
                 <td>
-                    @Html.DisplayFor(modelItem => item.staff.Role)
+                    @item.staff.FirstName @item.staff.Surname
                 </td>
-        </tr>
-}
+                <td class="text-success fw-bold">
+                    R @item.netSalary.ToString("N2")
+                </td>
+                <td>
+                    @item.taxRate.ToString("0.0") %
+                </td>
+                <td>
+                    @item.payCycle.Date.ToString("MMMM yyyy")
+                </td>
+                <td>
+                    @item.staff.Role
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<!-- SARS Payroll & Tax Breakdown Modal -->
+<div class="modal fade" id="deductionsModal" tabindex="-1" aria-labelledby="deductionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title fs-5" id="deductionsModalLabel">SARS Statutory Deductions & Tax Breakdown</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <!-- Header Info -->
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3 bg-white p-3 rounded border">
+                    <div>
+                        <h4 id="modalStaffName" class="fw-bold mb-0 text-dark"></h4>
+                        <span id="modalStaffRole" class="text-muted"></span>
+                    </div>
+                    <div class="text-end">
+                        <span id="modalAgeBadge" class="badge bg-primary mb-1"></span>
+                        <div class="fw-bold fs-5">Gross: <span id="modalGross" class="text-dark"></span></div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Left Column: Employee Deductions -->
+                    <div class="col-md-6">
+                        <div class="p-3 bg-white border rounded h-100">
+                            <h6 class="fw-bold text-danger mb-3 border-bottom pb-2">Employee Deductions (From Salary)</h6>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Pension Fund (7.5% Pre-tax):</span>
+                                <span id="modalPension" class="text-danger fw-semibold"></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>UIF (1% Employee Capped):</span>
+                                <span id="modalUif" class="text-danger fw-semibold"></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>PAYE Income Tax:</span>
+                                <span id="modalPaye" class="text-danger fw-semibold"></span>
+                            </div>
+
+                            <hr />
+
+                            <div class="d-flex justify-content-between fw-bold mb-3">
+                                <span>Total Deductions:</span>
+                                <span id="modalTotalDeductions" class="text-danger fs-6"></span>
+                            </div>
+
+                            <div class="p-3 bg-success bg-opacity-10 border border-success rounded text-center mb-3">
+                                <span class="text-muted small d-block">Take-Home Pay</span>
+                                <strong id="modalNet" class="text-success fs-4"></strong>
+                            </div>
+
+                            <!-- Employer Contributions Section -->
+                            <h6 class="fw-bold text-secondary mb-2 border-bottom pb-1" style="font-size: 0.85rem;">Company Contributions</h6>
+                            <p class="text-muted" style="font-size: 0.72rem; margin-bottom: 6px;">Paid by school, not deducted from employee pay:</p>
+                            <div class="d-flex justify-content-between small text-muted mb-1">
+                                <span>Skills Development Levy (SDL 1%):</span>
+                                <span id="modalSdl" class="fw-semibold"></span>
+                            </div>
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span>UIF Employer Contribution (1%):</span>
+                                <span id="modalEmpUif" class="fw-semibold"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: SARS Tax Table & Calculation -->
+                    <div class="col-md-6">
+                        <div class="p-3 bg-white border rounded h-100">
+                            <h6 class="fw-bold text-primary mb-3 border-bottom pb-2">SARS PAYE Calculation Detail</h6>
+
+                            <div class="d-flex justify-content-between small mb-2">
+                                <span>Annual Taxable Income:</span>
+                                <strong id="modalTaxable" class="text-dark"></strong>
+                            </div>
+
+                            <!-- Visual Applied Tax Bracket -->
+                            <div class="mb-3 p-2 bg-light border rounded">
+                                <div class="text-muted small fw-bold mb-1">Applied SARS Tax Bracket:</div>
+                                <table class="table table-sm table-bordered mb-0 bg-white small text-center">
+                                    <thead class="table-secondary">
+                                        <tr>
+                                            <th>Taxable Bracket</th>
+                                            <th>Marginal Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="table-warning fw-bold border border-warning">
+                                            <td id="modalBracketRange"></td>
+                                            <td id="modalTaxRate" class="text-danger"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Rebates & Credits Breakdown -->
+                            <div class="small">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Gross Tax (before rebates):</span>
+                                    <span id="modalGrossTax"></span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1 text-success">
+                                    <span>Less: <span id="modalRebateLabel"></span>:</span>
+                                    <span id="modalRebateVal"></span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1 text-success">
+                                    <span>Less: Medical Tax Credits (MTC):</span>
+                                    <span id="modalMedicalCredit"></span>
+                                </div>
+                                <hr class="my-2" />
+                                <div class="d-flex justify-content-between fw-bold text-danger">
+                                    <span>Final Monthly PAYE:</span>
+                                    <span id="modalFinalPaye"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-white">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AJAX Call to Load and Open Modal -->
+<script>
+    function loadDeductions(staffId) {
+        fetch('/Payroll/GetDeductionsBreakdown?staffId=' + staffId)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Unable to fetch deduction details");
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('modalStaffName').innerText = data.fullName;
+                document.getElementById('modalStaffRole').innerText = "Role: " + data.role;
+                document.getElementById('modalAgeBadge').innerText = "Age: " + data.age;
+                document.getElementById('modalGross').innerText = "R " + data.gross.toFixed(2);
+
+                document.getElementById('modalPension').innerText = "- R " + data.pension.toFixed(2);
+                document.getElementById('modalUif').innerText = "- R " + data.uif.toFixed(2);
+                document.getElementById('modalPaye').innerText = "- R " + data.paye.toFixed(2);
+                document.getElementById('modalTotalDeductions').innerText = "- R " + data.totalDeductions.toFixed(2);
+                document.getElementById('modalNet').innerText = "R " + data.net.toFixed(2);
+
+                document.getElementById('modalSdl').innerText = "R " + data.empSdl.toFixed(2);
+                document.getElementById('modalEmpUif').innerText = "R " + data.empUif.toFixed(2);
+
+                document.getElementById('modalTaxable').innerText = "R " + data.taxable.toFixed(2);
+
+                let maxLabel = data.bracketMax >= 90000000 ? "and above" : " - R " + data.bracketMax.toLocaleString('en-ZA');
+                document.getElementById('modalBracketRange').innerText = "R " + data.bracketMin.toLocaleString('en-ZA') + " " + maxLabel;
+                document.getElementById('modalTaxRate').innerText = data.taxRate + "%";
+
+                document.getElementById('modalGrossTax').innerText = "R " + data.taxBeforeRebate.toFixed(2);
+                document.getElementById('modalRebateLabel').innerText = data.rebateType;
+                document.getElementById('modalRebateVal').innerText = "- R " + data.monthlyRebate.toFixed(2);
+                document.getElementById('modalMedicalCredit').innerText = "- R " + data.medicalCredit.toFixed(2);
+                document.getElementById('modalFinalPaye').innerText = "R " + data.paye.toFixed(2);
+
+                var modal = new bootstrap.Modal(document.getElementById('deductionsModal'));
+                modal.show();
+            })
+            .catch(error => {
+                console.error("Deduction fetch error:", error);
+                alert("Failed to load statutory deduction breakdown.");
+            });
+    }
+</script>

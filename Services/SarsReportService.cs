@@ -1,7 +1,6 @@
 ﻿using SchoolManagmentSystem.Models;
 namespace SchoolManagmentSystem.Services
 {
-    // SarsReportService.cs
     public class SarsReportService
     {
         private readonly ISarsTaxDataProvider _taxDataProvider;

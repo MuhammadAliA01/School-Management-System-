@@ -2,7 +2,7 @@
 {
     public class SarsMonthlyReportDTO
     {
-        public string PayPeriod { get; set; }
+        public string? PayPeriod { get; set; }
         public int EmployeeCount { get; set; }
         public decimal TotalPAYE { get; set; }
         public decimal TotalEmployeeUIF { get; set; }

@@ -3,7 +3,7 @@ namespace SchoolManagmentSystem.Models
 {
     public class MockSarsTaxDataProvider : ISarsTaxDataProvider
     {
-        public SarsTaxContributionDTO GetContribution(int staffId, string payPeriod)
+        public SarsTaxContributionDTO GetContribution(int staffId, DateTime payPeriod)
         {
             // Tempo values for now
             return new SarsTaxContributionDTO

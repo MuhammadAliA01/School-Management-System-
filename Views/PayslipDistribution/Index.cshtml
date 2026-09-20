@@ -2,20 +2,133 @@
     ViewData["Title"] = "Payslip Distribution";
 }
 
-<div class="container mt-4">
+<style>
+    .payslip-page {
+        max-width: 900px;
+        margin: 50px auto;
+        background: transparent;
+    }
 
-    <h2>Payslip Distribution</h2>
+    .page-header {
+        margin-bottom: 35px;
+    }
 
-    <p class="text-muted">
-        Distribute generated payslips to employees or schedule them to be sent later.
-    </p>
+        .page-header h2 {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #c2410c;
+        }
 
-    <div class="card mb-4">
-        <div class="card-body">
+        .page-header p {
+            color: #64748b;
+            margin: 0;
+        }
 
-            <h5 class="card-title">Distribute Payslips</h5>
+    .distribution-card {
+        border: 1px solid #fed7aa;
+        border-radius: 14px;
+        background: #ffffff;
+        box-shadow: 0 4px 18px rgba(234, 88, 12, 0.04);
+        margin-bottom: 24px;
+        overflow: hidden;
+    }
 
-            <p class="card-text">
+    body {
+        min-height: 100vh;
+        margin: 0;
+        background-color: #fdfcfb;
+        background-image: repeating-radial-gradient( circle at 100% 100%, transparent 0, transparent 40px, rgba(234, 88, 12, 0.05) 40px, rgba(234, 88, 12, 0.05) 41.5px );
+        background-attachment: fixed;
+    }
+
+    .card-header-custom {
+        padding: 24px 24px 8px;
+    }
+
+        .card-header-custom h5 {
+            margin: 0;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+    .card-content {
+        padding: 8px 24px 24px;
+    }
+
+        .card-content p {
+            color: #64748b;
+            margin-bottom: 22px;
+        }
+
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 7px;
+        color: #334155;
+    }
+
+    .form-control {
+        border-radius: 9px;
+        padding: 10px 12px;
+        border: 1px solid #e2e8f0;
+    }
+
+        .form-control:focus {
+            border-color: #fb923c;
+            box-shadow: 0 0 0 0.18rem rgba(251, 146, 60, 0.18);
+        }
+
+    .btn-distribute {
+        border-radius: 7px;
+        padding: 6px 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        background-color: orangered;
+        color: #ffffff;
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 0 1px orangered, 0 4px 10px rgba(255, 69, 0, 0.25);
+        transition: all 0.15s ease-in-out;
+    }
+
+        .btn-distribute:hover {
+            background-color: orangered;
+            color: #ffffff;
+            box-shadow: 0 0 0 1px orangered, 0 6px 14px rgba(255, 69, 0, 0.35);
+            transform: translateY(-1px);
+        }
+
+    .schedule-row {
+        margin-bottom: 20px;
+    }
+
+    .info-strip {
+        background: #fffaf5;
+        border: 1px solid #ffedd5;
+        border-radius: 10px;
+        padding: 13px 16px;
+        margin-top: 15px;
+        font-size: 0.92rem;
+        color: #9a3412;
+    }
+</style>
+
+<div class="container payslip-page">
+
+    <div class="page-header">
+        <h2>Payslip Distribution</h2>
+        <p>
+            Distribute generated payslips to employees or schedule them to be sent later.
+        </p>
+    </div>
+
+    
+    <div class="distribution-card">
+
+        <div class="card-header-custom">
+            <h5>Distribute Payslips</h5>
+        </div>
+
+        <div class="card-content">
+            <p>
                 Send generated payslips to all employees immediately.
             </p>
 
@@ -23,21 +136,25 @@
                   asp-action="DistributePayslips"
                   method="post">
 
-                <button type="submit" class="btn btn-secondary">
+                <button type="submit"
+                        class="btn btn-distribute">
                     Distribute Immediately
                 </button>
 
             </form>
-
         </div>
+
     </div>
 
-    <div class="card">
-        <div class="card-body">
+    
+    <div class="distribution-card">
 
-            <h5 class="card-title">Schedule Distribution</h5>
+        <div class="card-header-custom">
+            <h5>Schedule Distribution</h5>
+        </div>
 
-            <p class="card-text">
+        <div class="card-content">
+            <p>
                 Choose a date and time to automatically distribute payslips.
             </p>
 
@@ -45,13 +162,13 @@
                   asp-action="Schedule"
                   method="post">
 
-                <div class="row">
+                <div class="row schedule-row">
 
                     <div class="col-md-6 mb-3">
-                        <label for="scheduledDate" class="form-label">
+                        <label for="scheduledDate"
+                               class="form-label">
                             Distribution Date
                         </label>
-
                         <input type="date"
                                id="scheduledDate"
                                name="scheduledDate"
@@ -60,10 +177,10 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="scheduledTime" class="form-label">
+                        <label for="scheduledTime"
+                               class="form-label">
                             Distribution Time
                         </label>
-
                         <input type="time"
                                id="scheduledTime"
                                name="scheduledTime"
@@ -73,16 +190,23 @@
 
                 </div>
 
-                <button type="submit" class="btn btn-secondary">
+                <button type="submit"
+                        class="btn btn-distribute">
                     Schedule Distribution
                 </button>
 
             </form>
 
+            <div class="info-strip">
+                Payslips will be distributed automatically at the selected date and time.
+            </div>
+
         </div>
+
     </div>
 
 </div>
+
 
 
 

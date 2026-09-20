@@ -593,7 +593,6 @@ namespace SchoolManagmentSystem.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("FailureReason")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("GeneratedAt")
@@ -618,6 +617,40 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasKey("PayslipId");
 
                     b.ToTable("Payslips");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.PayslipDistribution", b =>
+                {
+                    b.Property<int>("PayslipDistributionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PayslipDistributionId"));
+
+                    b.Property<string>("AccessToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DistributedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FailureReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PayslipId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ScheduledFor")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("PayslipDistributionId");
+
+                    b.ToTable("PayslipDistributions");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.PayslipVersionControl", b =>

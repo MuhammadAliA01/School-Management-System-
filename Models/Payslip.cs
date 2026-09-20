@@ -8,14 +8,15 @@
         public DateTime PayPeriodEnd { get; set; }
         public byte[] PdfContent { get; set; }
         public PayslipStatus Status { get; set; }
-        public string FailureReason { get; set; }
+        public string? FailureReason { get; set; }
         public int CurrentVersion { get; set; } = 1;
-        public DateTime GeneratedAt { get; set; }
+        public DateTime GeneratedAt { get; set; }  // Timestamp for when the payslip was finalized which occurs after distribution confirms
     }
 
     public enum PayslipStatus
     {
         Pending,
+        PendingConfirmation,   //changes based on the new processing flow
         Generated,
         Failed
     }

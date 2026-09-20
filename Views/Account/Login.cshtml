@@ -155,7 +155,8 @@
 
 
     <div class="regItems">
-        <form asp-action="Login">
+            <form asp-action="Login" method="post">
+                <input type="hidden" name="returnUrl" value="@Context.Request.Query["returnUrl"]" />
                 <h1 class="mainHeading" style="">Login</h1>
                 <p class="smallParagraph">Don't have an account? <a class="link" asp-action="CreateAccount">Click here</a></p>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>

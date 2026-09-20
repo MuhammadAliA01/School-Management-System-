@@ -9,6 +9,7 @@ using SchoolManagmentSystem.Services;
 using SchoolManagmentSystem.ServicesAi.EmploymentAI;
 using SchoolManagmentSystem.ServicesAi.IncidentAI;
 using Stripe;
+using QuestPDF.Infrastructure;
 using System.Security.Cryptography;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
@@ -23,15 +24,22 @@ if (string.IsNullOrWhiteSpace(firebaseCredentials))
 
 
 
-FirebaseApp.Create(new AppOptions
+/*FirebaseApp.Create(new AppOptions
 {
     Credential = GoogleCredential.FromFile("hla-notifs-firebase-adminsdk-fbsvc-82fbd7094d.json")
 });
-
+*/
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 builder.Services.AddScoped<FirebaseNotificationService>();
+
+
+builder.Services.AddScoped<IEmailService, DistributePayslipEmailService>();
+
+builder.Services.AddHostedService<PayslipDistributionBackgroundService>();
 
 
 // Add services to the container.
@@ -50,6 +58,8 @@ builder.Services.AddScoped<EmploymentService>();
 builder.Services.AddScoped<CVService>();
 builder.Services.AddScoped<AttendanceReportService>();
 builder.Services.AddHostedService<WeeklyReportWorker>();
+builder.Services.AddScoped<PayslipPdfService>();
+builder.Services.AddScoped<PayslipGenerationService>();
 
 StripeConfiguration.ApiKey =
     builder.Configuration["Stripe:SecretKey"];
@@ -95,6 +105,9 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 
 app.UseCors("Flutter");
 
+
+//pdfQuest
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 
 //set pdf font resolver

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SchoolManagementSystem.Models;
 using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Models
@@ -9,6 +10,7 @@ namespace SchoolManagmentSystem.Models
         {
         }
 
+        public DbSet<LeaveRequest> LeaveRequests { get; set; } 
 
         public DbSet<Parent> Parents { get; set; }
         public DbSet<Teacher> Teachers { get; set; }

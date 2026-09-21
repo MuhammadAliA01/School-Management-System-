@@ -28,7 +28,14 @@ namespace SchoolManagmentSystem.Services
 
             report.TotalEmployerUIF = report.TotalEmployeeUIF; // employer matches employee UIF, same cap
             report.SdlThresholdMet = (report.TotalGrossRemuneration * 12) > SdlAnnualThreshold;
-            report.TotalSDL = report.SdlThresholdMet ? report.TotalGrossRemuneration * 0.01m : 0m;
+            if (report.SdlThresholdMet)
+            {
+                report.TotalSDL = report.TotalGrossRemuneration * 0.01m;
+            }
+            else
+            {
+                report.TotalSDL = 0m;
+            }
             report.GrandTotalPayableToSars = report.TotalPAYE + report.TotalEmployeeUIF + report.TotalEmployerUIF + report.TotalSDL;
 
             return report;

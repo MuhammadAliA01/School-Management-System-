@@ -10,7 +10,8 @@ namespace SchoolManagmentSystem.Models
         {
         }
 
-        public DbSet<LeaveRequest> LeaveRequests { get; set; } 
+        public DbSet<LeaveRequest> LeaveRequests { get; set; }
+        public DbSet<LeaveBalance> LeaveBalances { get; set; }
 
         public DbSet<Parent> Parents { get; set; }
         public DbSet<Teacher> Teachers { get; set; }

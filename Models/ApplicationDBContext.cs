@@ -58,6 +58,8 @@ namespace SchoolManagmentSystem.Models
         public DbSet<TaxBracket> TaxBrackets { get; set; }
         public DbSet<TaxConfiguration> TaxConfigurations { get; set; }
 
+        public DbSet<OvertimeRequest> OvertimeRequests { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

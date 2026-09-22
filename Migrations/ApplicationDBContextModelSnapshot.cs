@@ -292,6 +292,9 @@ namespace SchoolManagmentSystem.Migrations
                     b.Property<double>("netSalary")
                         .HasColumnType("float");
 
+                    b.Property<double>("overtimeEarned")
+                        .HasColumnType("float");
+
                     b.Property<DateTime>("payCycle")
                         .HasColumnType("datetime2");
 

@@ -84,15 +84,15 @@ namespace SchoolManagmentSystem.Controllers
                     }
                 }
 
-                
+
                 double overtimePay = totalRealOvertimeHours * overtimeRate;
 
                 
-                salary += overtimePay;
+                double grossSalary = salary + overtimePay;
 
                 
-                double pension = salary * 0.075;
-                double annualTaxableIncome = (salary - pension) * 12.0;
+                double pension = grossSalary * 0.075;
+                double annualTaxableIncome = (grossSalary - pension) * 12.0;
 
 
                 double appliedRate = 0.18;
@@ -125,9 +125,9 @@ namespace SchoolManagmentSystem.Controllers
 
                 double monthlyPaye = annualPaye / 12.0;
 
-                double monthlyUif = Math.Min(salary * 0.01, 177.12);
+                double monthlyUif = Math.Min(grossSalary * 0.01, 177.12);
                 double totalDeductions = pension + monthlyPaye + monthlyUif;
-                double finalNet = salary - totalDeductions;
+                double finalNet = grossSalary - totalDeductions;
                 
 
                 var exists = _context.EmployeeEarnings.Any(x => x.EmployeeID == id.id && x.payCycle.Month == DateTime.Now.Month && x.payCycle.Year == DateTime.Now.Year);
@@ -137,7 +137,8 @@ namespace SchoolManagmentSystem.Controllers
                     var newEntry = new EmployeeEarnings
                     {
                         EmployeeID = empID,
-                        salaryAmt = salary,
+                        salaryAmt = salary,                
+                        overtimeEarned = overtimePay,      
                         payCycle = DateTime.Now,
 
                         //  new fields
@@ -200,15 +201,17 @@ namespace SchoolManagmentSystem.Controllers
             double taxBeforeRebate = earning.payeDeduction + monthlyRebateDiscount + medicalTaxCredit;
 
             // Employer Contributions
-            double employerUif = earning.uifDeduction; 
-            double employerSdl = earning.salaryAmt * 0.01; 
+            double employerUif = earning.uifDeduction;
+            double employerSdl = (earning.salaryAmt + earning.overtimeEarned) * 0.01;
 
             return Json(new
             {
                 fullName = $"{earning.staff.FirstName} {earning.staff.Surname}",
                 role = earning.staff.Role,
                 age = age,
-                gross = earning.salaryAmt,
+                baseSalary = earning.salaryAmt,
+                overtime = earning.overtimeEarned,
+                gross = earning.salaryAmt + earning.overtimeEarned,
                 pension = earning.pensionDeduction,
                 taxable = earning.taxableIncome,
 

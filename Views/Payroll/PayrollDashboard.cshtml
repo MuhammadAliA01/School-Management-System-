@@ -58,7 +58,11 @@
                     </div>
                     <div class="text-end">
                         <span id="modalAgeBadge" class="badge bg-primary mb-1"></span>
+                        <!-- ADDED BASE AND OVERTIME HERE -->
+                        <div class="text-muted small fw-bold">Base: <span id="modalBase"></span></div>
+                        <div class="text-success small fw-bold border-bottom pb-1 mb-1">Overtime: <span id="modalOvertime"></span></div>
                         <div class="fw-bold fs-5">Gross: <span id="modalGross" class="text-dark"></span></div>
+                    </div>
                         <!-- NEW: Overtime Display -->
                         <div class="text-success small fw-bold mt-1" id="overtimeContainer" style="display: none;">
                             Includes Overtime: <span id="modalOvertime"></span>
@@ -184,7 +188,9 @@
                 document.getElementById('modalStaffName').innerText = data.fullName;
                 document.getElementById('modalStaffRole').innerText = "Role: " + data.role;
                     document.getElementById('modalAgeBadge').innerText = "Age: " + data.age;
-                    document.getElementById('modalGross').innerText = "R " + data.gross.toFixed(2);
+                        document.getElementById('modalBase').innerText = "R " + data.baseSalary.toFixed(2);
+                        document.getElementById('modalOvertime').innerText = "R " + data.overtime.toFixed(2);
+                        document.getElementById('modalGross').innerText = "R " + data.gross.toFixed(2);
 
                     //  Handle Overtime Display
                     if (data.overtime > 0) {

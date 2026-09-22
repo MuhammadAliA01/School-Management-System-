@@ -11,6 +11,7 @@ namespace SchoolManagmentSystem.Models
         public virtual Staff staff { get; set; }
 
         public double salaryAmt { get; set; }
+        public double overtimeEarned { get; set; } = 0; 
         public double taxRate { get; set; }
         public double pensionDeduction { get; set; }
         public double taxableIncome { get; set; }

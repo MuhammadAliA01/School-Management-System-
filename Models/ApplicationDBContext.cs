@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SchoolManagementSystem.Models;
 using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Models
@@ -9,6 +10,8 @@ namespace SchoolManagmentSystem.Models
         {
         }
 
+        public DbSet<LeaveRequest> LeaveRequests { get; set; }
+        public DbSet<LeaveBalance> LeaveBalances { get; set; }
 
         public DbSet<Parent> Parents { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
@@ -55,6 +58,8 @@ namespace SchoolManagmentSystem.Models
         //  TAX FEATURE TABLES
         public DbSet<TaxBracket> TaxBrackets { get; set; }
         public DbSet<TaxConfiguration> TaxConfigurations { get; set; }
+
+        public DbSet<OvertimeRequest> OvertimeRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -5,86 +5,67 @@
 }
 
 <style>
+    body {
+        min-height: 100vh;
+        margin: 0;
+        background-color: #fdfcfb;
+        background-image: repeating-radial-gradient(
+            circle at 100% 100%,
+            transparent 0,
+            transparent 40px,
+            rgba(234, 88, 12, 0.05) 40px,
+            rgba(234, 88, 12, 0.05) 41.5px
+        );
+        background-attachment: fixed;
+    }
+
     .payslip-container {
         max-width: 900px;
-        margin: 40px auto;
+        margin: 50px auto;
+        background: transparent;
     }
 
     .payslip-header {
-        margin-bottom: 25px;
+        margin-bottom: 35px;
     }
 
         .payslip-header h3 {
             font-size: 28px;
             font-weight: 600;
-            margin-bottom: 6px;
-            color: #252525;
+            margin-bottom: 8px;
+            color: #c2410c;
         }
 
         .payslip-header p {
-            color: #777;
+            color: #64748b;
             margin: 0;
         }
 
     .payslip-card {
-        background: white;
-        border: 1px solid #e5e5e5;
-        border-radius: 12px;
+        background: #ffffff;
+        border: 1px solid #fed7aa;
+        border-radius: 14px;
         padding: 30px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 18px rgba(234, 88, 12, 0.04);
     }
-
-    .period-section {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        margin-bottom: 30px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-        .form-group label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-group input[type="date"] {
-            width: 100%;
-            padding: 11px 13px;
-            border: 1px solid #d8d8d8;
-            border-radius: 7px;
-            font-size: 14px;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-            .form-group input[type="date"]:focus {
-                border-color: #4f46e5;
-                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-            }
 
     .staff-section {
-        margin-top: 10px;
+        margin-top: 0;
     }
 
     .staff-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #eeeeee;
+        padding: 0 0 15px;
+        border-bottom: 1px solid #ffedd5;
     }
 
         .staff-header h4 {
             margin: 0;
             font-size: 17px;
             font-weight: 600;
-            color: #333;
+            color: #1e293b;
         }
 
     .select-all {
@@ -92,7 +73,7 @@
         align-items: center;
         gap: 8px;
         font-size: 14px;
-        color: #555;
+        color: #64748b;
         cursor: pointer;
     }
 
@@ -100,6 +81,7 @@
             width: 16px;
             height: 16px;
             cursor: pointer;
+            accent-color: #ea580c;
         }
 
     .staff-list {
@@ -110,12 +92,13 @@
         display: flex;
         align-items: center;
         padding: 15px 10px;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f1f5f9;
         transition: background-color 0.15s ease;
+        border-radius: 7px;
     }
 
         .staff-row:hover {
-            background-color: #f8f8ff;
+            background-color: #fffaf5;
         }
 
         .staff-row:last-child {
@@ -127,17 +110,18 @@
             height: 17px;
             margin-right: 12px;
             cursor: pointer;
+            accent-color: #ea580c;
         }
 
     .staff-name {
         font-size: 15px;
-        color: #333;
+        color: #334155;
     }
 
     .staff-id {
         margin-left: auto;
         font-size: 12px;
-        color: #999;
+        color: #94a3b8;
     }
 
     .form-footer {
@@ -145,38 +129,41 @@
         justify-content: flex-end;
         margin-top: 25px;
         padding-top: 20px;
-        border-top: 1px solid #eeeeee;
+        border-top: 1px solid #ffedd5;
     }
 
     .next-button {
-        border: none;
         border-radius: 7px;
-        padding: 11px 28px;
-        background: #4f46e5;
-        color: white;
-        font-size: 14px;
+        padding: 6px 15px;
+        background-color: orangered;
+        color: #ffffff;
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 0 1px orangered,
+                    0 4px 10px rgba(255, 69, 0, 0.25);
+        font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
-        transition: background-color 0.2s ease;
+        transition: all 0.15s ease-in-out;
     }
 
         .next-button:hover {
-            background: #4338ca;
+            background-color: orangered;
+            color: #ffffff;
+            box-shadow: 0 0 0 1px orangered,
+                        0 6px 14px rgba(255, 69, 0, 0.35);
+            transform: translateY(-1px);
         }
 
     .empty-staff {
         padding: 30px;
         text-align: center;
-        color: #888;
+        color: #94a3b8;
     }
 
     @@media (max-width: 700px) {
-        .payslip-container {
-            margin: 20px 15px;
-        }
 
-        .period-section {
-            grid-template-columns: 1fr;
+        .payslip-container {
+            margin: 30px 15px;
         }
 
         .payslip-card {
@@ -190,14 +177,19 @@
     }
 </style>
 
+
 <div class="payslip-container">
 
     <div class="payslip-header">
+
         <h3>Generate Payslips</h3>
+
         <p>
-            Choose the pay period and select the staff members who should receive payslips.
+            Choose the staff members who should receive payslips.
         </p>
+
     </div>
+
 
     <form method="post"
           asp-controller="PayslipDistribution"
@@ -205,7 +197,6 @@
 
         <div class="payslip-card">
 
-        
             <div class="staff-section">
 
                 <div class="staff-header">
@@ -213,14 +204,17 @@
                     <h4>Select Staff</h4>
 
                     <label class="select-all">
+
                         <input type="checkbox"
                                id="selectAll"
                                checked />
 
                         Select All Staff
+
                     </label>
 
                 </div>
+
 
                 <div class="staff-list">
 
@@ -257,6 +251,7 @@
 
             </div>
 
+
             <div class="form-footer">
 
                 <button type="submit" class="next-button">
@@ -270,6 +265,7 @@
     </form>
 
 </div>
+
 
 <script>
     document.getElementById('selectAll').addEventListener('change', function () {

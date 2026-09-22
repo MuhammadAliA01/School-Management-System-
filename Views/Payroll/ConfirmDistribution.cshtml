@@ -11,56 +11,79 @@
 }
 
 <style>
+    body {
+        min-height: 100vh;
+        margin: 0;
+        background-color: #fdfcfb;
+        background-image: repeating-radial-gradient(
+            circle at 100% 100%,
+            transparent 0,
+            transparent 40px,
+            rgba(234, 88, 12, 0.05) 40px,
+            rgba(234, 88, 12, 0.05) 41.5px
+        );
+        background-attachment: fixed;
+    }
+
     .confirm-page {
         max-width: 900px;
         margin: 50px auto;
+        background: transparent;
     }
 
     .confirm-header {
-        margin-bottom: 30px;
+        margin-bottom: 35px;
     }
 
         .confirm-header h3 {
             font-size: 28px;
             font-weight: 600;
             margin-bottom: 8px;
+            color: #c2410c;
         }
 
         .confirm-header p {
-            color: #777;
+            color: #64748b;
             margin: 0;
         }
 
     .distribution-card {
-        background: #fff;
-        border-radius: 12px;
+        background: #ffffff;
+        border: 1px solid #fed7aa;
+        border-radius: 14px;
         overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        margin-bottom: 25px;
+        box-shadow: 0 4px 18px rgba(234, 88, 12, 0.04);
+        margin-bottom: 24px;
     }
 
     .card-header-custom {
-        padding: 20px 25px;
-        border-bottom: 1px solid #eee;
+        padding: 24px 24px 8px;
     }
 
         .card-header-custom h5 {
             margin: 0;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
+            color: #1e293b;
         }
 
     .card-content {
-        padding: 25px;
+        padding: 16px 24px 24px;
     }
 
     .employee-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 15px 0;
-        border-bottom: 1px solid #eee;
+        padding: 15px 10px;
+        border-bottom: 1px solid #f1f5f9;
+        transition: background-color 0.15s ease;
+        border-radius: 7px;
     }
+
+        .employee-row:hover {
+            background-color: #fffaf5;
+        }
 
         .employee-row:last-child {
             border-bottom: none;
@@ -68,54 +91,100 @@
 
     .employee-name {
         font-weight: 600;
-        font-size: 16px;
+        font-size: 15px;
+        color: #334155;
     }
 
     .employee-email {
-        color: #777;
+        color: #64748b;
         font-size: 14px;
-        margin-top: 3px;
+        margin-top: 4px;
     }
 
     .employee-number {
-        color: #999;
-        font-size: 14px;
+        color: #94a3b8;
+        font-size: 12px;
     }
 
     .schedule-info {
-        background: #f7f7f7;
-        border-radius: 8px;
-        padding: 15px 18px;
-        margin-bottom: 25px;
+        background: #fffaf5;
+        border: 1px solid #ffedd5;
+        border-radius: 10px;
+        padding: 13px 16px;
+        margin-bottom: 0;
+        color: #9a3412;
+        font-size: 0.92rem;
     }
 
         .schedule-info strong {
             display: block;
             margin-bottom: 5px;
+            color: #c2410c;
         }
 
     .process-button {
         width: 100%;
-        padding: 13px 20px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 7px;
+        font-size: 0.9rem;
         font-weight: 600;
         cursor: pointer;
     }
+
+    .btn-distribute {
+        background-color: orangered;
+        color: #ffffff;
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 0 1px orangered,
+                    0 4px 10px rgba(255, 69, 0, 0.25);
+        transition: all 0.15s ease-in-out;
+    }
+
+        .btn-distribute:hover {
+            background-color: orangered;
+            color: #ffffff;
+            box-shadow: 0 0 0 1px orangered,
+                        0 6px 14px rgba(255, 69, 0, 0.35);
+            transform: translateY(-1px);
+        }
+
+    @@media (max-width: 700px) {
+
+        .confirm-page {
+            margin: 30px 15px;
+        }
+
+        .employee-row {
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .employee-number {
+            text-align: right;
+        }
+    }
 </style>
+
 
 <div class="confirm-page">
 
     <div class="confirm-header">
+
         <h3>Confirm Distribution</h3>
-        <p>Review the employees selected before continuing.</p>
+
+        <p>
+            Review the employees selected before continuing.
+        </p>
+
     </div>
+
 
     <div class="distribution-card">
 
         <div class="card-header-custom">
+
             <h5>Selected Employees</h5>
+
         </div>
 
         <div class="card-content">
@@ -127,6 +196,7 @@
                     <div class="employee-row">
 
                         <div>
+
                             <div class="employee-name">
                                 @staff.FirstName @staff.Surname
                             </div>
@@ -134,6 +204,7 @@
                             <div class="employee-email">
                                 @staff.Email
                             </div>
+
                         </div>
 
                         <div class="employee-number">
@@ -152,22 +223,27 @@
 
     </div>
 
+
     @if (isScheduled && scheduledDate.HasValue && scheduledTime.HasValue)
     {
         <div class="distribution-card">
 
             <div class="card-header-custom">
+
                 <h5>Scheduled Distribution</h5>
+
             </div>
 
             <div class="card-content">
 
                 <div class="schedule-info">
+
                     <strong>Distribution Date & Time</strong>
 
                     @scheduledDate.Value.ToString("dd MMMM yyyy")
                     at
                     @scheduledTime.Value.ToString(@"hh\:mm")
+
                 </div>
 
             </div>
@@ -179,18 +255,23 @@
         <div class="distribution-card">
 
             <div class="card-header-custom">
+
                 <h5>Distribution Type</h5>
+
             </div>
 
             <div class="card-content">
+
                 <p>
                     The selected payslips will be processed for
                     <strong>immediate distribution</strong>.
                 </p>
+
             </div>
 
         </div>
     }
+
 
     <div class="distribution-card">
 
@@ -227,7 +308,9 @@
 
                 <button type="submit"
                         class="process-button btn btn-distribute">
+
                     Process Distribution
+
                 </button>
 
             </form>

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SchoolManagementSystem.Models;
 using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Models
@@ -10,7 +9,8 @@ namespace SchoolManagmentSystem.Models
         {
         }
 
-        public DbSet<LeaveRequest> LeaveRequests { get; set; } 
+        public DbSet<LeaveRequest> LeaveRequests { get; set; }
+        public DbSet<LeaveBalance> LeaveBalances { get; set; }
 
         public DbSet<Parent> Parents { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
@@ -90,6 +90,11 @@ namespace SchoolManagmentSystem.Models
                 }
             );
         }
+
+        public DbSet<BankAccount> BankAccounts { get; set; }
+        public DbSet<Transactions> Transactions { get; set; }
+
+
 
     }
 }

@@ -22,6 +22,31 @@ namespace SchoolManagmentSystem.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SchoolManagementSystem.Models.LeaveBalance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("LeaveType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalAllocatedDays")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsedDays")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LeaveBalances");
+                });
+
             modelBuilder.Entity("SchoolManagementSystem.Models.LeaveRequest", b =>
                 {
                     b.Property<int>("Id")
@@ -174,6 +199,32 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasIndex("teacherID");
 
                     b.ToTable("AttendanceModels");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.BankAccount", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("accountName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("accountNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("employeeID")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("employeeID");
+
+                    b.ToTable("BankAccounts");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Class", b =>
@@ -1390,6 +1441,30 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("ticketPurchases");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.Transactions", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("accTransferredTo")
+                        .HasColumnType("int");
+
+                    b.Property<double>("amtTransferred")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("transferDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("accTransferredTo");
+
+                    b.ToTable("Transactions");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.medsAdministered", b =>
                 {
                     b.Property<int>("ID")
@@ -1460,6 +1535,17 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("Staff");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.BankAccount", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.Staff", "staff")
+                        .WithMany()
+                        .HasForeignKey("employeeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("staff");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.ConductReport", b =>
@@ -1637,6 +1723,17 @@ namespace SchoolManagmentSystem.Migrations
                     b.Navigation("EventCalendar");
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.Transactions", b =>
+                {
+                    b.HasOne("SchoolManagmentSystem.Models.BankAccount", "bAccount")
+                        .WithMany()
+                        .HasForeignKey("accTransferredTo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("bAccount");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.medsAdministered", b =>

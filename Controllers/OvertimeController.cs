@@ -31,7 +31,10 @@ namespace SchoolManagmentSystem.Controllers
 
             if (workedYesterday)
             {
-                return BadRequest(new { message = "Overtime blocked: You cannot work overtime on consecutive days." });
+                return BadRequest(new
+                {
+                    message = "Overtime blocked: You cannot work overtime on consecutive days."
+                });
             }
 
             request.Status = "Pending";
@@ -40,7 +43,10 @@ namespace SchoolManagmentSystem.Controllers
             _context.OvertimeRequests.Add(request);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Overtime request submitted successfully." });
+            return Ok(new
+            {
+                message = "Overtime request submitted successfully."
+            });
         }
     }
 }

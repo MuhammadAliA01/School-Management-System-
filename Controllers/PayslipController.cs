@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Models;
 using SchoolManagmentSystem.Services;
+
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -111,6 +113,22 @@ namespace SchoolManagmentSystem.Controllers
             var data = _payslipGenerationService.BuildPayslipDataFromEarnings(staff, existing.PayPeriodStart, existing.PayPeriodEnd);
             var payslip = _payslipGenerationService.StagePayslip(data, regenerationReason);
             return Json(new { payslip.PayslipId, payslip.Status, payslip.CurrentVersion });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SelectStaffForPayslips()
+        {
+            var staff = await _context.Staffs
+                        .OrderBy(x => x.FirstName)
+                        .ToListAsync();
+
+            return View(staff);
+        }
+
+        [HttpGet]
+        public IActionResult RegeneratePayslip()
+        {
+            return View();
         }
     }
 }

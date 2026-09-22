@@ -1,4 +1,4 @@
-﻿namespace SchoolManagementSystem.Models
+﻿namespace SchoolManagmentSystem.Models
 {
     public enum LeaveRequestStatus
     {

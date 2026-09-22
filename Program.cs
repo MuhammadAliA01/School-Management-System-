@@ -32,8 +32,11 @@ if (string.IsNullOrWhiteSpace(firebaseCredentials))
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
+builder.Services.AddHttpClient<ModernTreasuryService>(client =>
+{
+    client.BaseAddress = new Uri("https://app.moderntreasury.com/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 builder.Services.AddScoped<FirebaseNotificationService>();
 
 
@@ -95,6 +98,10 @@ builder.WebHost.UseUrls(
 );
 
 var app = builder.Build();
+
+
+
+
 var supportedCultures = new[] { new System.Globalization.CultureInfo("en-US") };
 app.UseRequestLocalization(new RequestLocalizationOptions
 {

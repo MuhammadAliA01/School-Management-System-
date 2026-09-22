@@ -7,10 +7,13 @@
 <h1>PayrollDashboard</h1>
 
 <!-- The original table structure, updated to be clickable -->
+<a class="btn btn-primary btn-lg fw-bold" asp-action="RegeneratePayslip" asp-controller="Payslip">Previous Payslips</a>
+
 <table class="table table-hover">
     <thead>
         <tr>
             <th>Staff Name</th>
+            <th>Gross Salary</th>
             <th>Nett Salary</th>
             <th>Tax Rate</th>
             <th>Next Pay Date</th>
@@ -23,6 +26,9 @@
             <tr style="cursor: pointer;" onclick="loadDeductions(@item.EmployeeID)">
                 <td>
                     @item.staff.FirstName @item.staff.Surname
+                </td>
+                <td class="text-success fw-bold">
+                    R @item.salaryAmt.ToString("N2")
                 </td>
                 <td class="text-success fw-bold">
                     R @item.netSalary.ToString("N2")
@@ -39,7 +45,12 @@
             </tr>
         }
     </tbody>
+
+
 </table>
+<div class="d-grid gap-2">
+    <a class="btn btn-primary btn-lg fw-bold" asp-action="SelectStaffForPayslips" asp-controller="Payslip">Start Payroll Process</a>
+</div>
 
 <!-- SARS Payroll & Tax Breakdown Modal -->
 <div class="modal fade" id="deductionsModal" tabindex="-1" aria-labelledby="deductionsModalLabel" aria-hidden="true">
@@ -170,6 +181,7 @@
             <div class="modal-footer bg-white">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
+
         </div>
     </div>
 </div>

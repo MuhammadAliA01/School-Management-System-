@@ -76,10 +76,19 @@ namespace SchoolManagmentSystem.Services
                                 Hybrid Learning Academy</p>
                             ";
 
+                            if (payslip.PdfContent == null || payslip.PdfContent.Length == 0)
+                            {
+                                distribution.Status = DistributionStatus.Failed;
+                                distribution.FailureReason = "Payslip PDF is missing.";
+                                continue;
+                            }
+
                             await emailService.SendEmailAsync(
                                 staff.Email,
                                 "Your Payslip - Hybrid Learning Academy",
-                                emailBody);
+                                emailBody,
+                                payslip.PdfContent,
+                                $"Payslip_{staff.FirstName}_{staff.Surname}_{payslip.PayPeriodStart:yyyyMM}.pdf");
 
                             distribution.DistributedAt = DateTime.Now;
                             distribution.Status = DistributionStatus.Distributed;

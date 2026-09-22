@@ -1,6 +1,8 @@
-﻿@{
+﻿@model List<Staff>
+@{
     ViewData["Title"] = "Payslip Distribution";
-}
+    var staffIds = ViewBag.StaffIds as List<int> ?? Model?.Select(s => s.id).ToList() ?? new List<int>();
+    }
 
 <style>
     .payslip-page {
@@ -116,39 +118,61 @@
     <div class="page-header">
         <h2>Payslip Distribution</h2>
         <p>
-            Distribute generated payslips to employees or schedule them to be sent later.
+            Distribute generated payslips to @staffIds.Count selected employee(s) or schedule them to be sent later.
         </p>
     </div>
 
-    
     <div class="distribution-card">
+        <div class="card-header-custom">
+            <h5>Selected Employees (@Model.Count)</h5>
+        </div>
+        <div class="card-content">
+           
+            
 
+            <ul class="selected-staff-list">
+                @foreach (var staff in Model)
+                {
+                    <li class="selected-staff-item">
+                        <span><strong>@staff.FirstName @staff.Surname</strong></span>
+                        <span class="badge">ID: @staff.id</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <!-- Distribute Immediately Card -->
+    <div class="distribution-card">
         <div class="card-header-custom">
             <h5>Distribute Payslips</h5>
         </div>
 
         <div class="card-content">
             <p>
-                Send generated payslips to all employees immediately.
+                Send generated payslips to selected employees immediately.
             </p>
 
-            <form asp-controller="PayslipDistribution"
-                  asp-action="DistributePayslips"
+            <form asp-controller="Payroll"
+                  asp-action="ConfirmDistribution"
                   method="post">
 
-                <button type="submit"
-                        class="btn btn-distribute">
+                @foreach (var id in staffIds)
+                {
+                    <input type="hidden" name="staffIds" value="@id" />
+                }
+
+                <input type="hidden" name="isScheduled" value="false" />
+
+                <button type="submit" class="btn btn-distribute">
                     Distribute Immediately
                 </button>
-
             </form>
         </div>
-
     </div>
 
-    
+    <!-- Schedule Card -->
     <div class="distribution-card">
-
         <div class="card-header-custom">
             <h5>Schedule Distribution</h5>
         </div>
@@ -158,17 +182,25 @@
                 Choose a date and time to automatically distribute payslips.
             </p>
 
-            <form asp-controller="PayslipDistribution"
-                  asp-action="Schedule"
+            <form asp-controller="Payroll"
+                  asp-action="ConfirmDistribution"
                   method="post">
 
-                <div class="row schedule-row">
+                @foreach (var id in staffIds)
+                {
+                    <input type="hidden" name="staffIds" value="@id" />
+                }
 
+                <input type="hidden"
+                       name="isScheduled"
+                       value="true" />
+
+                <div class="row schedule-row">
                     <div class="col-md-6 mb-3">
-                        <label for="scheduledDate"
-                               class="form-label">
+                        <label for="scheduledDate" class="form-label">
                             Distribution Date
                         </label>
+
                         <input type="date"
                                id="scheduledDate"
                                name="scheduledDate"
@@ -177,36 +209,30 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="scheduledTime"
-                               class="form-label">
+                        <label for="scheduledTime" class="form-label">
                             Distribution Time
                         </label>
+
                         <input type="time"
                                id="scheduledTime"
                                name="scheduledTime"
                                class="form-control"
                                required />
                     </div>
-
                 </div>
 
-                <button type="submit"
-                        class="btn btn-distribute">
+                <button type="submit" class="btn btn-distribute">
                     Schedule Distribution
                 </button>
-
             </form>
 
             <div class="info-strip">
                 Payslips will be distributed automatically at the selected date and time.
             </div>
-
         </div>
-
     </div>
 
 </div>
-
 
 
 

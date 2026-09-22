@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "SARS Reports";
+}
+
+<h2>SARS Monthly Report</h2>
+<p>Select a pay period to generate the report.</p>
+
+<form asp-controller="SarsReport" asp-action="GenerateReport" method="get">
+    <label for="payCycle">Pay Period:</label>
+    <input type="month" id="payCycleInput" name="payCycleInput" required />
+    <input type="hidden" id="payCycle" name="payCycle" />
+    <button type="submit">Generate Report</button>
+</form>
+
+<script>
+    // Convert the month picker (e.g. "2026-09") into a full date the controller expects
+    document.querySelector("form").addEventListener("submit", function () {
+        var val = document.getElementById("payCycleInput").value; // "2026-09"
+        document.getElementById("payCycle").value = val + "-01"; // "2026-09-01"
+    });
+</script>

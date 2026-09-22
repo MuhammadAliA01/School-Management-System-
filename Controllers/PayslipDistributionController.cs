@@ -23,15 +23,20 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
-        
+
 
         [HttpPost]
-        public async Task<IActionResult> Schedule(DateTime scheduledDate, TimeSpan scheduledTime)
+        public async Task<IActionResult> Schedule(DateTime scheduledDate, TimeSpan scheduledTime, List<int> staffIds)
         {
+            if (staffIds == null || !staffIds.Any())
+            {
+                return BadRequest("No staff members selected.");
+            }
+
             var scheduledDateTime = scheduledDate.Date + scheduledTime;
 
             var payslips = await _context.Payslips
-                .Where(p => p.Status == PayslipStatus.Generated)
+                .Where(p => p.Status == PayslipStatus.Generated && staffIds.Contains(p.StaffId))
                 .ToListAsync();
 
             if (!payslips.Any())
@@ -77,20 +82,45 @@ namespace SchoolManagmentSystem.Controllers
             }
 
             await _context.SaveChangesAsync();
-
             return Ok($"Successfully scheduled {scheduledCount} payslip(s) for {scheduledDateTime:dd MMMM yyyy HH:mm}.");
         }
 
         [HttpPost]
-        public async Task<IActionResult> DistributePayslips()
+        public async Task <IActionResult> SelectStaff(DateTime periodStart, DateTime periodEnd, List<int> staffIds)
         {
+            if (staffIds == null || !staffIds.Any())
+            {
+                TempData["Error"] = "Please select at least one staff member.";
+                // Handle case where no staff members were selected
+                return RedirectToAction("SelectStaffForPayslips", "Payslip");
+            }
+            var selectedStaff = await _context.Staffs
+        .Where(s => staffIds.Contains(s.id))
+        .OrderBy(s => s.FirstName)
+        .ToListAsync();
+
+            ViewBag.PeriodStart = periodStart;
+            ViewBag.PeriodEnd = periodEnd;
+            ViewBag.StaffIds = staffIds;
+
+            return View("Index", selectedStaff);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DistributePayslips(List<int> staffIds)
+        {
+            if (staffIds == null || !staffIds.Any())
+            {
+                return BadRequest("No staff members selected.");
+            }
+
             var payslips = await _context.Payslips
-                .Where(p => p.Status == PayslipStatus.Generated)
+                .Where(p => p.Status == PayslipStatus.Generated && staffIds.Contains(p.StaffId))
                 .ToListAsync();
 
             if (!payslips.Any())
             {
-                return BadRequest("No generated payslips are available for distribution.");
+                return BadRequest("No generated payslips are available for the selected staff.");
             }
 
             foreach (var payslip in payslips)
@@ -135,27 +165,19 @@ namespace SchoolManagmentSystem.Controllers
                 try
                 {
                     var emailSubject = "Your Payslip - Hybrid Learning Academy";
-
                     var emailBody = $@"
                 <p>Dear {staff.FirstName} {staff.Surname},</p>
-
                 <p>Your payslip is now available.</p>
-
-                <p>
-                    <a href=""{payslipLink}"">View Your Payslip</a>
-                </p>
-
-                <p>You can view your payslip using the link above. 
-                If you are not currently logged in, you will be asked to log in first.</p>
-
-                <p>Regards,<br>
-                Hybrid Learning Academy</p>
-            ";
+                <p><a href=""{payslipLink}"">View Your Payslip</a></p>
+                <p>You can view your payslip using the link above. If you are not currently logged in, you will be asked to log in first.</p>
+                <p>Regards,<br>Hybrid Learning Academy</p>";
 
                     await _emailService.SendEmailAsync(
-                        staff.Email,
-                        emailSubject,
-                        emailBody);
+    staff.Email,
+    emailSubject,
+    emailBody,
+    payslip.PdfContent,
+    $"Payslip_{staff.FirstName}_{staff.Surname}_{payslip.PayPeriodStart:yyyyMM}.pdf");
 
                     distribution.DistributedAt = DateTime.Now;
                     distribution.Status = DistributionStatus.Distributed;
@@ -168,65 +190,79 @@ namespace SchoolManagmentSystem.Controllers
             }
 
             await _context.SaveChangesAsync();
-
             return Ok("Payslip distribution process completed.");
         }
 
 
-        [HttpGet]
-        public IActionResult ViewPayslip(string token)
+[HttpGet]
+public IActionResult ViewPayslip(string token)
         {
             if (string.IsNullOrEmpty(token))
             {
                 return NotFound("Invalid payslip link.");
             }
 
-           
             if (!User.Identity?.IsAuthenticated ?? true)
             {
-                return RedirectToAction("Login", "Account", 
-                new { returnUrl = $"/PayslipDistribution/ViewPayslip?token={token}" });
+                return RedirectToAction(
+                    "Login",
+                    "Account",
+                    new
+                    {
+                        returnUrl = $"/PayslipDistribution/ViewPayslip?token={token}"
+                    });
             }
 
-            return RedirectToAction("OpenPayslip", new { token = token });
+            return RedirectToAction(
+                "OpenPayslip",
+                new
+                {
+                    token = token
+                });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> OpenPayslip(string token)
+[HttpGet]
+public async Task<IActionResult> OpenPayslip(string token)
         {
-            var userId = User.FindFirst("UserInternalID")?.Value;
-
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(token))
             {
-                return RedirectToAction("Login", "Account");
-            }
-
-            if (!int.TryParse(userId, out int staffId))
-            {
-                return Unauthorized();
+                return NotFound("Invalid payslip link.");
             }
 
             var distribution = await _context.PayslipDistributions
-                .FirstOrDefaultAsync(d => d.AccessToken == token &&
-                                          d.StaffId == staffId &&
-                                          d.Status == DistributionStatus.Distributed);
+                .FirstOrDefaultAsync(d =>
+                    d.AccessToken == token &&
+                    d.Status == DistributionStatus.Distributed);
 
             if (distribution == null)
             {
-                return NotFound("Payslip link is invalid or does not belong to you.");
+                return NotFound(
+                    "Payslip link is invalid or has not been distributed.");
             }
 
-            var payslip = await _context.Payslips
-                .FirstOrDefaultAsync(p => p.PayslipId == distribution.PayslipId &&
-                                          p.StaffId == staffId &&
-                                          p.Status == PayslipStatus.Generated);
 
-            if (payslip == null || payslip.PdfContent == null)
+            var payslip = await _context.Payslips
+                .FirstOrDefaultAsync(p =>
+                    p.PayslipId == distribution.PayslipId);
+
+            if (payslip == null)
             {
                 return NotFound("Payslip could not be found.");
             }
 
-            return File(payslip.PdfContent, "application/pdf");
+            if (payslip.PdfContent == null ||
+                payslip.PdfContent.Length == 0)
+            {
+                return NotFound("Payslip PDF could not be found.");
+            }
+
+            return File(
+                payslip.PdfContent,
+                "application/pdf");
         }
+
+
+
+        
     }
 }

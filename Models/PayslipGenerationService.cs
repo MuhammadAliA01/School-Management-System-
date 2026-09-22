@@ -94,6 +94,8 @@ namespace SchoolManagmentSystem.Services
                 throw new InvalidOperationException($"No calculated earnings found for staff {staff.id} in this period. Run salary calculation first.");
             }
             var basePay = (decimal)earnings.salaryAmt;
+            var overtimePay = (decimal)earnings.overtimeEarned;
+
 
             var attendanceRecords = _context.StaffAttendances
                 .Where(a => a.StaffId == staff.id &&
@@ -107,7 +109,6 @@ namespace SchoolManagmentSystem.Services
             decimal uif = (decimal)earnings.uifDeduction;
             decimal pension = (decimal)earnings.pensionDeduction;
             decimal netPay = (decimal)earnings.netSalary;
-
             return new PayslipDTO
             {
                 StaffId = staff.id,
@@ -118,8 +119,8 @@ namespace SchoolManagmentSystem.Services
                 PayPeriodEnd = periodEnd,
                 BasePay = basePay,
                 HoursWorked = hoursWorked,
-                OvertimePay = 0,
-                GrossPay = basePay,
+                OvertimePay = overtimePay,              
+                GrossPay = basePay + overtimePay,
                 PAYE = paye,
                 UIF = uif,
                 Pension = pension,

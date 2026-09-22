@@ -23,15 +23,20 @@ namespace SchoolManagmentSystem.Controllers
             return View();
         }
 
-        
+
 
         [HttpPost]
-        public async Task<IActionResult> Schedule(DateTime scheduledDate, TimeSpan scheduledTime)
+        public async Task<IActionResult> Schedule(DateTime scheduledDate, TimeSpan scheduledTime, List<int> staffIds)
         {
+            if (staffIds == null || !staffIds.Any())
+            {
+                return BadRequest("No staff members selected.");
+            }
+
             var scheduledDateTime = scheduledDate.Date + scheduledTime;
 
             var payslips = await _context.Payslips
-                .Where(p => p.Status == PayslipStatus.Generated)
+                .Where(p => p.Status == PayslipStatus.Generated && staffIds.Contains(p.StaffId))
                 .ToListAsync();
 
             if (!payslips.Any())
@@ -77,20 +82,45 @@ namespace SchoolManagmentSystem.Controllers
             }
 
             await _context.SaveChangesAsync();
-
             return Ok($"Successfully scheduled {scheduledCount} payslip(s) for {scheduledDateTime:dd MMMM yyyy HH:mm}.");
         }
 
         [HttpPost]
-        public async Task<IActionResult> DistributePayslips()
+        public async Task <IActionResult> SelectStaff(DateTime periodStart, DateTime periodEnd, List<int> staffIds)
         {
+            if (staffIds == null || !staffIds.Any())
+            {
+                TempData["Error"] = "Please select at least one staff member.";
+                // Handle case where no staff members were selected
+                return RedirectToAction("SelectStaffForPayslips", "Payslip");
+            }
+            var selectedStaff = await _context.Staffs
+        .Where(s => staffIds.Contains(s.id))
+        .OrderBy(s => s.FirstName)
+        .ToListAsync();
+
+            ViewBag.PeriodStart = periodStart;
+            ViewBag.PeriodEnd = periodEnd;
+            ViewBag.StaffIds = staffIds;
+
+            return View("Index", selectedStaff);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DistributePayslips(List<int> staffIds)
+        {
+            if (staffIds == null || !staffIds.Any())
+            {
+                return BadRequest("No staff members selected.");
+            }
+
             var payslips = await _context.Payslips
-                .Where(p => p.Status == PayslipStatus.Generated)
+                .Where(p => p.Status == PayslipStatus.Generated && staffIds.Contains(p.StaffId))
                 .ToListAsync();
 
             if (!payslips.Any())
             {
-                return BadRequest("No generated payslips are available for distribution.");
+                return BadRequest("No generated payslips are available for the selected staff.");
             }
 
             foreach (var payslip in payslips)
@@ -135,27 +165,19 @@ namespace SchoolManagmentSystem.Controllers
                 try
                 {
                     var emailSubject = "Your Payslip - Hybrid Learning Academy";
-
                     var emailBody = $@"
                 <p>Dear {staff.FirstName} {staff.Surname},</p>
-
                 <p>Your payslip is now available.</p>
-
-                <p>
-                    <a href=""{payslipLink}"">View Your Payslip</a>
-                </p>
-
-                <p>You can view your payslip using the link above. 
-                If you are not currently logged in, you will be asked to log in first.</p>
-
-                <p>Regards,<br>
-                Hybrid Learning Academy</p>
-            ";
+                <p><a href=""{payslipLink}"">View Your Payslip</a></p>
+                <p>You can view your payslip using the link above. If you are not currently logged in, you will be asked to log in first.</p>
+                <p>Regards,<br>Hybrid Learning Academy</p>";
 
                     await _emailService.SendEmailAsync(
-                        staff.Email,
-                        emailSubject,
-                        emailBody);
+    staff.Email,
+    emailSubject,
+    emailBody,
+    payslip.PdfContent,
+    $"Payslip_{staff.FirstName}_{staff.Surname}_{payslip.PayPeriodStart:yyyyMM}.pdf");
 
                     distribution.DistributedAt = DateTime.Now;
                     distribution.Status = DistributionStatus.Distributed;
@@ -168,7 +190,6 @@ namespace SchoolManagmentSystem.Controllers
             }
 
             await _context.SaveChangesAsync();
-
             return Ok("Payslip distribution process completed.");
         }
 
@@ -228,5 +249,7 @@ namespace SchoolManagmentSystem.Controllers
 
             return File(payslip.PdfContent, "application/pdf");
         }
+
+        
     }
 }

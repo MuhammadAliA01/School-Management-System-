@@ -1,0 +1,239 @@
+﻿@model List<Staff>
+
+@{
+    ViewData["Title"] = "Confirm Payslip Distribution";
+
+    var staffIds = ViewBag.StaffIds as List<int> ?? new List<int>();
+    bool isScheduled = ViewBag.IsScheduled ?? false;
+
+    DateTime? scheduledDate = ViewBag.ScheduledDate;
+    TimeSpan? scheduledTime = ViewBag.ScheduledTime;
+}
+
+<style>
+    .confirm-page {
+        max-width: 900px;
+        margin: 50px auto;
+    }
+
+    .confirm-header {
+        margin-bottom: 30px;
+    }
+
+        .confirm-header h3 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .confirm-header p {
+            color: #777;
+            margin: 0;
+        }
+
+    .distribution-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 25px;
+    }
+
+    .card-header-custom {
+        padding: 20px 25px;
+        border-bottom: 1px solid #eee;
+    }
+
+        .card-header-custom h5 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+    .card-content {
+        padding: 25px;
+    }
+
+    .employee-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+        .employee-row:last-child {
+            border-bottom: none;
+        }
+
+    .employee-name {
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .employee-email {
+        color: #777;
+        font-size: 14px;
+        margin-top: 3px;
+    }
+
+    .employee-number {
+        color: #999;
+        font-size: 14px;
+    }
+
+    .schedule-info {
+        background: #f7f7f7;
+        border-radius: 8px;
+        padding: 15px 18px;
+        margin-bottom: 25px;
+    }
+
+        .schedule-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+    .process-button {
+        width: 100%;
+        padding: 13px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+</style>
+
+<div class="confirm-page">
+
+    <div class="confirm-header">
+        <h3>Confirm Distribution</h3>
+        <p>Review the employees selected before continuing.</p>
+    </div>
+
+    <div class="distribution-card">
+
+        <div class="card-header-custom">
+            <h5>Selected Employees</h5>
+        </div>
+
+        <div class="card-content">
+
+            @if (Model != null && Model.Any())
+            {
+                foreach (var staff in Model)
+                {
+                    <div class="employee-row">
+
+                        <div>
+                            <div class="employee-name">
+                                @staff.FirstName @staff.Surname
+                            </div>
+
+                            <div class="employee-email">
+                                @staff.Email
+                            </div>
+                        </div>
+
+                        <div class="employee-number">
+                            Employee #@staff.id
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No employees were selected.</p>
+            }
+
+        </div>
+
+    </div>
+
+    @if (isScheduled && scheduledDate.HasValue && scheduledTime.HasValue)
+    {
+        <div class="distribution-card">
+
+            <div class="card-header-custom">
+                <h5>Scheduled Distribution</h5>
+            </div>
+
+            <div class="card-content">
+
+                <div class="schedule-info">
+                    <strong>Distribution Date & Time</strong>
+
+                    @scheduledDate.Value.ToString("dd MMMM yyyy")
+                    at
+                    @scheduledTime.Value.ToString(@"hh\:mm")
+                </div>
+
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="distribution-card">
+
+            <div class="card-header-custom">
+                <h5>Distribution Type</h5>
+            </div>
+
+            <div class="card-content">
+                <p>
+                    The selected payslips will be processed for
+                    <strong>immediate distribution</strong>.
+                </p>
+            </div>
+
+        </div>
+    }
+
+    <div class="distribution-card">
+
+        <div class="card-content">
+
+            <form asp-controller="Payroll"
+                  asp-action="ProcessDistribution"
+                  method="post">
+
+                @foreach (var id in staffIds)
+                {
+                    <input type="hidden"
+                           name="staffIds"
+                           value="@id" />
+                }
+
+                <input type="hidden"
+                       name="isScheduled"
+                       value="@isScheduled" />
+
+                @if (scheduledDate.HasValue)
+                {
+                    <input type="hidden"
+                           name="scheduledDate"
+                           value="@scheduledDate.Value.ToString("yyyy-MM-dd")" />
+                }
+
+                @if (scheduledTime.HasValue)
+                {
+                    <input type="hidden"
+                           name="scheduledTime"
+                           value="@scheduledTime.Value.ToString(@"hh\:mm")" />
+                }
+
+                <button type="submit"
+                        class="process-button btn btn-distribute">
+                    Process Distribution
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

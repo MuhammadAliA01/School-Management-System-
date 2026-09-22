@@ -354,10 +354,10 @@ namespace SchoolManagmentSystem.Controllers
 
         [HttpPost]
         public async Task<IActionResult> ProcessDistribution(
-    List<int> staffIds,
-    bool isScheduled,
-    DateTime? scheduledDate,
-    TimeSpan? scheduledTime)
+     List<int> staffIds,
+     bool isScheduled,
+     DateTime? scheduledDate,
+     TimeSpan? scheduledTime)
         {
             if (staffIds == null || !staffIds.Any())
             {
@@ -380,8 +380,6 @@ namespace SchoolManagmentSystem.Controllers
                 }
             }
 
-
-
             var selectedStaff = await _context.Staffs
                 .Where(s => staffIds.Contains(s.id))
                 .OrderBy(s => s.FirstName)
@@ -396,14 +394,10 @@ namespace SchoolManagmentSystem.Controllers
                     "Payslip");
             }
 
-
-
-
             foreach (var staff in selectedStaff)
             {
                 try
                 {
-         
                     DateTime periodStart = new DateTime(
                         DateTime.Now.Year,
                         DateTime.Now.Month,
@@ -413,8 +407,7 @@ namespace SchoolManagmentSystem.Controllers
                         .AddMonths(1)
                         .AddDays(-1);
 
-
-
+                    // Generate the payslip here
                     var payslipData =
                         _payslipGenerationService
                             .BuildPayslipDataFromEarnings(
@@ -422,23 +415,15 @@ namespace SchoolManagmentSystem.Controllers
                                 periodStart,
                                 periodEnd);
 
-
-
-
                     var payslip =
                         _payslipGenerationService
                             .StagePayslip(payslipData);
-
-
 
                     if (payslip.PdfContent == null ||
                         payslip.PdfContent.Length == 0)
                     {
                         continue;
                     }
-
-
-
 
                     var bankAccount = await _context.BankAccounts
                         .FirstOrDefaultAsync(x =>
@@ -448,8 +433,6 @@ namespace SchoolManagmentSystem.Controllers
                     {
                         continue;
                     }
-
-
 
                     var earnings = await _context.EmployeeEarnings
                         .FirstOrDefaultAsync(x =>
@@ -462,18 +445,15 @@ namespace SchoolManagmentSystem.Controllers
                         continue;
                     }
 
-
-
+                    // Create unique access token
                     var accessToken = Guid.NewGuid().ToString();
 
-
-
+                    // Create link to the payslip
                     var payslipLink = Url.Action(
                         "ViewPayslip",
                         "PayslipDistribution",
                         new { token = accessToken },
                         Request.Scheme);
-
 
                     var distribution = new PayslipDistribution
                     {
@@ -482,8 +462,6 @@ namespace SchoolManagmentSystem.Controllers
                         AccessToken = accessToken,
                         Status = DistributionStatus.Pending
                     };
-
-
 
                     if (isScheduled)
                     {
@@ -496,66 +474,57 @@ namespace SchoolManagmentSystem.Controllers
                         continue;
                     }
 
-
                     distribution.ScheduledFor = DateTime.Now;
 
                     _context.PayslipDistributions.Add(distribution);
 
-
-
+                    // Email containing the link instead of the PDF attachment
                     var emailSubject =
                         "Your Payslip - Hybrid Learning Academy";
 
                     var emailBody = $@"
-                <p>Dear {staff.FirstName} {staff.Surname},</p>
+<p>Dear {staff.FirstName} {staff.Surname},</p>
 
-                <p>Your payslip has been generated and is now available.</p>
+<p>Your payslip has been generated and is now available.</p>
 
-                <p>
-                    Your payslip is attached to this email as a PDF.
-                </p>
+<p>
+    You can view your payslip online using the link below:
+</p>
 
-                <p>
-                    You can also view your payslip online:
-                </p>
+<p>
+    <a href=""{payslipLink}"">
+        View Your Payslip
+    </a>
+</p>
 
-                <p>
-                    <a href=""{payslipLink}"">
-                        View Your Payslip
-                    </a>
-                </p>
+<p>
+    Your payslip will open as a PDF in your browser.
+</p>
 
-                <p>
-                    Regards,<br>
-                    Hybrid Learning Academy
-                </p>";
+<p>
+    Regards,<br>
+    Hybrid Learning Academy
+</p>";
 
-
+                    // IMPORTANT:
+                    // This uses the email method WITHOUT an attachment.
                     await _emailService.SendEmailAsync(
                         staff.Email,
                         emailSubject,
-                        emailBody,
-                        payslip.PdfContent,
-                        $"Payslip_{staff.FirstName}_{staff.Surname}_{payslip.PayPeriodStart:yyyyMM}.pdf");
-
+                        emailBody);
 
                     distribution.DistributedAt = DateTime.Now;
                     distribution.Status = DistributionStatus.Distributed;
 
-
+                    // Process salary payment
                     await _modernTreasuryService.TransferAsync(
                         bankAccount.accountNumber,
                         "01a0a0f2-20db-78b2-8ab8-5d09e1f5e27e",
                         (decimal)earnings.netSalary,
                         $"Salary payment for {staff.FirstName} {staff.Surname}");
-
-
-
                 }
                 catch (Exception ex)
                 {
-                    
-
                     TempData["Error"] =
                         $"An error occurred while processing " +
                         $"{staff.FirstName} {staff.Surname}: {ex.Message}";
@@ -564,9 +533,7 @@ namespace SchoolManagmentSystem.Controllers
                 }
             }
 
-
             await _context.SaveChangesAsync();
-
 
             if (isScheduled)
             {
@@ -580,7 +547,6 @@ namespace SchoolManagmentSystem.Controllers
                 TempData["Success"] =
                     "Payslips generated, emailed and processed successfully.";
             }
-
 
             return RedirectToAction(
                 "HomePage",

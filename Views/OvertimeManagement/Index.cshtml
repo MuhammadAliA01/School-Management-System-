@@ -1,0 +1,334 @@
+﻿@model List<SchoolManagmentSystem.Models.OvertimeRequest>
+
+@{
+    ViewData["Title"] = "Overtime Requests";
+}
+
+<style>
+    .overtime-page {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .page-header {
+        margin-bottom: 30px;
+    }
+
+        .page-header h2 {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #777;
+            margin: 0;
+        }
+
+    .alert {
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .alert-success {
+        background: #e9f8ef;
+        color: #187a3d;
+    }
+
+    .alert-danger {
+        background: #fdecec;
+        color: #b42318;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    }
+
+    .overtime-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .overtime-table thead {
+            background: #f7f7fb;
+        }
+
+        .overtime-table th {
+            text-align: left;
+            padding: 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #555;
+            border-bottom: 1px solid #e9e9ef;
+        }
+
+        .overtime-table td {
+            padding: 17px 16px;
+            border-bottom: 1px solid #eeeeee;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .overtime-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .overtime-table tbody tr:hover {
+            background: #fafaff;
+        }
+
+    .status {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-pending {
+        background: #fff4d6;
+        color: #996c00;
+    }
+
+    .status-accepted {
+        background: #e8f7ed;
+        color: #187a3d;
+    }
+
+    .status-rejected {
+        background: #fdeaea;
+        color: #b42318;
+    }
+
+    .actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-button {
+        border: none;
+        padding: 8px 13px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .accept-button {
+        background: #198754;
+        color: white;
+    }
+
+        .accept-button:hover {
+            background: #157347;
+        }
+
+    .reject-button {
+        background: #dc3545;
+        color: white;
+    }
+
+        .reject-button:hover {
+            background: #bb2d3b;
+        }
+
+    .empty-state {
+        padding: 50px 20px;
+        text-align: center;
+        color: #777;
+    }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: #444;
+        }
+
+    .reason {
+        max-width: 220px;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    @@media (max-width: 900px) {
+        .table-container
+
+    {
+        overflow-x: auto;
+    }
+
+    .overtime-table {
+        min-width: 1000px;
+    }
+
+    }
+</style>
+
+<div class="overtime-page">
+
+    <div class="page-header">
+        <h2>Overtime Requests</h2>
+        <p>Review and manage employee overtime requests.</p>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="table-container">
+            <div class="empty-state">
+                <h3>No overtime requests</h3>
+                <p>There are currently no overtime requests to display.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-container">
+
+            <table class="overtime-table">
+
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Overtime Date</th>
+                        <th>Hours</th>
+                        <th>Reason</th>
+                        <th>Date Submitted</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var request in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                Employee #@request.StaffId
+                            </td>
+
+                            <td>
+                                @request.DateOfOvertime.ToString("dd MMM yyyy")
+                            </td>
+
+                            <td>
+                                @request.HoursRequested.ToString("0.##") hrs
+                            </td>
+
+                            <td class="reason">
+                                @request.Reason
+                            </td>
+
+                            <td>
+                                @request.DateSubmitted.ToString("dd MMM yyyy HH:mm")
+                            </td>
+
+                            <td>
+                                @if (request.Status == "Pending")
+                                {
+                                    <span class="status status-pending">
+                                        Pending
+                                    </span>
+                                }
+                                else if (request.Status == "Accepted")
+                                {
+                                    <span class="status status-accepted">
+                                        Accepted
+                                    </span>
+                                }
+                                else if (request.Status == "Rejected")
+                                {
+                                    <span class="status status-rejected">
+                                        Rejected
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status status-pending">
+                                        @request.Status
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+
+                                @if (request.Status == "Pending")
+                                {
+                                    <div class="actions">
+
+                                        <form asp-controller="OvertimeManagement"
+                                              asp-action="Accept"
+                                              method="post">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@request.OvertimeId" />
+
+                                            <button type="submit"
+                                                    class="action-button accept-button">
+                                                Accept
+                                            </button>
+
+                                        </form>
+
+                                        <form asp-controller="OvertimeManagement"
+                                              asp-action="Reject"
+                                              method="post">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@request.OvertimeId" />
+
+                                            <button type="submit"
+                                                    class="action-button reject-button">
+                                                Reject
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span style="color:#999; font-size:13px;">
+                                        No actions
+                                    </span>
+                                }
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>

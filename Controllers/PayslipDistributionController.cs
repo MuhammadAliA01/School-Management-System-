@@ -194,61 +194,74 @@ namespace SchoolManagmentSystem.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult ViewPayslip(string token)
+[HttpGet]
+public IActionResult ViewPayslip(string token)
         {
             if (string.IsNullOrEmpty(token))
             {
                 return NotFound("Invalid payslip link.");
             }
 
-           
             if (!User.Identity?.IsAuthenticated ?? true)
             {
-                return RedirectToAction("Login", "Account", 
-                new { returnUrl = $"/PayslipDistribution/ViewPayslip?token={token}" });
+                return RedirectToAction(
+                    "Login",
+                    "Account",
+                    new
+                    {
+                        returnUrl = $"/PayslipDistribution/ViewPayslip?token={token}"
+                    });
             }
 
-            return RedirectToAction("OpenPayslip", new { token = token });
+            return RedirectToAction(
+                "OpenPayslip",
+                new
+                {
+                    token = token
+                });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> OpenPayslip(string token)
+[HttpGet]
+public async Task<IActionResult> OpenPayslip(string token)
         {
-            var userId = User.FindFirst("UserInternalID")?.Value;
-
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(token))
             {
-                return RedirectToAction("Login", "Account");
-            }
-
-            if (!int.TryParse(userId, out int staffId))
-            {
-                return Unauthorized();
+                return NotFound("Invalid payslip link.");
             }
 
             var distribution = await _context.PayslipDistributions
-                .FirstOrDefaultAsync(d => d.AccessToken == token &&
-                                          d.StaffId == staffId &&
-                                          d.Status == DistributionStatus.Distributed);
+                .FirstOrDefaultAsync(d =>
+                    d.AccessToken == token &&
+                    d.Status == DistributionStatus.Distributed);
 
             if (distribution == null)
             {
-                return NotFound("Payslip link is invalid or does not belong to you.");
+                return NotFound(
+                    "Payslip link is invalid or has not been distributed.");
             }
 
-            var payslip = await _context.Payslips
-                .FirstOrDefaultAsync(p => p.PayslipId == distribution.PayslipId &&
-                                          p.StaffId == staffId &&
-                                          p.Status == PayslipStatus.Generated);
 
-            if (payslip == null || payslip.PdfContent == null)
+            var payslip = await _context.Payslips
+                .FirstOrDefaultAsync(p =>
+                    p.PayslipId == distribution.PayslipId);
+
+            if (payslip == null)
             {
                 return NotFound("Payslip could not be found.");
             }
 
-            return File(payslip.PdfContent, "application/pdf");
+            if (payslip.PdfContent == null ||
+                payslip.PdfContent.Length == 0)
+            {
+                return NotFound("Payslip PDF could not be found.");
+            }
+
+            return File(
+                payslip.PdfContent,
+                "application/pdf");
         }
+
+
 
         
     }

@@ -124,5 +124,11 @@ namespace SchoolManagmentSystem.Controllers
 
             return View(staff);
         }
+
+        [HttpGet]
+        public IActionResult RegeneratePayslip()
+        {
+            return View();
+        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SchoolManagementSystem.Models;
 using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Models

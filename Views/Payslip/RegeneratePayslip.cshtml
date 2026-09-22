@@ -2,70 +2,543 @@
     ViewData["Title"] = "Regenerate Payslip";
 }
 
-<h3>Regenerate Payslip</h3>
+<style>
+    .regenerate-page {
+        max-width: 1100px;
+        margin: 45px auto;
+        padding: 0 25px;
+    }
 
-<div>
-    <label>Staff ID:</label>
-    <input type="number" id="staffId" />
-    <button onclick="loadHistory()">Load</button>
+    .page-header {
+        margin-bottom: 30px;
+    }
+
+        .page-header h2 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 700;
+            color: #25213b;
+        }
+
+        .page-header p {
+            margin-top: 8px;
+            color: #77738a;
+            font-size: 15px;
+        }
+
+    .search-panel {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 25px 28px;
+        box-shadow: 0 8px 30px rgba(40, 32, 70, 0.07);
+        border: 1px solid #eeeaf5;
+        margin-bottom: 30px;
+    }
+
+    .search-title {
+        font-size: 17px;
+        font-weight: 600;
+        color: #302b48;
+        margin-bottom: 18px;
+    }
+
+    .search-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 15px;
+    }
+
+    .input-group {
+        flex: 1;
+    }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #5f5a70;
+            margin-bottom: 8px;
+        }
+
+    .staff-input {
+        width: 100%;
+        height: 46px;
+        border: 1px solid #ddd9e8;
+        border-radius: 10px;
+        padding: 0 14px;
+        font-size: 15px;
+        color: #302b48;
+        outline: none;
+        transition: 0.2s;
+        box-sizing: border-box;
+    }
+
+        .staff-input:focus {
+            border-color: #6956d8;
+            box-shadow: 0 0 0 3px rgba(105, 86, 216, 0.10);
+        }
+
+    .load-button {
+        height: 46px;
+        padding: 0 25px;
+        border: none;
+        border-radius: 10px;
+        background: #6956d8;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .load-button:hover {
+            background: #5845c5;
+            transform: translateY(-1px);
+        }
+
+    .history-panel {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(40, 32, 70, 0.07);
+        border: 1px solid #eeeaf5;
+        overflow: hidden;
+    }
+
+    .history-header {
+        padding: 22px 25px;
+        border-bottom: 1px solid #eeeaf5;
+    }
+
+        .history-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #302b48;
+            font-weight: 650;
+        }
+
+        .history-header p {
+            margin: 5px 0 0;
+            color: #858092;
+            font-size: 13px;
+        }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    #historyTable {
+        width: 100%;
+        border-collapse: collapse;
+        border: none;
+    }
+
+        #historyTable thead {
+            background: #f8f7fb;
+        }
+
+        #historyTable th {
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #6f6a7e;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            border-bottom: 1px solid #eeeaf5;
+            white-space: nowrap;
+        }
+
+        #historyTable td {
+            padding: 17px 20px;
+            font-size: 14px;
+            color: #454052;
+            border-bottom: 1px solid #f0eef5;
+            vertical-align: middle;
+        }
+
+        #historyTable tbody tr {
+            transition: background 0.2s;
+        }
+
+            #historyTable tbody tr:hover {
+                background: #faf9fd;
+            }
+
+            #historyTable tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    .payslip-id {
+        font-weight: 650;
+        color: #302b48;
+    }
+
+    .period {
+        color: #666174;
+    }
+
+    .version-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        height: 26px;
+        padding: 0 9px;
+        border-radius: 20px;
+        background: #f0edff;
+        color: #6250c9;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 11px;
+        border-radius: 20px;
+        background: #eef8f2;
+        color: #27834d;
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .regenerate-button {
+        border: none;
+        background: #6956d8;
+        color: white;
+        padding: 9px 15px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .regenerate-button:hover {
+            background: #5845c5;
+            transform: translateY(-1px);
+        }
+
+    .empty-state {
+        display: none;
+        text-align: center;
+        padding: 55px 20px;
+        color: #817c8d;
+    }
+
+    .empty-icon {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 15px;
+        border-radius: 50%;
+        background: #f1effa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6956d8;
+        font-size: 22px;
+    }
+
+    .empty-state h4 {
+        margin: 0 0 6px;
+        color: #403b4e;
+        font-size: 16px;
+    }
+
+    .empty-state p {
+        margin: 0;
+        font-size: 13px;
+    }
+
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 35px;
+        color: #77738a;
+        font-size: 14px;
+    }
+
+    .spinner {
+        width: 22px;
+        height: 22px;
+        border: 3px solid #e5e1f2;
+        border-top-color: #6956d8;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 10px;
+    }
+
+    @@keyframes spin {
+        to
+
+    {
+        transform: rotate(360deg);
+    }
+
+    }
+
+    .error-message {
+        display: none;
+        margin-top: 12px;
+        padding: 11px 14px;
+        border-radius: 8px;
+        background: #fff1f1;
+        color: #c33f3f;
+        font-size: 13px;
+    }
+
+    @@media (max-width: 700px) {
+        .regenerate-page
+
+    {
+        margin: 25px auto;
+        padding: 0 15px;
+    }
+
+    .page-header h2 {
+        font-size: 25px;
+    }
+
+    .search-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .load-button {
+        width: 100%;
+    }
+
+    .search-panel {
+        padding: 20px;
+    }
+
+    #historyTable th,
+    #historyTable td {
+        padding: 13px 14px;
+    }
+
+    }
+</style>
+
+<div class="regenerate-page">
+
+    <div class="page-header">
+        <h2>Regenerate Payslip</h2>
+        <p>
+            Find an employee's payslip history and generate a new version when required.
+        </p>
+    </div>
+
+    <div class="search-panel">
+        <div class="search-title">
+            Find Employee Payslips
+        </div>
+
+        <div class="search-row">
+            <div class="input-group">
+                <label for="staffId">
+                    Staff ID
+                </label>
+
+                <input type="number"
+                       id="staffId"
+                       class="staff-input"
+                       placeholder="Enter staff ID"
+                       min="1" />
+            </div>
+
+            <button type="button"
+                    class="load-button"
+                    onclick="loadHistory()">
+                Load Payslips
+            </button>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+
+    <div id="historyPanel" class="history-panel">
+
+        <div class="history-header">
+            <h3>Payslip History</h3>
+            <p>
+                Previous payslip versions for the selected employee.
+            </p>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            Loading payslip history...
+        </div>
+
+        <div class="table-wrapper">
+            <table id="historyTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Payslip ID</th>
+                        <th>Pay Period</th>
+                        <th>Status</th>
+                        <th>Version</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="historyBody"></tbody>
+            </table>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+            <div class="empty-icon">
+                📄
+            </div>
+
+            <h4>No Payslips Found</h4>
+
+            <p>
+                No payslip history was found for this staff member.
+            </p>
+        </div>
+
+    </div>
+
 </div>
-
-<table id="historyTable" border="1" style="margin-top:15px; display:none;">
-    <thead>
-        <tr>
-            <th>Payslip ID</th>
-            <th>Period</th>
-            <th>Status</th>
-            <th>Version</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody id="historyBody"></tbody>
-</table>
 
 <script>
     async function loadHistory() {
-        const staffId = document.getElementById('staffId').value;
-        const res = await fetch(`/Payslip/History?staffId=${staffId}`);
-        const data = await res.json();
+        const staffId = document.getElementById("staffId").value;
+        const table = document.getElementById("historyTable");
+        const body = document.getElementById("historyBody");
+        const loading = document.getElementById("loading");
+        const emptyState = document.getElementById("emptyState");
+        const errorMessage = document.getElementById("errorMessage");
 
-        const body = document.getElementById('historyBody');
-        body.innerHTML = '';
+        errorMessage.style.display = "none";
+        table.style.display = "none";
+        emptyState.style.display = "none";
+        body.innerHTML = "";
 
-        data.forEach(p => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${p.payslipId}</td>
-                <td>${new Date(p.payPeriodStart).toLocaleDateString()} - ${new Date(p.payPeriodEnd).toLocaleDateString()}</td>
-                <td>${p.status}</td>
-                <td>${p.currentVersion}</td>
-                <td><button onclick="regenerate(${p.payslipId})">Regenerate</button></td>
-            `;
-            body.appendChild(row);
-        });
+        if (!staffId) {
+            showError("Please enter a staff ID.");
+            return;
+        }
 
-        document.getElementById('historyTable').style.display = data.length ? 'table' : 'none';
+        loading.style.display = "block";
+
+        try {
+            const response = await fetch(
+                `/Payslip/History?staffId=${encodeURIComponent(staffId)}`
+            );
+
+            if (!response.ok) {
+                throw new Error("Unable to load payslip history.");
+            }
+
+            const data = await response.json();
+
+            loading.style.display = "none";
+
+            if (!data || data.length === 0) {
+                emptyState.style.display = "block";
+                return;
+            }
+
+            data.forEach(p => {
+                const row = document.createElement("tr");
+
+                const startDate = new Date(p.payPeriodStart);
+                const endDate = new Date(p.payPeriodEnd);
+
+                row.innerHTML = `
+                    <td>
+                        <span class="payslip-id">
+                            #${p.payslipId}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="period">
+                            ${startDate.toLocaleDateString()} -
+                            ${endDate.toLocaleDateString()}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="status-badge">
+                            ${p.status}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="version-badge">
+                            v${p.currentVersion}
+                        </span>
+                    </td>
+
+                    <td>
+                        <button
+                            type="button"
+                            class="regenerate-button"
+                            onclick="regenerate(${p.payslipId})">
+                            Regenerate
+                        </button>
+                    </td>
+                `;
+
+                body.appendChild(row);
+            });
+
+            table.style.display = "table";
+
+        } catch (error) {
+            loading.style.display = "none";
+            showError(error.message);
+        }
     }
 
     async function regenerate(payslipId) {
-        const reason = prompt("Reason for regeneration:");
-        if (!reason) return;
+        const reason = prompt("Please enter the reason for regeneration:");
+
+        if (!reason || !reason.trim()) {
+            return;
+        }
 
         const formData = new URLSearchParams();
-        formData.append('payslipId', payslipId);
-        formData.append('regenerationReason', reason);
 
-        const res = await fetch('/Payslip/Regenerate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData
-        });
+        formData.append("payslipId", payslipId);
+        formData.append("regenerationReason", reason.trim());
 
-        if (res.ok) {
-            alert("Regenerated successfully.");
-            loadHistory();
-        } else {
-            alert(await res.text());
+        try {
+            const response = await fetch("/Payslip/Regenerate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                alert("Payslip regenerated successfully.");
+                loadHistory();
+            } else {
+                const message = await response.text();
+                alert(message || "Unable to regenerate the payslip.");
+            }
+
+        } catch (error) {
+            alert("An error occurred while regenerating the payslip.");
         }
     }
+
+    function showError(message) {
+        const errorMessage = document.getElementById("errorMessage");
+
+        errorMessage.textContent = message;
+        errorMessage.style.display = "block";
+    }
+
+    document.getElementById("staffId").addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            loadHistory();
+        }
+    });
 </script>

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchoolManagementSystem.Models;
 using SchoolManagmentSystem.Models;
 using System;
 using System.Linq;
 
-namespace SchoolManagementSystem.Controllers
+namespace SchoolManagmentSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -19,19 +18,37 @@ namespace SchoolManagementSystem.Controllers
 
         // NEW: Endpoint to fetch available leave days
         [HttpGet("balance/{staffId}/{leaveType}")]
-        public IActionResult GetLeaveBalance(int staffId, LeaveType leaveType)
+        public IActionResult GetLeaveBalance(
+     int staffId,
+     LeaveType leaveType)
         {
             var balance = _context.LeaveBalances
-                .FirstOrDefault(b => b.StaffId == staffId && b.LeaveType == leaveType);
+                .FirstOrDefault(b =>
+                    b.StaffId == staffId &&
+                    b.LeaveType == leaveType);
 
-            // If no record exists yet, assume the default 30 days
             if (balance == null)
             {
-                return Ok(new { availableDays = 30 });
+                balance = new LeaveBalance
+                {
+                    StaffId = staffId,
+                    LeaveType = leaveType,
+                    TotalAllocatedDays = 30,
+                    UsedDays = 0
+                };
+
+                _context.LeaveBalances.Add(balance);
+                _context.SaveChanges();
             }
 
-            int availableDays = balance.TotalAllocatedDays - balance.UsedDays;
-            return Ok(new { availableDays = availableDays });
+            int availableDays =
+                balance.TotalAllocatedDays -
+                balance.UsedDays;
+
+            return Ok(new
+            {
+                availableDays = availableDays
+            });
         }
 
         [HttpPost("submit")]
@@ -41,33 +58,50 @@ namespace SchoolManagementSystem.Controllers
             {
                 int staffId = int.Parse(requestDto.StaffId);
 
-                // 1. Calculate how many days they are asking for (inclusive)
-                int requestedDays = (requestDto.EndDate.Date - requestDto.StartDate.Date).Days + 1;
+                int requestedDays =
+                    (requestDto.EndDate.Date - requestDto.StartDate.Date).Days + 1;
 
                 if (requestedDays <= 0)
                 {
-                    return BadRequest(new { error = "End date must be the same as or after the start date." });
+                    return BadRequest(new
+                    {
+                        error = "End date must be the same as or after the start date."
+                    });
                 }
 
-                // 2. Fetch the teacher's current balance from the database
                 var currentBalance = _context.LeaveBalances
-                    .FirstOrDefault(b => b.StaffId == staffId && b.LeaveType == requestDto.Type);
+                    .FirstOrDefault(b =>
+                        b.StaffId == staffId &&
+                        b.LeaveType == requestDto.Type);
 
-                // 3. Gatekeeper Check: Do they have a balance record?
                 if (currentBalance == null)
                 {
-                    return BadRequest(new { error = "No leave balance record found for this leave type." });
+                    currentBalance = new LeaveBalance
+                    {
+                        StaffId = staffId,
+                        LeaveType = requestDto.Type,
+                        TotalAllocatedDays = 30,
+                        UsedDays = 0
+                    };
+
+                    _context.LeaveBalances.Add(currentBalance);
                 }
 
-                // 4. Gatekeeper Check: Do they have enough days left?
-                int availableDays = currentBalance.TotalAllocatedDays - currentBalance.UsedDays;
+                int availableDays =
+                    currentBalance.TotalAllocatedDays -
+                    currentBalance.UsedDays;
 
                 if (requestedDays > availableDays)
                 {
-                    return BadRequest(new { error = $"Insufficient balance. You requested {requestedDays} days, but only have {availableDays} days left." });
+                    return BadRequest(new
+                    {
+                        error =
+                            $"Insufficient balance. You requested " +
+                            $"{requestedDays} days, but only " +
+                            $"{availableDays} days are available."
+                    });
                 }
 
-                // 5. Apply the strict constructor rules 
                 var leaveRequest = new LeaveRequest(
                     staffId,
                     requestDto.Type,
@@ -76,24 +110,28 @@ namespace SchoolManagementSystem.Controllers
                     requestDto.Reason
                 );
 
-                // 6. Save the new request to the database
                 _context.LeaveRequests.Add(leaveRequest);
-
-                // 7. Deduct the used days from the teacher's balance and update the database
-                currentBalance.UsedDays += requestedDays;
-                _context.LeaveBalances.Update(currentBalance);
 
                 _context.SaveChanges();
 
-                return Ok(new { message = "Leave request submitted successfully!" });
+                return Ok(new
+                {
+                    message = "Leave request submitted successfully!"
+                });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { error = ex.Message });
+                return BadRequest(new
+                {
+                    error = ex.Message
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, new { error = "An unexpected error occurred." });
+                return StatusCode(500, new
+                {
+                    error = ex.Message
+                });
             }
         }
     }

@@ -59,8 +59,11 @@
                     <div class="text-end">
                         <span id="modalAgeBadge" class="badge bg-primary mb-1"></span>
                         <div class="fw-bold fs-5">Gross: <span id="modalGross" class="text-dark"></span></div>
+                        <!-- NEW: Overtime Display -->
+                        <div class="text-success small fw-bold mt-1" id="overtimeContainer" style="display: none;">
+                            Includes Overtime: <span id="modalOvertime"></span>
+                        </div>
                     </div>
-                </div>
 
                 <div class="row g-3">
                     <!-- Left Column: Employee Deductions -->
@@ -180,8 +183,18 @@
             .then(data => {
                 document.getElementById('modalStaffName').innerText = data.fullName;
                 document.getElementById('modalStaffRole').innerText = "Role: " + data.role;
-                document.getElementById('modalAgeBadge').innerText = "Age: " + data.age;
-                document.getElementById('modalGross').innerText = "R " + data.gross.toFixed(2);
+                    document.getElementById('modalAgeBadge').innerText = "Age: " + data.age;
+                    document.getElementById('modalGross').innerText = "R " + data.gross.toFixed(2);
+
+                    //  Handle Overtime Display
+                    if (data.overtime > 0) {
+                        document.getElementById('overtimeContainer').style.display = 'block';
+                        document.getElementById('modalOvertime').innerText = "R " + data.overtime.toFixed(2);
+                    } else {
+                        document.getElementById('overtimeContainer').style.display = 'none';
+                    }
+
+                    document.getElementById('modalPension').innerText = "- R " + data.pension.toFixed(2);
 
                 document.getElementById('modalPension').innerText = "- R " + data.pension.toFixed(2);
                 document.getElementById('modalUif').innerText = "- R " + data.uif.toFixed(2);

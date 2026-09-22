@@ -51,11 +51,50 @@ namespace SchoolManagmentSystem.Controllers
                     salary = 40 * Convert.ToDouble(hoursWorked);
 
                 }
+                //  OVERTIME RATE CALCULATION (6 hours/day)
+                double standardHoursPerMonth = 132.0; 
+                double normalHourlyRate = salary / standardHoursPerMonth;
+                double overtimeRate = normalHourlyRate * 1.5;
+
+                
+                int currentMonth = DateTime.Now.Month;
+                int currentYear = DateTime.Now.Year;
+
+                
+                var monthlyAttendance = _context.StaffAttendances
+                    .Where(a => a.StaffId == id.id
+                             && a.ClockInTime.HasValue
+                             && a.ClockInTime.Value.Month == currentMonth
+                             && a.ClockInTime.Value.Year == currentYear
+                             && a.TotalHoursWorked.HasValue) 
+                    .ToList();
+
+                double totalRealOvertimeHours = 0.0;
+
+                
+                foreach (var record in monthlyAttendance)
+                {
+                    
+                    double hoursWorkedThatDay = (double)record.TotalHoursWorked.Value;
+
+                    
+                    if (hoursWorkedThatDay > 6.0)
+                    {
+                        totalRealOvertimeHours += (hoursWorkedThatDay - 6.0);
+                    }
+                }
+
+                
+                double overtimePay = totalRealOvertimeHours * overtimeRate;
+
+                
+                salary += overtimePay;
+
                 
                 double pension = salary * 0.075;
                 double annualTaxableIncome = (salary - pension) * 12.0;
 
-                
+
                 double appliedRate = 0.18;
                 double baseTax = 0;
                 double minIncome = 1;

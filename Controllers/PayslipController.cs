@@ -96,6 +96,14 @@ namespace SchoolManagmentSystem.Controllers
 
             return Json(history);
         }
+        [HttpGet]
+        public IActionResult GetStaffList()
+        {
+            var staff = _context.Staffs
+                .Select(s => new { s.id, Name = s.FirstName + " " + s.Surname })
+                .ToList();
+            return Json(staff);
+        }
         [HttpPost]
         public IActionResult Regenerate(int payslipId, string regenerationReason)
         {

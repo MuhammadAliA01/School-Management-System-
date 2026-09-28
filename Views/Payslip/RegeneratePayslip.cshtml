@@ -401,6 +401,7 @@
         <div id="errorMessage" class="error-message"></div>
     </div>
 
+    <div id="successMessage" style="display:none; margin-bottom:20px; padding:14px 18px; border-radius:10px; background:#eef8f2; color:#27834d; font-size:14px; font-weight:600;"></div>
     <div class="history-panel">
 
         <div class="history-header">
@@ -554,16 +555,23 @@
             closeReasonModal();
 
             if (response.ok) {
-                alert("Payslip regenerated successfully.");
+                showSuccess("Payslip regenerated successfully.");
                 loadHistory();
             } else {
                 const message = await response.text();
-                alert(message || "Unable to regenerate the payslip.");
+                showError(message || "Unable to regenerate the payslip.");
             }
         } catch (error) {
             closeReasonModal();
-            alert("An error occurred while regenerating the payslip.");
+            showError("An error occurred while regenerating the payslip.");
         }
+    }
+
+    function showSuccess(message) {
+        const successMessage = document.getElementById("successMessage");
+        successMessage.textContent = message;
+        successMessage.style.display = "block";
+        setTimeout(() => { successMessage.style.display = "none"; }, 3000);
     }
 
     function showError(message) {

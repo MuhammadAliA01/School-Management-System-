@@ -1,21 +1,182 @@
-﻿@{
+﻿@model IEnumerable<dynamic>
+
+@{
     ViewData["Title"] = "SARS Reports";
 }
 
-<h2>SARS Monthly Report</h2>
-<p>Select a pay period to generate the report.</p>
+<style>
+    .sars-page {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
 
-<form asp-controller="SarsReport" asp-action="GenerateReport" method="get">
-    <label for="payCycle">Pay Period:</label>
-    <input type="month" id="payCycleInput" name="payCycleInput" required />
-    <input type="hidden" id="payCycle" name="payCycle" />
-    <button type="submit">Generate Report</button>
-</form>
+    .sars-header {
+        margin-bottom: 25px;
+    }
 
-<script>
-    // Convert the month picker (e.g. "2026-09") into a full date the controller expects
-    document.querySelector("form").addEventListener("submit", function () {
-        var val = document.getElementById("payCycleInput").value; // "2026-09"
-        document.getElementById("payCycle").value = val + "-01"; // "2026-09-01"
-    });
-</script>
+        .sars-header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: #25213b;
+        }
+
+        .sars-header p {
+            margin-top: 8px;
+            color: #77738a;
+            font-size: 14px;
+        }
+
+    .reports-panel {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #f5e3d0;
+        box-shadow: 0 8px 30px rgba(40, 32, 70, 0.07);
+        overflow: hidden;
+    }
+
+    .reports-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .reports-table thead {
+            background: #fff6ee;
+        }
+
+        .reports-table th {
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #a06a3a;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            border-bottom: 1px solid #f5e3d0;
+        }
+
+        .reports-table td {
+            padding: 17px 20px;
+            font-size: 14px;
+            color: #454052;
+            border-bottom: 1px solid #f8ece0;
+        }
+
+        .reports-table tbody tr:hover {
+            background: #fffaf5;
+        }
+
+    .report-button {
+        display: inline-block;
+        background: #ff8a3d;
+        color: white;
+        padding: 9px 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .report-button:hover {
+            background: #f07627;
+            color: white;
+            text-decoration: none;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 55px 20px;
+        color: #817c8d;
+    }
+
+        .empty-state h4 {
+            margin-bottom: 6px;
+            color: #403b4e;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 13px;
+        }
+
+    @@media (max-width: 700px) {
+        .reports-table th,
+        .reports-table td {
+            padding: 13px 14px;
+        }
+    }
+</style>
+
+<div class="sars-page">
+
+    <div class="sars-header">
+        <h2>SARS Monthly Reports</h2>
+
+        <p>
+            View SARS reports generated after completed payroll distributions.
+        </p>
+    </div>
+
+    <div class="reports-panel">
+
+        @if (Model.Any())
+        {
+            <table class="reports-table">
+
+                <thead>
+                    <tr>
+                        <th>Pay Period</th>
+                        <th>Generated</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var report in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                @report.PayCycle.ToString("MMMM yyyy")
+                            </td>
+
+                            <td>
+                                @report.GeneratedAt.ToString("dd MMMM yyyy HH:mm")
+                            </td>
+
+                            <td>
+                                <a class="report-button"
+                                   asp-controller="SarsReport"
+                                   asp-action="GenerateReport"
+                                   asp-route-payCycle="@report.PayCycle">
+                                    View Report
+                                </a>
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+        }
+        else
+        {
+            <div class="empty-state">
+
+                <h4>No SARS Reports Available</h4>
+
+                <p>
+                    SARS reports will appear here after a payroll distribution
+                    has been completed.
+                </p>
+
+            </div>
+        }
+
+    </div>
+
+</div>

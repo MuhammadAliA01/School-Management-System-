@@ -17,6 +17,8 @@ namespace SchoolManagmentSystem.Controllers
         private readonly HttpClient _httpClient;
         private readonly IEmailService _emailService;
         private readonly PayslipGenerationService _payslipGenerationService;
+        private readonly SarsReportService _sarsReportService;
+        private readonly SarsReportDocumentService _sarsReportDocumentService;
 
 
         public PayrollController(ApplicationDBContext context, ModernTreasuryService modernTreasuryService, HttpClient httpClient, IEmailService emailService,
@@ -27,6 +29,8 @@ namespace SchoolManagmentSystem.Controllers
             _httpClient = httpClient;
             _emailService = emailService;
             _payslipGenerationService = payslipGenerationService;
+            _sarsReportService = new SarsReportService(context);
+            _sarsReportDocumentService = new SarsReportDocumentService();
         }
 
         
@@ -547,8 +551,47 @@ namespace SchoolManagmentSystem.Controllers
             }
             else
             {
-                TempData["Success"] =
-                    "Payslips generated, emailed and processed successfully.";
+                try
+                {
+                    DateTime payCycle = new DateTime(
+                        DateTime.Now.Year,
+                        DateTime.Now.Month,
+                        1);
+
+                    var existingSarsReport = await _context.SarsReports
+                        .FirstOrDefaultAsync(x =>
+                            x.PayCycle.Year == payCycle.Year &&
+                            x.PayCycle.Month == payCycle.Month);
+
+                    if (existingSarsReport == null)
+                    {
+                        var sarsReport =
+                            _sarsReportService.GenerateReport(payCycle);
+
+                        var pdfBytes =
+                            _sarsReportDocumentService.GeneratePdf(sarsReport);
+
+                        var savedSarsReport = new SarsReport
+                        {
+                            PayCycle = payCycle,
+                            GeneratedAt = DateTime.Now,
+                            PdfContent = pdfBytes
+                        };
+
+                        _context.SarsReports.Add(savedSarsReport);
+
+                        await _context.SaveChangesAsync();
+                    }
+
+                    TempData["Success"] =
+                        "Payslips generated, emailed, salaries processed and SARS report generated successfully.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] =
+                        "Payroll was processed, but the SARS report could not be generated: " +
+                        ex.Message;
+                }
             }
 
             return RedirectToAction(

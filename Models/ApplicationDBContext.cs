@@ -94,6 +94,7 @@ namespace SchoolManagmentSystem.Models
         public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<Transactions> Transactions { get; set; }
 
+        public DbSet<SarsReport> SarsReports { get; set; }
 
 
     }

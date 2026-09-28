@@ -10,11 +10,13 @@ namespace SchoolManagmentSystem.Controllers
     {
         private readonly PayslipGenerationService _payslipGenerationService;
         private readonly ApplicationDBContext _context;
+        private readonly IEmailService _emailService;
 
-        public PayslipController(PayslipGenerationService payslipGenerationService, ApplicationDBContext context)
+        public PayslipController(PayslipGenerationService payslipGenerationService, ApplicationDBContext context, IEmailService emailService)
         {
             _payslipGenerationService = payslipGenerationService;
             _context = context;
+            _emailService = emailService;
         }
 
         // Batch — all staff for a period
@@ -103,22 +105,90 @@ namespace SchoolManagmentSystem.Controllers
             return Json(staff);
         }
         [HttpPost]
-        public IActionResult Regenerate(int payslipId, string regenerationReason)
+        public async Task<IActionResult> Regenerate(
+    int payslipId,
+    string regenerationReason)
         {
             if (string.IsNullOrWhiteSpace(regenerationReason))
                 return BadRequest("A reason is required to regenerate a payslip.");
 
             var existing = _context.Payslips.Find(payslipId);
+
             if (existing == null)
                 return NotFound("Payslip not found.");
 
             var staff = _context.Staffs.Find(existing.StaffId);
+
             if (staff == null)
                 return NotFound("Staff member not found.");
 
-            var data = _payslipGenerationService.BuildPayslipDataFromEarnings(staff, existing.PayPeriodStart, existing.PayPeriodEnd);
-            var payslip = _payslipGenerationService.StagePayslip(data, regenerationReason);
-            return Json(new { payslip.PayslipId, payslip.Status, payslip.CurrentVersion });
+            if (string.IsNullOrWhiteSpace(staff.Email))
+                return BadRequest("Payslip cannot be emailed because the staff member has no email address.");
+
+            var data = _payslipGenerationService.BuildPayslipDataFromEarnings(
+                staff,
+                existing.PayPeriodStart,
+                existing.PayPeriodEnd);
+
+            var payslip = _payslipGenerationService.StagePayslip(
+                data,
+                regenerationReason);
+
+            if (payslip.PdfContent == null || payslip.PdfContent.Length == 0)
+            {
+                return BadRequest(
+                    "Payslip was regenerated, but the PDF could not be generated.");
+            }
+
+            var fileName =
+                $"payslip_{payslip.StaffId}_{payslip.PayPeriodStart:yyyyMM}_v{payslip.CurrentVersion}.pdf";
+
+            var subject = "Your Payslip - Hybrid Learning Academy";
+
+            var body = $@"
+        <p>Dear {staff.FirstName},</p>
+
+        <p>
+            Your payslip has been regenerated for the period
+            <strong>
+                {payslip.PayPeriodStart:dd MMM yyyy}
+                -
+                {payslip.PayPeriodEnd:dd MMM yyyy}
+            </strong>.
+        </p>
+
+        <p>
+            <strong>Version:</strong> v{payslip.CurrentVersion}
+        </p>
+
+        <p>
+            <strong>Reason for regeneration:</strong>
+            {System.Net.WebUtility.HtmlEncode(regenerationReason)}
+        </p>
+
+        <p>
+            Your updated payslip is attached to this email.
+        </p>
+
+        <p>
+            Regards,<br />
+            Hybrid Learning Academy
+        </p>
+    ";
+
+            await _emailService.SendEmailAsync(
+                staff.Email,
+                subject,
+                body,
+                payslip.PdfContent,
+                fileName);
+
+            return Json(new
+            {
+                payslip.PayslipId,
+                payslip.Status,
+                payslip.CurrentVersion
+            });
         }
 
         [HttpGet]

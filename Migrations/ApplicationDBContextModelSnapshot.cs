@@ -22,63 +22,6 @@ namespace SchoolManagmentSystem.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SchoolManagementSystem.Models.LeaveBalance", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("LeaveType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StaffId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalAllocatedDays")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsedDays")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LeaveBalances");
-                });
-
-            modelBuilder.Entity("SchoolManagementSystem.Models.LeaveRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StaffId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LeaveRequests");
-                });
-
             modelBuilder.Entity("SchoolManagmentSystem.Models.ActivityModel", b =>
                 {
                     b.Property<int>("ActivityID")
@@ -601,6 +544,63 @@ namespace SchoolManagmentSystem.Migrations
                     b.ToTable("Incidents");
                 });
 
+            modelBuilder.Entity("SchoolManagmentSystem.Models.LeaveBalance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("LeaveType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalAllocatedDays")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsedDays")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LeaveBalances");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.LeaveRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LeaveRequests");
+                });
+
             modelBuilder.Entity("SchoolManagmentSystem.Models.Medication", b =>
                 {
                     b.Property<int>("ID")
@@ -802,6 +802,29 @@ namespace SchoolManagmentSystem.Migrations
                     b.HasKey("PayslipVersionControlId");
 
                     b.ToTable("PayslipVersionControls");
+                });
+
+            modelBuilder.Entity("SchoolManagmentSystem.Models.SarsReport", b =>
+                {
+                    b.Property<int>("SarsReportId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SarsReportId"));
+
+                    b.Property<DateTime>("GeneratedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("PayCycle")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("PdfContent")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.HasKey("SarsReportId");
+
+                    b.ToTable("SarsReports");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Staff", b =>

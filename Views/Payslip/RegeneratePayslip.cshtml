@@ -27,7 +27,7 @@
         }
 
     .search-panel {
-        background: #ffffff;
+        background: #fff;
         border-radius: 16px;
         padding: 25px 28px;
         box-shadow: 0 8px 30px rgba(40, 32, 70, 0.07);
@@ -42,23 +42,13 @@
         margin-bottom: 18px;
     }
 
-    .search-row {
-        display: flex;
-        align-items: flex-end;
-        gap: 15px;
+    .input-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #5f5a70;
+        margin-bottom: 8px;
     }
-
-    .input-group {
-        flex: 1;
-    }
-
-        .input-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #5f5a70;
-            margin-bottom: 8px;
-        }
 
     .staff-input {
         width: 100%;
@@ -69,9 +59,9 @@
         font-size: 15px;
         color: #302b48;
         outline: none;
-        transition: 0.2s;
         box-sizing: border-box;
         background: #fff;
+        transition: 0.2s;
     }
 
         .staff-input:focus {
@@ -79,26 +69,45 @@
             box-shadow: 0 0 0 3px rgba(255, 138, 61, 0.12);
         }
 
-    .load-button {
-        height: 46px;
-        padding: 0 25px;
-        border: none;
-        border-radius: 10px;
-        background: #ff8a3d;
-        color: white;
-        font-size: 14px;
-        font-weight: 600;
+    .staff-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .staff-chip {
+        padding: 9px 16px;
+        border: 1px solid #f0c9a0;
+        background: #fff;
+        color: #302b48;
+        border-radius: 20px;
         cursor: pointer;
+        font-size: 14px;
         transition: 0.2s;
     }
 
-        .load-button:hover {
-            background: #f07627;
-            transform: translateY(-1px);
+        .staff-chip:hover {
+            background: #fff6ee;
+        }
+
+        .staff-chip.active {
+            background: #ff8a3d;
+            color: #fff;
+            border-color: #ff8a3d;
+        }
+
+    .date-row {
+        display: flex;
+        gap: 14px;
+        margin-top: 20px;
+    }
+
+        .date-row .input-group {
+            flex: 1;
         }
 
     .history-panel {
-        background: #ffffff;
+        background: #fff;
         border-radius: 16px;
         box-shadow: 0 8px 30px rgba(40, 32, 70, 0.07);
         border: 1px solid #f5e3d0;
@@ -202,7 +211,7 @@
     .regenerate-button {
         border: none;
         background: #ff8a3d;
-        color: white;
+        color: #fff;
         padding: 9px 15px;
         border-radius: 8px;
         font-size: 12px;
@@ -245,6 +254,13 @@
     .empty-state p {
         margin: 0;
         font-size: 13px;
+    }
+
+    .prompt-state {
+        text-align: center;
+        padding: 45px 20px;
+        color: #a08a75;
+        font-size: 14px;
     }
 
     .loading {
@@ -295,7 +311,7 @@
         background: #fff;
         border-radius: 14px;
         padding: 26px 28px;
-        width: 360px;
+        width: 380px;
         box-shadow: 0 10px 40px rgba(0,0,0,0.15);
     }
 
@@ -321,7 +337,7 @@
 
     .modal-confirm {
         background: #ff8a3d;
-        color: white;
+        color: #fff;
         border: none;
         padding: 9px 16px;
         border-radius: 8px;
@@ -343,13 +359,8 @@
             font-size: 25px;
         }
 
-        .search-row {
+        .date-row {
             flex-direction: column;
-            align-items: stretch;
-        }
-
-        .load-button {
-            width: 100%;
         }
 
         .search-panel {
@@ -366,32 +377,38 @@
 
     <div class="page-header">
         <h2>Regenerate Payslip</h2>
-        <p>Find an employee's payslip history and generate a new version when required.</p>
+        <p>Select an employee to view their payslip history, then regenerate the one you need.</p>
     </div>
 
     <div class="search-panel">
-        <div class="search-title">Find Employee Payslips</div>
+        <div class="search-title">Select Employee</div>
 
-        <div class="search-row">
+        <div class="input-group">
+            <div id="staffList" class="staff-chips"></div>
+        </div>
+
+        <div class="date-row">
             <div class="input-group">
-                <label for="staffId">Employee</label>
-                <select id="staffId" class="staff-input"></select>
+                <label for="fromDate">From (optional)</label>
+                <input type="date" id="fromDate" class="staff-input" onchange="loadHistory()" />
             </div>
-
-            <button type="button" class="load-button" onclick="loadHistory()">
-                Load Payslips
-            </button>
+            <div class="input-group">
+                <label for="toDate">To (optional)</label>
+                <input type="date" id="toDate" class="staff-input" onchange="loadHistory()" />
+            </div>
         </div>
 
         <div id="errorMessage" class="error-message"></div>
     </div>
 
-    <div id="historyPanel" class="history-panel">
+    <div class="history-panel">
 
         <div class="history-header">
             <h3>Payslip History</h3>
-            <p>Previous payslip versions for the selected employee.</p>
+            <p>Payslips previously generated for the selected employee.</p>
         </div>
+
+        <div id="promptState" class="prompt-state">Select an employee above to see their payslips.</div>
 
         <div id="loading" class="loading">
             <div class="spinner"></div>
@@ -416,7 +433,7 @@
         <div id="emptyState" class="empty-state">
             <div class="empty-icon">📄</div>
             <h4>No Payslips Found</h4>
-            <p>No payslip history was found for this staff member.</p>
+            <p>No payslips were found for this employee in the selected range.</p>
         </div>
 
     </div>
@@ -435,37 +452,46 @@
 </div>
 
 <script>
+    let selectedStaffId = null;
     let pendingPayslipId = null;
 
     async function loadStaffList() {
         const res = await fetch("/Payslip/GetStaffList");
         const staff = await res.json();
-        const select = document.getElementById("staffId");
-        select.innerHTML = staff.map(s => `<option value="${s.id}">${s.name} (ID ${s.id})</option>`).join("");
+        document.getElementById("staffList").innerHTML = staff.map(s =>
+            `<button type="button" class="staff-chip" id="chip-${s.id}" onclick="selectStaff(${s.id})">${s.name}</button>`
+        ).join("");
+    }
+
+    function selectStaff(id) {
+        selectedStaffId = id;
+        document.querySelectorAll(".staff-chip").forEach(c => c.classList.remove("active"));
+        document.getElementById("chip-" + id).classList.add("active");
+        loadHistory();
     }
 
     async function loadHistory() {
-        const staffId = document.getElementById("staffId").value;
+        if (!selectedStaffId) return;
+
         const table = document.getElementById("historyTable");
         const body = document.getElementById("historyBody");
         const loading = document.getElementById("loading");
         const emptyState = document.getElementById("emptyState");
+        const promptState = document.getElementById("promptState");
         const errorMessage = document.getElementById("errorMessage");
 
+        const from = document.getElementById("fromDate").value;
+        const to = document.getElementById("toDate").value;
+
         errorMessage.style.display = "none";
+        promptState.style.display = "none";
         table.style.display = "none";
         emptyState.style.display = "none";
         body.innerHTML = "";
-
-        if (!staffId) {
-            showError("Please select an employee.");
-            return;
-        }
-
         loading.style.display = "block";
 
         try {
-            const response = await fetch(`/Payslip/History?staffId=${encodeURIComponent(staffId)}`);
+            const response = await fetch(`/Payslip/History?staffId=${selectedStaffId}&from=${from}&to=${to}`);
             if (!response.ok) throw new Error("Unable to load payslip history.");
 
             const data = await response.json();
@@ -502,6 +528,7 @@
         pendingPayslipId = payslipId;
         document.getElementById("reasonInput").value = "";
         document.getElementById("reasonModal").style.display = "flex";
+        document.getElementById("reasonInput").focus();
     }
 
     function closeReasonModal() {

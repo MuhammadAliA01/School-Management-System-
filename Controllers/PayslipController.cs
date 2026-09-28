@@ -78,24 +78,22 @@ namespace SchoolManagmentSystem.Controllers
             return Json(new { Success = true, payslipId });
         }
 
-        [HttpGet]
-        public IActionResult History(int staffId)
+        [HttpGet]  //updates so we ca get dates
+        public IActionResult History(int staffId, DateTime? from, DateTime? to)
         {
-            var history = _context.Payslips
-                .Where(p => p.StaffId == staffId)
+            var query = _context.Payslips.Where(p => p.StaffId == staffId);
+
+            if (from.HasValue) query = query.Where(p => p.PayPeriodStart >= from.Value);
+            if (to.HasValue) query = query.Where(p => p.PayPeriodEnd <= to.Value);
+
+            var history = query
                 .OrderByDescending(p => p.PayPeriodStart)
-                .Select(p => new
-                {
-                    p.PayslipId,
-                    p.PayPeriodStart,
-                    p.PayPeriodEnd,
-                    p.Status,
-                    p.CurrentVersion
-                })
+                .Select(p => new { p.PayslipId, p.PayPeriodStart, p.PayPeriodEnd, p.Status, p.CurrentVersion })
                 .ToList();
 
             return Json(history);
         }
+
         [HttpGet]
         public IActionResult GetStaffList()
         {

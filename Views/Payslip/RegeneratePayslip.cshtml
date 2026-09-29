@@ -382,6 +382,7 @@
 
     <div class="search-panel">
         <div class="search-title">Select Employee</div>
+        <input type="text" id="staffSearch" class="staff-input" placeholder="Search by name or staff ID..." oninput="filterStaffList()" style="margin-bottom:12px;" />
 
         <div class="input-group">
             <div id="staffList" class="staff-chips"></div>
@@ -453,15 +454,28 @@
 </div>
 
 <script>
-    let selectedStaffId = null;
-    let pendingPayslipId = null;
+        let selectedStaffId = null;
+        let pendingPayslipId = null;
+        let allStaff = [];
 
     async function loadStaffList() {
         const res = await fetch("/Payslip/GetStaffList");
-        const staff = await res.json();
+        allStaff = await res.json();
+        renderStaffList(allStaff);
+    }
+
+    function renderStaffList(staff) {
         document.getElementById("staffList").innerHTML = staff.map(s =>
-            `<button type="button" class="staff-chip" id="chip-${s.id}" onclick="selectStaff(${s.id})">${s.name}</button>`
+            `<button type="button" class="staff-chip ${s.id === selectedStaffId ? 'active' : ''}" id="chip-${s.id}" onclick="selectStaff(${s.id})">${s.name} (ID ${s.id})</button>`
         ).join("");
+    }
+
+    function filterStaffList() {
+        const term = document.getElementById("staffSearch").value.toLowerCase();
+        const filtered = allStaff.filter(s =>
+            s.name.toLowerCase().includes(term) || String(s.id).includes(term)
+        );
+        renderStaffList(filtered);
     }
 
     function selectStaff(id) {

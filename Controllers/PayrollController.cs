@@ -431,6 +431,7 @@ namespace SchoolManagmentSystem.Controllers
                     {
                         continue;
                     }
+                    _payslipGenerationService.FinalizePayslip(payslip.PayslipId); //added to finalize the payslip after staging so status changes to generated
 
                     var bankAccount = await _context.BankAccounts
                         .FirstOrDefaultAsync(x =>

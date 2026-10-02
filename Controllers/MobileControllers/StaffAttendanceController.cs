@@ -56,8 +56,24 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             return $"/uploads/images/{fileName}";
         }
 
+        // Sends a notification, but NEVER lets a Firebase problem break the clock-in/out.
+        private async Task TrySendNotificationAsync(string? fcmToken, string title, string body)
+        {
+            if (string.IsNullOrEmpty(fcmToken)) return;
+
+            try
+            {
+                await _firebaseNotificationService.SendNotification(fcmToken, title, body);
+            }
+            catch (Exception ex)
+            {
+               
+                Console.WriteLine($"Notification failed: {ex.Message}");
+            }
+        }
+
         [HttpPost("ClockIn")]
-        public async Task<IActionResult> ClockIn([FromForm] ClockInRequest request) 
+        public async Task<IActionResult> ClockIn([FromForm] ClockInRequest request)
         {
             var staff = await _context.Staffs.FindAsync(request.StaffId);
             if (staff == null)
@@ -87,7 +103,7 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
                 DateTime oldClockInLocal = oldOpenSession.ClockInTime.Value.AddHours(2);
                 DateTime nowLocalCheck = DateTime.UtcNow.AddHours(2);
 
-                
+
                 if (oldClockInLocal.Date < nowLocalCheck.Date)
                 {
                     DateTime shiftEndLocal = oldClockInLocal.Date.AddHours(16); // 4:00 PM — actual paid shift end
@@ -115,8 +131,8 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             {
                 StaffId = request.StaffId,
                 ClockInTime = clockInTimeUtc,
-                ClockInLatitude = (decimal)request.Latitude,   
-                ClockInLongitude = (decimal)request.Longitude, 
+                ClockInLatitude = (decimal)request.Latitude,
+                ClockInLongitude = (decimal)request.Longitude,
                 ClockInPhotoUrl = photoUrl, // Saving the file path here
                 IsAnomaly = isLate,
                 AnomalyReason = isLate ? $"Late clock-in — arrived at {clockInTimeLocal:HH:mm}, expected by {expectedStartTime.Add(graceWindow):hh\\:mm}" : null
@@ -125,16 +141,9 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             _context.StaffAttendances.Add(attendance);
             await _context.SaveChangesAsync();
 
-            
+            // Notification is a bonus: if it fails, the clock-in still succeeds
+            await TrySendNotificationAsync(staff.FCMToken, "Clocked In", "You have Clocked In");
 
-            if (staff != null && !string.IsNullOrEmpty(staff.FCMToken))
-            {
-                await _firebaseNotificationService.SendNotification(
-                    staff.FCMToken,
-                    "Clocked In",
-                    "You have Clocked In"
-                );
-            }
             return Ok(new { message = "Clock-in successful.", attendanceId = attendance.Id, isAnomaly = isLate });
         }
 
@@ -153,12 +162,12 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
             if (attendance == null)
                 return BadRequest("No clock-in record found for this staff.");
 
-            
+
             string? photoUrl = await SaveFileAsync(request.Photo, request.StaffId, "ClockOut");
 
             attendance.ClockOutTime = DateTime.UtcNow;
-            attendance.ClockOutLatitude = (decimal)request.Latitude; 
-            attendance.ClockOutLongitude = (decimal)request.Longitude; 
+            attendance.ClockOutLatitude = (decimal)request.Latitude;
+            attendance.ClockOutLongitude = (decimal)request.Longitude;
             attendance.ClockOutPhotoUrl = photoUrl; // Saving the file path here
 
             if (attendance.ClockInTime.HasValue && attendance.ClockOutTime.HasValue)
@@ -169,14 +178,9 @@ namespace SchoolManagmentSystem.Controllers.MobileControllers
 
             await _context.SaveChangesAsync();
 
-            if (staff != null && !string.IsNullOrEmpty(staff.FCMToken))
-            {
-                await _firebaseNotificationService.SendNotification(
-                    staff.FCMToken,
-                    "Clocked Out",
-                    "You have Clocked Out"
-                );
-            }
+            // Notification is a bonus: if it fails, the clock-out still succeeds
+            await TrySendNotificationAsync(staff.FCMToken, "Clocked Out", "You have Clocked Out");
+
             return Ok(new { message = "Clock-out successful.", totalHoursWorked = attendance.TotalHoursWorked });
         }
     }
